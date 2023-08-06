@@ -38,7 +38,7 @@
     }
 </script>
 
-<div class="flex flex-col justify-around h-screen bg-neutral-300">
+<div class="flex flex-col justify-around h-full bg-neutral-300">
     <div class="flex flex-col gap-2 items-center">
         <div class="flex gap-2 justify-center">
             {#each opponent.cards as _}
