@@ -140,7 +140,7 @@ function finishTurn(pokerState: PokerState): PokerState {
   return pokerState;
 }
 
-export function playerCheck(pokerState: PokerState): PokerState {
+export function playerCheck(_: number, pokerState: PokerState): PokerState {
   if (pokerState.currentAction.minRaise > 0) return pokerState;
   return finishTurn(pokerState);
 }
@@ -164,4 +164,27 @@ export function playerRaise(seat: number, pokerState: PokerState): PokerState {
   pokerState.pot += pokerState.currentAction.minRaise + raiseAmount;
   pokerState.currentAction.minRaise += raiseAmount;
   return finishTurn(pokerState);
+}
+
+export function calculateShownCommunityCards(pokerState: PokerState): Card[] {
+  const communityCards: Card[] = [
+    { value: -1, suit: "Hidden" },
+    { value: -1, suit: "Hidden" },
+    { value: -1, suit: "Hidden" },
+    { value: -1, suit: "Hidden" },
+    { value: -1, suit: "Hidden" },
+  ];
+
+  if (pokerState.round === "Blinds") return communityCards;
+
+  communityCards[0] = pokerState.communityCards[0];
+  communityCards[1] = pokerState.communityCards[1];
+  communityCards[3] = pokerState.communityCards[3];
+  if (pokerState.round === "Flop") return communityCards;
+
+  communityCards[4] = pokerState.communityCards[4];
+  if (pokerState.round === "River") return communityCards;
+
+  communityCards[5] = pokerState.communityCards[5];
+  return communityCards;
 }
