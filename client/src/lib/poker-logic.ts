@@ -10,6 +10,7 @@ export interface Player {
   stack: number;
   out: boolean;
   isCurrentPlayer: boolean;
+  lastAction: "Raise" | "Check" | "Call" | "Fold" | "None";
 }
 
 export interface CurrentAction {
@@ -33,6 +34,13 @@ export function createInitalHandState(): PokerState {
   const deck = createInitalDeck();
   const playerCards = [deck.pop(), deck.pop()];
   const enemyCards = [deck.pop(), deck.pop()];
+  const communityCards = [
+    deck.pop(),
+    deck.pop(),
+    deck.pop(),
+    deck.pop(),
+    deck.pop(),
+  ];
   return {
     seats: [
       {
@@ -40,12 +48,14 @@ export function createInitalHandState(): PokerState {
         stack: 20,
         out: false,
         isCurrentPlayer: true,
+        lastAction: "None",
       },
       {
         cards: enemyCards,
         stack: 20,
         out: false,
         isCurrentPlayer: false,
+        lastAction: "None",
       },
     ],
     round: "Blinds",
@@ -54,13 +64,7 @@ export function createInitalHandState(): PokerState {
       minRaise: 0,
       lastSeatToRaise: -1,
     },
-    communityCards: [
-      { value: 0, suit: "Hidden" },
-      { value: 0, suit: "Hidden" },
-      { value: 0, suit: "Hidden" },
-      { value: 0, suit: "Hidden" },
-      { value: 0, suit: "Hidden" },
-    ],
+    communityCards: communityCards,
     pot: 0,
     deck: deck,
     finished: false,
@@ -80,12 +84,14 @@ export function performEnemyActions(
 
   // Fold
   if (mustCall && seed < 0.1) {
+    pokerState.seats[seat].lastAction = "Fold";
     pokerState.seats[seat].out = true;
     return finishTurn(pokerState);
   }
 
   // Call
   if (mustCall && seed < 0.6) {
+    pokerState.seats[seat].lastAction = "Call";
     pokerState.seats[seat].stack -= pokerState.currentAction.minRaise;
     pokerState.pot += pokerState.currentAction.minRaise;
     return finishTurn(pokerState);
@@ -93,76 +99,96 @@ export function performEnemyActions(
 
   // Check
   if (!mustCall && seed < 0.5) {
+    pokerState.seats[seat].lastAction = "Check";
     return finishTurn(pokerState);
   }
 
   // Raise
+  pokerState.seats[seat].lastAction = "Raise";
   const raiseAmount = Math.floor(seed * 10);
   pokerState.seats[seat].stack -=
     pokerState.currentAction.minRaise + raiseAmount;
   pokerState.pot += pokerState.currentAction.minRaise + raiseAmount;
   pokerState.currentAction.minRaise += raiseAmount;
+  pokerState.currentAction.lastSeatToRaise = seat;
   return finishTurn(pokerState);
 }
 
 function finishTurn(pokerState: PokerState): PokerState {
   if (pokerState.seats.filter((it) => !it.out).length === 1) {
     pokerState.finished = true;
-    return;
+    return pokerState;
   }
 
   let seatInTurn = pokerState.currentAction.seatInTurn;
   seatInTurn = (seatInTurn + 1) % pokerState.seats.length;
-  while (pokerState.seats[seatInTurn].out === false) {
+  while (pokerState.seats[seatInTurn].out === true) {
     seatInTurn = (seatInTurn + 1) % pokerState.seats.length;
   }
   if (seatInTurn === pokerState.currentAction.lastSeatToRaise) {
-    pokerState.currentAction = {
-      seatInTurn: 0,
-      minRaise: 0,
-      lastSeatToRaise: -1,
-    };
-    if (pokerState.round === "Blinds") {
-      pokerState.round = "Flop";
-    }
-    if (pokerState.round === "Flop") {
-      pokerState.round = "River";
-    }
-    if (pokerState.round === "River") {
-      pokerState.round = "Turn";
-    }
-    if (pokerState.round === "Turn") {
-      pokerState.finished = true;
-    }
+    pokerState = finishRound(pokerState);
   }
   pokerState.currentAction.seatInTurn = seatInTurn;
 
   return pokerState;
 }
 
-export function playerCheck(_: number, pokerState: PokerState): PokerState {
+function finishRound(pokerState: PokerState): PokerState {
+  pokerState.currentAction = {
+    seatInTurn: 0,
+    minRaise: 0,
+    lastSeatToRaise: -1,
+  };
+  pokerState.seats = pokerState.seats.map((seat) => {
+    return {
+      cards: seat.cards,
+      stack: seat.stack,
+      out: seat.out,
+      isCurrentPlayer: seat.isCurrentPlayer,
+      lastAction: "None",
+    };
+  });
+  if (pokerState.round === "Blinds") {
+    pokerState.round = "Flop";
+  } else if (pokerState.round === "Flop") {
+    pokerState.round = "River";
+  } else if (pokerState.round === "River") {
+    pokerState.round = "Turn";
+  } else if (pokerState.round === "Turn") {
+    pokerState.finished = true;
+  }
+  return pokerState;
+}
+
+export function playerCheck(seat: number, pokerState: PokerState): PokerState {
   if (pokerState.currentAction.minRaise > 0) return pokerState;
+  pokerState.seats[seat].lastAction = "Check";
+  pokerState.currentAction.lastSeatToRaise = seat;
   return finishTurn(pokerState);
 }
 
 export function playerFold(seat: number, pokerState: PokerState): PokerState {
+  pokerState.seats[seat].lastAction = "Fold";
   pokerState.seats[seat].out = true;
   return finishTurn(pokerState);
 }
 
 export function playerCall(seat: number, pokerState: PokerState): PokerState {
+  pokerState.seats[seat].lastAction = "Call";
   pokerState.seats[seat].stack -= pokerState.currentAction.minRaise;
   pokerState.pot += pokerState.currentAction.minRaise;
   return finishTurn(pokerState);
 }
 
 export function playerRaise(seat: number, pokerState: PokerState): PokerState {
+  pokerState.seats[seat].lastAction = "Raise";
   const seed = Math.random();
   const raiseAmount = Math.floor(seed * 10);
   pokerState.seats[seat].stack -=
     pokerState.currentAction.minRaise + raiseAmount;
   pokerState.pot += pokerState.currentAction.minRaise + raiseAmount;
   pokerState.currentAction.minRaise += raiseAmount;
+  pokerState.currentAction.lastSeatToRaise = seat;
   return finishTurn(pokerState);
 }
 
@@ -179,12 +205,12 @@ export function calculateShownCommunityCards(pokerState: PokerState): Card[] {
 
   communityCards[0] = pokerState.communityCards[0];
   communityCards[1] = pokerState.communityCards[1];
-  communityCards[3] = pokerState.communityCards[3];
+  communityCards[2] = pokerState.communityCards[2];
   if (pokerState.round === "Flop") return communityCards;
 
-  communityCards[4] = pokerState.communityCards[4];
+  communityCards[3] = pokerState.communityCards[3];
   if (pokerState.round === "River") return communityCards;
 
-  communityCards[5] = pokerState.communityCards[5];
+  communityCards[4] = pokerState.communityCards[4];
   return communityCards;
 }

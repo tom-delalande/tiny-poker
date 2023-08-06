@@ -1,6 +1,7 @@
 <script lang="ts">
     import Button from "./Button.svelte";
     import Card from "./Card.svelte";
+    import LastActionLabel from "./LastActionLabel.svelte";
     import Stack from "./Stack.svelte";
     import {
         createInitalHandState,
@@ -18,25 +19,34 @@
         throw Error("Tables bigger than 2 are not supported");
 
     const playerSeat = pokerState.seats.findIndex((it) => it.isCurrentPlayer);
-    const enemySeat = pokerState.seats.findIndex((it) => !it.isCurrentPlayer);
-    const communityCards = calculateShownCommunityCards(pokerState);
+    const opponentSeat = pokerState.seats.findIndex(
+        (it) => !it.isCurrentPlayer
+    );
+    $: opponent = pokerState.seats[opponentSeat];
+    $: player = pokerState.seats[playerSeat];
+    $: communityCards = calculateShownCommunityCards(pokerState);
     console.log(pokerState);
     function playerAction(
         action: (seat: number, state: PokerState) => PokerState
     ) {
         pokerState = action(playerSeat, pokerState);
-        pokerState = performEnemyActions(enemySeat, pokerState);
+        console.log(pokerState);
+        setTimeout(() => {
+            pokerState = performEnemyActions(opponentSeat, pokerState);
+            console.log(pokerState);
+        }, 1000);
     }
 </script>
 
 <div class="flex flex-col justify-around h-screen bg-neutral-300">
     <div class="flex flex-col gap-2 items-center">
         <div class="flex gap-2 justify-center">
-            {#each pokerState.seats[enemySeat].cards as _}
+            {#each opponent.cards as _}
                 <Card suit="Hidden" value={1} />
             {/each}
         </div>
-        <Stack value={123} />
+        <Stack value={opponent.stack} />
+        <LastActionLabel lastAction={opponent.lastAction} />
     </div>
     <div class="flex flex-col gap-2 justify-center items-center">
         <div class="flex justify-center gap-2">
@@ -49,34 +59,42 @@
                 <Card suit={card.suit} value={card.value} />
             {/each}
         </div>
-        <Stack value={50} />
+        <Stack value={pokerState.pot} />
     </div>
     <div class="flex flex-col gap-2 items-center">
-        <Stack value={125} />
+        <LastActionLabel lastAction={player.lastAction} />
+        <Stack value={player.stack} />
         <div class="flex gap-2 justify-center">
-            {#each pokerState.seats[playerSeat].cards as card}
+            {#each player.cards as card}
                 <Card suit={card.suit} value={card.value} />
             {/each}
         </div>
         <div class="flex gap-2 justify-center">
-            {#if pokerState.currentAction.seatInTurn === playerSeat}
-                {#if pokerState.currentAction.minRaise > 0}
-                    <Button
-                        label="Fold"
-                        action={() => playerAction(playerFold)}
-                    />
-                {:else}
-                    <Button
-                        label="Check"
-                        action={() => playerAction(playerCheck)}
-                    />
-                {/if}
-                <Button label="Call" action={() => playerAction(playerCall)} />
+            {#if pokerState.currentAction.minRaise > 0}
                 <Button
-                    label="Raise"
-                    action={() => playerAction(playerRaise)}
+                    label="Call"
+                    disabled={pokerState.currentAction.seatInTurn !==
+                        playerSeat}
+                    action={() => playerAction(playerCall)}
+                />
+            {:else}
+                <Button
+                    label="Check"
+                    disabled={pokerState.currentAction.seatInTurn !==
+                        playerSeat}
+                    action={() => playerAction(playerCheck)}
                 />
             {/if}
+            <Button
+                label="Fold"
+                disabled={pokerState.currentAction.seatInTurn !== playerSeat}
+                action={() => playerAction(playerFold)}
+            />
+            <Button
+                label="Raise"
+                disabled={pokerState.currentAction.seatInTurn !== playerSeat}
+                action={() => playerAction(playerRaise)}
+            />
         </div>
     </div>
 </div>
