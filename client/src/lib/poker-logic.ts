@@ -1,5 +1,10 @@
 import { createInitalDeck } from "./deck";
 
+export interface InitialPlayer {
+  isCurrentPlayer: boolean;
+  stack: number;
+}
+
 export interface Card {
   value: number;
   suit: "Hearts" | "Spades" | "Clubs" | "Diamonds" | "Hidden";
@@ -30,10 +35,19 @@ export interface PokerState {
   winner: number;
 }
 
-export function createInitalHandState(): PokerState {
+export function createInitalHandState(
+  initialPlayers: InitialPlayer[]
+): PokerState {
   const deck = createInitalDeck();
-  const playerCards = [deck.pop(), deck.pop()];
-  const enemyCards = [deck.pop(), deck.pop()];
+  const seats = initialPlayers.map((player): Player => {
+    return {
+      cards: [deck.pop(), deck.pop()],
+      stack: player.stack,
+      isCurrentPlayer: player.isCurrentPlayer,
+      out: false,
+      lastAction: "None",
+    };
+  });
   const communityCards = [
     deck.pop(),
     deck.pop(),
@@ -42,22 +56,7 @@ export function createInitalHandState(): PokerState {
     deck.pop(),
   ];
   return {
-    seats: [
-      {
-        cards: playerCards,
-        stack: 20,
-        out: false,
-        isCurrentPlayer: true,
-        lastAction: "None",
-      },
-      {
-        cards: enemyCards,
-        stack: 20,
-        out: false,
-        isCurrentPlayer: false,
-        lastAction: "None",
-      },
-    ],
+    seats: seats,
     round: "Blinds",
     currentAction: {
       seatInTurn: 0,
@@ -86,7 +85,7 @@ export function performEnemyActions(
   if (mustCall && seed < 0.1) {
     pokerState.seats[seat].lastAction = "Fold";
     pokerState.seats[seat].out = true;
-    return finishTurn(pokerState);
+    return pokerState;
   }
 
   // Call
@@ -94,13 +93,13 @@ export function performEnemyActions(
     pokerState.seats[seat].lastAction = "Call";
     pokerState.seats[seat].stack -= pokerState.currentAction.minRaise;
     pokerState.pot += pokerState.currentAction.minRaise;
-    return finishTurn(pokerState);
+    return pokerState;
   }
 
   // Check
   if (!mustCall && seed < 0.5) {
     pokerState.seats[seat].lastAction = "Check";
-    return finishTurn(pokerState);
+    return pokerState;
   }
 
   // Raise
@@ -111,10 +110,10 @@ export function performEnemyActions(
   pokerState.pot += pokerState.currentAction.minRaise + raiseAmount;
   pokerState.currentAction.minRaise += raiseAmount;
   pokerState.currentAction.lastSeatToRaise = seat;
-  return finishTurn(pokerState);
+  return pokerState;
 }
 
-function finishTurn(pokerState: PokerState): PokerState {
+export function finishTurn(pokerState: PokerState): PokerState {
   if (pokerState.seats.filter((it) => !it.out).length === 1) {
     pokerState.finished = true;
     return pokerState;
@@ -164,32 +163,34 @@ export function playerCheck(seat: number, pokerState: PokerState): PokerState {
   if (pokerState.currentAction.minRaise > 0) return pokerState;
   pokerState.seats[seat].lastAction = "Check";
   pokerState.currentAction.lastSeatToRaise = seat;
-  return finishTurn(pokerState);
+  return pokerState;
 }
 
 export function playerFold(seat: number, pokerState: PokerState): PokerState {
   pokerState.seats[seat].lastAction = "Fold";
   pokerState.seats[seat].out = true;
-  return finishTurn(pokerState);
+  return pokerState;
 }
 
 export function playerCall(seat: number, pokerState: PokerState): PokerState {
   pokerState.seats[seat].lastAction = "Call";
   pokerState.seats[seat].stack -= pokerState.currentAction.minRaise;
   pokerState.pot += pokerState.currentAction.minRaise;
-  return finishTurn(pokerState);
+  return pokerState;
 }
 
-export function playerRaise(seat: number, pokerState: PokerState): PokerState {
+export function playerRaise(
+  seat: number,
+  pokerState: PokerState,
+  raiseAmount: number
+): PokerState {
   pokerState.seats[seat].lastAction = "Raise";
-  const seed = Math.random();
-  const raiseAmount = Math.floor(seed * 10);
   pokerState.seats[seat].stack -=
     pokerState.currentAction.minRaise + raiseAmount;
   pokerState.pot += pokerState.currentAction.minRaise + raiseAmount;
   pokerState.currentAction.minRaise += raiseAmount;
   pokerState.currentAction.lastSeatToRaise = seat;
-  return finishTurn(pokerState);
+  return pokerState;
 }
 
 export function calculateShownCommunityCards(pokerState: PokerState): Card[] {
