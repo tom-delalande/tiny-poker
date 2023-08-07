@@ -88,9 +88,6 @@ export function createInitalHandState(
 }
 
 export function prepareNextHand(pokerState: PokerState): PokerState | Player {
-  const lastSeat = pokerState.seats.pop();
-  pokerState.seats.unshift(lastSeat);
-
   if (pokerState.seats.filter((it) => it.stack === 0).length === 1) {
     return pokerState.seats[
       pokerState.seats.findIndex((seat) => seat.stack > 0)
@@ -102,6 +99,10 @@ export function prepareNextHand(pokerState: PokerState): PokerState | Player {
       stack: seat.stack,
     };
   });
+
+  const lastSeat = seats.pop();
+  seats.unshift(lastSeat);
+
   return createInitalHandState(seats);
 }
 
@@ -113,10 +114,16 @@ export function performEnemyActions(
     return pokerState;
   const seed = Math.random();
 
+  const player = pokerState.seats[seat];
   let mustCall = pokerState.currentAction.minRaise > 0;
 
   // Fold
   if (mustCall && seed < 0.1) {
+    console.debug({
+      message: "Opponent Folded",
+      seed: seed,
+      minRaise: pokerState.currentAction.minRaise,
+    });
     pokerState.seats[seat].lastAction = "Fold";
     pokerState.seats[seat].out = true;
     return pokerState;
@@ -127,22 +134,44 @@ export function performEnemyActions(
     pokerState.seats[seat].lastAction = "Call";
     const callAmount = Math.min(
       pokerState.seats[seat].stack,
-      pokerState.currentAction.minRaise
+      pokerState.currentAction.minRaise - pokerState.seats[seat].currentRaise
     );
     pokerState.seats[seat].stack -= callAmount;
     pokerState.pot += callAmount;
+    console.debug({
+      message: "Opponent Called",
+      seed: seed,
+      minRaise: pokerState.currentAction.minRaise,
+      currentRaise: player.currentRaise,
+      opponentStack: pokerState.seats[seat].stack,
+      callAmount: callAmount,
+    });
     return pokerState;
   }
 
   // Check
   if (!mustCall && seed < 0.5) {
     pokerState.seats[seat].lastAction = "Check";
+    console.debug({
+      message: "Opponent Checked",
+      seed: seed,
+      minRaise: pokerState.currentAction.minRaise,
+    });
     return pokerState;
   }
 
-  if (pokerState.seats[seat].stack <= pokerState.currentAction.minRaise) {
+  if (
+    pokerState.seats[seat].stack <= pokerState.currentAction.minRaise ||
+    pokerState.currentAction.lastSeatToRaise === seat
+  ) {
     pokerState.seats[seat].lastAction = "Fold";
     pokerState.seats[seat].out = true;
+    console.debug({
+      message: "Opponent Folded",
+      seed: seed,
+      opponentStack: pokerState.seats[seat].stack,
+      minRaise: pokerState.currentAction.minRaise,
+    });
     return pokerState;
   }
   // Raise
@@ -153,8 +182,16 @@ export function performEnemyActions(
   );
   pokerState.seats[seat].stack -= raiseAmount;
   pokerState.pot += raiseAmount;
-  pokerState.currentAction.minRaise = raiseAmount;
+  pokerState.currentAction.minRaise = raiseAmount + player.currentRaise;
+  pokerState.seats[seat].currentRaise = pokerState.currentAction.minRaise;
   pokerState.currentAction.lastSeatToRaise = seat;
+  console.debug({
+    message: "Opponent Raised",
+    seed: seed,
+    opponentStack: pokerState.seats[seat].stack,
+    minRaise: pokerState.currentAction.minRaise,
+    raiseAmount: raiseAmount,
+  });
   return pokerState;
 }
 
@@ -254,11 +291,13 @@ export function playerRaise(
   pokerState: PokerState,
   raiseAmount: number
 ): PokerState {
+  const player = pokerState.seats[seat];
   pokerState.seats[seat].lastAction = "Raise";
-  pokerState.seats[seat].stack -=
-    pokerState.currentAction.minRaise + raiseAmount;
-  pokerState.pot += pokerState.currentAction.minRaise + raiseAmount;
-  pokerState.currentAction.minRaise += raiseAmount;
+  const totalRaiseAmount = raiseAmount;
+  pokerState.seats[seat].stack -= totalRaiseAmount;
+  pokerState.pot += raiseAmount;
+  pokerState.currentAction.minRaise = raiseAmount + player.currentRaise;
+  pokerState.seats[seat].currentRaise = pokerState.currentAction.minRaise;
   pokerState.currentAction.lastSeatToRaise = seat;
   return pokerState;
 }

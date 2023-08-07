@@ -13,7 +13,6 @@
         playerRaise,
         playerCheck,
         finishTurn,
-        rateHand,
         prepareNextHand,
         type Player,
     } from "./poker-logic";
@@ -33,27 +32,24 @@
     if (pokerState.seats.length > 2)
         throw Error("Tables bigger than 2 are not supported");
 
-    const playerSeat = pokerState.seats.findIndex((it) => it.isCurrentPlayer);
-    const opponentSeat = pokerState.seats.findIndex(
-        (it) => !it.isCurrentPlayer
-    );
+    $: playerSeat = pokerState.seats.findIndex((it) => it.isCurrentPlayer);
+    $: opponentSeat = pokerState.seats.findIndex((it) => !it.isCurrentPlayer);
     $: opponent = pokerState.seats[opponentSeat];
     $: player = pokerState.seats[playerSeat];
     $: communityCards = calculateShownCommunityCards(pokerState);
-    console.log(pokerState);
-    console.log(
-        rateHand([...pokerState.seats[0].cards, ...pokerState.communityCards])
-    );
+
     function playerAction(
         action: (seat: number, state: PokerState) => PokerState
     ) {
         pokerState = action(playerSeat, pokerState);
+        console.debug(JSON.parse(JSON.stringify(pokerState)));
         setTimeout(() => {
             pokerState = finishTurn(pokerState);
             setTimeout(() => {
                 pokerState = performEnemyActions(opponentSeat, pokerState);
                 setTimeout(() => {
                     pokerState = finishTurn(pokerState);
+                    console.debug(pokerState);
                 }, 500);
             }, 500);
         }, 200);
@@ -61,50 +57,41 @@
 
     let raiseMenuOpen = false;
     $: raiseAmounts = [
-        pokerState.currentAction.minRaise + 1,
-        Math.floor(
-            pokerState.currentAction.minRaise +
-                (player.stack - pokerState.currentAction.minRaise) / 4
-        ),
-        Math.floor(
-            pokerState.currentAction.minRaise +
-                (player.stack - pokerState.currentAction.minRaise) / 2
-        ),
-        Math.floor(
-            pokerState.currentAction.minRaise +
-                (player.stack - pokerState.currentAction.minRaise) / 1.5
-        ),
-        player.stack,
+        ...new Set([
+            Math.min(pokerState.currentAction.minRaise + 1, player.stack),
+            Math.floor(
+                pokerState.currentAction.minRaise +
+                    (player.stack - pokerState.currentAction.minRaise) / 4
+            ),
+            Math.floor(
+                pokerState.currentAction.minRaise +
+                    (player.stack - pokerState.currentAction.minRaise) / 2
+            ),
+            Math.floor(
+                pokerState.currentAction.minRaise +
+                    (player.stack - pokerState.currentAction.minRaise) / 1.5
+            ),
+            player.stack,
+        ]),
     ];
 
-    let gameFinished = false;
-    let gameWinners = undefined;
+    $: gameFinished =
+        pokerState.seats.filter((it) => it.stack === 0).length === 1;
     function playAgain() {
         if (gameFinished) pokerState = createInitalHandState(initialPlayers);
         const nextHand: Player | PokerState = prepareNextHand(pokerState);
-        if ("cards" in nextHand) {
-            gameFinished = true;
-            gameWinners = nextHand;
-            return;
-        }
+        if ("cards" in nextHand) return;
         pokerState = nextHand;
+        setTimeout(() => {
+            pokerState = performEnemyActions(opponentSeat, pokerState);
+            setTimeout(() => {
+                pokerState = finishTurn(pokerState);
+            }, 500);
+        }, 500);
     }
 </script>
 
 <div class="flex flex-col justify-around h-full bg-neutral-300 max-height">
-    {#if pokerState.finished}
-        <div
-            class="bg-neutral-100 bg-opacity-20 backdrop-blur-sm rounded p-5 z-10 fixed left-0 right-0 mx-10
-        text-center flex flex-col items-center justify-around"
-        >
-            {#if pokerState.winners.includes(playerSeat)}
-                You won!
-            {:else}
-                You lose
-            {/if}
-            <Button action={playAgain}>Play</Button>
-        </div>
-    {/if}
     <div class="flex flex-col gap-2 items-center">
         <div class="flex gap-2 justify-center">
             {#each opponent.cards as card}
@@ -149,9 +136,18 @@
         </div>
         <div class="flex gap-2 justify-center">
             {#if pokerState.finished}
-                <Button action={playAgain}>Restart</Button>
+                <Button action={playAgain}
+                    >{#if gameFinished}
+                        New Game
+                    {:else}
+                        Continue
+                    {/if}</Button
+                >
             {:else if raiseMenuOpen}
-                <div class="flex flex-wrap gap-2 items-center justify-center">
+                <div
+                    class="flex flex-wrap gap-2 items-center justify-center
+                    max-w-md"
+                >
                     <Button action={() => (raiseMenuOpen = false)}
                         >Cancel</Button
                     >
@@ -173,7 +169,11 @@
                     <Button
                         disabled={pokerState.currentAction.seatInTurn !==
                             playerSeat}
-                        action={() => playerAction(playerCall)}>Call</Button
+                        action={() => playerAction(playerCall)}
+                        >Call {#if pokerState.currentAction.seatInTurn === playerSeat}({pokerState
+                                .currentAction.minRaise -
+                                pokerState.seats[playerSeat]
+                                    .currentRaise}){/if}</Button
                     >
                 {:else}
                     <Button
