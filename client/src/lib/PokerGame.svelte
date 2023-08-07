@@ -92,20 +92,6 @@
 </script>
 
 <div class="flex flex-col justify-around h-full bg-neutral-300 max-height">
-    {#if gameFinished}
-        <div
-            class="bg-neutral-100 bg-opacity-20 backdrop-blur-sm rounded p-5 z-10 fixed left-0 right-0 mx-10
-        text-center flex flex-col items-center justify-around"
-        >
-            Game Finished!
-            {#if gameWinners.includes(playerSeat)}
-                You won!
-            {:else}
-                You lose
-            {/if}
-            <Button action={playAgain}>Restart</Button>
-        </div>
-    {/if}
     {#if pokerState.finished}
         <div
             class="bg-neutral-100 bg-opacity-20 backdrop-blur-sm rounded p-5 z-10 fixed left-0 right-0 mx-10
@@ -130,7 +116,11 @@
             {/each}
         </div>
         <Stack value={opponent.stack} />
-        <LastActionLabel lastAction={opponent.lastAction} />
+        {#if pokerState.winners.includes(opponentSeat)}
+            <LastActionLabel lastAction={"Winner"} />
+        {:else}
+            <LastActionLabel lastAction={opponent.lastAction} />
+        {/if}
     </div>
     <div class="flex flex-col gap-2 justify-center items-center">
         <div class="flex justify-center gap-2">
@@ -146,7 +136,11 @@
         <Stack value={pokerState.pot} />
     </div>
     <div class="flex flex-col gap-2 items-center">
-        <LastActionLabel lastAction={player.lastAction} />
+        {#if pokerState.winners.includes(playerSeat)}
+            <LastActionLabel lastAction={"Winner"} />
+        {:else}
+            <LastActionLabel lastAction={player.lastAction} />
+        {/if}
         <Stack value={player.stack} />
         <div class="flex gap-2 justify-center">
             {#each player.cards as card}
@@ -154,7 +148,9 @@
             {/each}
         </div>
         <div class="flex gap-2 justify-center">
-            {#if raiseMenuOpen}
+            {#if pokerState.finished}
+                <Button action={playAgain}>Restart</Button>
+            {:else if raiseMenuOpen}
                 <div class="flex flex-wrap gap-2 items-center justify-center">
                     <Button action={() => (raiseMenuOpen = false)}
                         >Cancel</Button

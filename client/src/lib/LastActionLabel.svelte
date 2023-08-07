@@ -1,7 +1,21 @@
 <script lang="ts">
-    export let lastAction: "Fold" | "Raise" | "Call" | "Check" | "None";
+    export let lastAction:
+        | "Fold"
+        | "Raise"
+        | "Call"
+        | "Check"
+        | "None"
+        | "Winner";
 </script>
 
+{#if lastAction === "Winner"}
+    <div
+        class="border-2 border-yellow-900 rounded-md px-4 bg-yellow-300
+        text-yellow-900"
+    >
+        {lastAction}
+    </div>
+{/if}
 {#if lastAction === "None"}
     <div
         class="border-2 border-neutral-300 rounded-md px-4 bg-neutral-300 text-neutral-300"

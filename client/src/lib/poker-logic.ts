@@ -16,6 +16,7 @@ export interface Player {
   out: boolean;
   isCurrentPlayer: boolean;
   lastAction: "Raise" | "Check" | "Call" | "Fold" | "None";
+  currentRaise: number;
 }
 
 export interface CurrentAction {
@@ -38,14 +39,29 @@ export interface PokerState {
 export function createInitalHandState(
   initialPlayers: InitialPlayer[]
 ): PokerState {
+  const smallBlind = 1;
+  const bigBlind = 2;
   const deck = createInitalDeck();
-  const seats = initialPlayers.map((player): Player => {
+  const seats = initialPlayers.map((player, index): Player => {
+    let stack = player.stack;
+    let lastAction: "None" | "Raise" = "None";
+    let currentRaise = 0;
+    if (index === 0) {
+      stack -= smallBlind;
+      currentRaise = smallBlind;
+    }
+    if (index === 1) {
+      stack -= bigBlind;
+      lastAction = "Raise";
+      currentRaise = bigBlind;
+    }
     return {
       cards: [deck.pop(), deck.pop()],
-      stack: player.stack,
+      stack: stack,
       isCurrentPlayer: player.isCurrentPlayer,
       out: false,
-      lastAction: "None",
+      lastAction: lastAction,
+      currentRaise: currentRaise,
     };
   });
   const communityCards = [
@@ -60,11 +76,11 @@ export function createInitalHandState(
     round: "Blinds",
     currentAction: {
       seatInTurn: 0,
-      minRaise: 0,
-      lastSeatToRaise: -1,
+      minRaise: bigBlind,
+      lastSeatToRaise: 1,
     },
     communityCards: communityCards,
-    pot: 0,
+    pot: smallBlind + bigBlind,
     deck: deck,
     finished: false,
     winners: [],
@@ -73,7 +89,7 @@ export function createInitalHandState(
 
 export function prepareNextHand(pokerState: PokerState): PokerState | Player {
   const lastSeat = pokerState.seats.pop();
-  pokerState.seats.push(lastSeat);
+  pokerState.seats.unshift(lastSeat);
 
   if (pokerState.seats.filter((it) => it.stack === 0).length === 1) {
     return pokerState.seats[
@@ -142,7 +158,7 @@ export function performEnemyActions(
   return pokerState;
 }
 
-export function handlePayouts(pokerState: PokerState): PokerState {
+function handlePayouts(pokerState: PokerState): PokerState {
   const winnings = Math.floor(pokerState.pot / pokerState.winners.length);
   pokerState.winners.forEach((seat) => {
     pokerState.seats[seat].stack += winnings;
@@ -186,6 +202,7 @@ function finishRound(pokerState: PokerState): PokerState {
       out: seat.out,
       isCurrentPlayer: seat.isCurrentPlayer,
       lastAction: "None",
+      currentRaise: 0,
     };
   });
 
@@ -204,6 +221,7 @@ function finishRound(pokerState: PokerState): PokerState {
   );
   if (round === "Turn" || everyoneAllIn) {
     pokerState.winners = calculateWinners(pokerState);
+    pokerState = handlePayouts(pokerState);
     pokerState.finished = true;
   }
   return pokerState;
@@ -224,8 +242,10 @@ export function playerFold(seat: number, pokerState: PokerState): PokerState {
 
 export function playerCall(seat: number, pokerState: PokerState): PokerState {
   pokerState.seats[seat].lastAction = "Call";
-  pokerState.seats[seat].stack -= pokerState.currentAction.minRaise;
-  pokerState.pot += pokerState.currentAction.minRaise;
+  const callAmount =
+    pokerState.currentAction.minRaise - pokerState.seats[seat].currentRaise;
+  pokerState.seats[seat].stack -= callAmount;
+  pokerState.pot += callAmount;
   return pokerState;
 }
 
