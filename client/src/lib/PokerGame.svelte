@@ -13,6 +13,7 @@
         playerRaise,
         playerCheck,
         finishTurn,
+        rateHand,
     } from "./poker-logic";
 
     let pokerState: PokerState = createInitalHandState([
@@ -36,6 +37,9 @@
     $: player = pokerState.seats[playerSeat];
     $: communityCards = calculateShownCommunityCards(pokerState);
     console.log(pokerState);
+    console.log(
+        rateHand([...pokerState.seats[0].cards, ...pokerState.communityCards])
+    );
     function playerAction(
         action: (seat: number, state: PokerState) => PokerState
     ) {
