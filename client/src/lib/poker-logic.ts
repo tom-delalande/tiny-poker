@@ -109,8 +109,12 @@ export function performEnemyActions(
   // Call
   if (mustCall && seed < 0.6) {
     pokerState.seats[seat].lastAction = "Call";
-    pokerState.seats[seat].stack -= pokerState.currentAction.minRaise;
-    pokerState.pot += pokerState.currentAction.minRaise;
+    const callAmount = Math.min(
+      pokerState.seats[seat].stack,
+      pokerState.currentAction.minRaise
+    );
+    pokerState.seats[seat].stack -= callAmount;
+    pokerState.pot += callAmount;
     return pokerState;
   }
 
@@ -120,13 +124,20 @@ export function performEnemyActions(
     return pokerState;
   }
 
+  if (pokerState.seats[seat].stack <= pokerState.currentAction.minRaise) {
+    pokerState.seats[seat].lastAction = "Fold";
+    pokerState.seats[seat].out = true;
+    return pokerState;
+  }
   // Raise
   pokerState.seats[seat].lastAction = "Raise";
-  const raiseAmount = Math.floor(seed * 10);
-  pokerState.seats[seat].stack -=
-    pokerState.currentAction.minRaise + raiseAmount;
-  pokerState.pot += pokerState.currentAction.minRaise + raiseAmount;
-  pokerState.currentAction.minRaise += raiseAmount;
+  const raiseAmount = Math.min(
+    pokerState.seats[seat].stack,
+    pokerState.currentAction.minRaise + Math.floor(seed * 10)
+  );
+  pokerState.seats[seat].stack -= raiseAmount;
+  pokerState.pot += raiseAmount;
+  pokerState.currentAction.minRaise = raiseAmount;
   pokerState.currentAction.lastSeatToRaise = seat;
   return pokerState;
 }
@@ -176,13 +187,21 @@ function finishRound(pokerState: PokerState): PokerState {
       lastAction: "None",
     };
   });
-  if (pokerState.round === "Blinds") {
+
+  const round = pokerState.round;
+  if (round === "Blinds") {
     pokerState.round = "Flop";
-  } if (pokerState.round === "Flop") {
+  }
+  if (round === "Flop") {
     pokerState.round = "River";
-  } else if (pokerState.round === "River") {
+  }
+  if (round === "River") {
     pokerState.round = "Turn";
-  } else if (pokerState.round === "Turn") {
+  }
+  const everyoneAllIn = pokerState.seats.every(
+    (seat) => seat.out || seat.stack == 0
+  );
+  if (round === "Turn" || everyoneAllIn) {
     pokerState.winners = calculateWinners(pokerState);
     pokerState.finished = true;
   }
