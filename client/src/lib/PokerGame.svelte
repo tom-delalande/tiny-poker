@@ -145,8 +145,7 @@
                 </Button>
             {:else if raiseMenuOpen}
                 <div
-                    class="flex flex-row flex-wrap gap-2 items-center justify-center
-                    max-w-xs overflow-scroll w-80"
+                    class="flex flex-wrap gap-2 items-center justify-center"
                 >
                     <Button action={() => (raiseMenuOpen = false)}
                         >Cancel</Button
