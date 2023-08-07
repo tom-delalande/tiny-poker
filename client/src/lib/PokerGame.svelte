@@ -78,7 +78,10 @@
     $: gameFinished =
         pokerState.seats.filter((it) => it.stack === 0).length === 1;
     function playAgain() {
-        if (gameFinished) pokerState = createInitalHandState(initialPlayers);
+        if (gameFinished) {
+            pokerState = createInitalHandState(initialPlayers);
+            return;
+        }
         const nextHand: Player | PokerState = prepareNextHand(pokerState);
         if ("cards" in nextHand) return;
         pokerState = nextHand;
@@ -145,7 +148,8 @@
                 </Button>
             {:else if raiseMenuOpen}
                 <div
-                    class="flex flex-wrap gap-2 items-center justify-center"
+                    class="flex flex-wrap gap-2 items-center justify-center
+                    max-w-xs"
                 >
                     <Button action={() => (raiseMenuOpen = false)}
                         >Cancel</Button
