@@ -14,9 +14,11 @@
         playerCheck,
         finishTurn,
         rateHand,
+        prepareNextHand,
+        type Player,
     } from "./poker-logic";
 
-    let pokerState: PokerState = createInitalHandState([
+    const initialPlayers = [
         {
             isCurrentPlayer: true,
             stack: 20,
@@ -25,7 +27,9 @@
             isCurrentPlayer: false,
             stack: 20,
         },
-    ]);
+    ];
+
+    let pokerState: PokerState = createInitalHandState(initialPlayers);
     if (pokerState.seats.length > 2)
         throw Error("Tables bigger than 2 are not supported");
 
@@ -72,13 +76,57 @@
         ),
         player.stack,
     ];
+
+    let gameFinished = false;
+    let gameWinners = undefined;
+    function playAgain() {
+        if (gameFinished) pokerState = createInitalHandState(initialPlayers);
+        const nextHand: Player | PokerState = prepareNextHand(pokerState);
+        if ("cards" in nextHand) {
+            gameFinished = true;
+            gameWinners = nextHand;
+            return;
+        }
+        pokerState = nextHand;
+    }
 </script>
 
 <div class="flex flex-col justify-around h-full bg-neutral-300 max-height">
+    {#if gameFinished}
+        <div
+            class="bg-neutral-100 bg-opacity-20 backdrop-blur-sm rounded p-5 z-10 fixed left-0 right-0 mx-10
+        text-center flex flex-col items-center justify-around"
+        >
+            Game Finished!
+            {#if gameWinners.includes(playerSeat)}
+                You won!
+            {:else}
+                You lose
+            {/if}
+            <Button action={playAgain}>Restart</Button>
+        </div>
+    {/if}
+    {#if pokerState.finished}
+        <div
+            class="bg-neutral-100 bg-opacity-20 backdrop-blur-sm rounded p-5 z-10 fixed left-0 right-0 mx-10
+        text-center flex flex-col items-center justify-around"
+        >
+            {#if pokerState.winners.includes(playerSeat)}
+                You won!
+            {:else}
+                You lose
+            {/if}
+            <Button action={playAgain}>Play</Button>
+        </div>
+    {/if}
     <div class="flex flex-col gap-2 items-center">
         <div class="flex gap-2 justify-center">
-            {#each opponent.cards as _}
-                <Card suit="Hidden" value={1} />
+            {#each opponent.cards as card}
+                {#if pokerState.finished}
+                    <Card suit={card.suit} value={card.value} />
+                {:else}
+                    <Card suit="Hidden" value={1} />
+                {/if}
             {/each}
         </div>
         <Stack value={opponent.stack} />

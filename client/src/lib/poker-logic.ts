@@ -71,6 +71,24 @@ export function createInitalHandState(
   };
 }
 
+export function prepareNextHand(pokerState: PokerState): PokerState | Player {
+  const lastSeat = pokerState.seats.pop();
+  pokerState.seats.push(lastSeat);
+
+  if (pokerState.seats.filter((it) => it.stack === 0).length === 1) {
+    return pokerState.seats[
+      pokerState.seats.findIndex((seat) => seat.stack > 0)
+    ];
+  }
+  const seats: InitialPlayer[] = pokerState.seats.map((seat) => {
+    return {
+      isCurrentPlayer: seat.isCurrentPlayer,
+      stack: seat.stack,
+    };
+  });
+  return createInitalHandState(seats);
+}
+
 export function performEnemyActions(
   seat: number,
   pokerState: PokerState
@@ -113,8 +131,19 @@ export function performEnemyActions(
   return pokerState;
 }
 
+export function handlePayouts(pokerState: PokerState): PokerState {
+  const winnings = Math.floor(pokerState.pot / pokerState.winners.length);
+  pokerState.winners.forEach((seat) => {
+    pokerState.seats[seat].stack += winnings;
+  });
+  return pokerState;
+}
+
 export function finishTurn(pokerState: PokerState): PokerState {
-  if (pokerState.seats.filter((it) => !it.out).length === 1) {
+  const playersIn = pokerState.seats.filter((it) => !it.out);
+  if (playersIn.length === 1) {
+    pokerState.winners = [pokerState.seats.findIndex((it) => !it.out)];
+    pokerState = handlePayouts(pokerState);
     pokerState.finished = true;
     return pokerState;
   }
@@ -149,7 +178,7 @@ function finishRound(pokerState: PokerState): PokerState {
   });
   if (pokerState.round === "Blinds") {
     pokerState.round = "Flop";
-  } else if (pokerState.round === "Flop") {
+  } if (pokerState.round === "Flop") {
     pokerState.round = "River";
   } else if (pokerState.round === "River") {
     pokerState.round = "Turn";
