@@ -147,6 +147,7 @@ export function handlePayouts(pokerState: PokerState): PokerState {
   pokerState.winners.forEach((seat) => {
     pokerState.seats[seat].stack += winnings;
   });
+  pokerState.pot = 0;
   return pokerState;
 }
 
