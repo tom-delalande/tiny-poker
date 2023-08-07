@@ -32,10 +32,10 @@
         </div>
         <div class="text-xl top-0 right-0 absolute">
             {#if suit === "Hearts"}
-                <i class="fa-solid fa-heart text-red-400" />
+                <i class="fa-solid fa-heart text-red-800" />
             {/if}
             {#if suit === "Diamonds"}
-                <i class="fa-solid fa-diamond text-red-400" />
+                <i class="fa-solid fa-diamond text-red-800" />
             {/if}
             {#if suit === "Spades"}
                 <i class="fa-solid fa-star text-black" />
