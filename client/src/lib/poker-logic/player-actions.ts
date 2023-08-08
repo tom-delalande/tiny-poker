@@ -15,8 +15,10 @@ export function playerFold(seat: number, pokerState: PokerState): PokerState {
 
 export function playerCall(seat: number, pokerState: PokerState): PokerState {
   pokerState.seats[seat].lastAction = "Call";
-  const callAmount =
-    pokerState.currentAction.minRaise - pokerState.seats[seat].currentRaise;
+  const callAmount = Math.min(
+    pokerState.seats[seat].stack,
+    pokerState.currentAction.minRaise - pokerState.seats[seat].currentRaise
+  );
   pokerState.seats[seat].stack -= callAmount;
   pokerState.pot += callAmount;
   return pokerState;
