@@ -10,15 +10,16 @@ export function createInitalHandState(
   const deck = createInitalDeck();
   const seats = initialPlayers.map((player, index): Player => {
     let stack = player.stack;
-    let lastAction: "None" | "Raise" = "None";
+    let lastAction: "None" | "Big Blind" | "Small Blind" = "None";
     let currentRaise = 0;
     if (index === 0) {
       stack -= smallBlind;
       currentRaise = smallBlind;
+      lastAction = "Small Blind";
     }
     if (index === 1) {
       stack -= bigBlind;
-      lastAction = "Raise";
+      lastAction = "Big Blind";
       currentRaise = bigBlind;
     }
     return {

@@ -5,7 +5,9 @@
         | "Call"
         | "Check"
         | "None"
-        | "Winner";
+        | "Winner"
+        | "Big Blind"
+        | "Small Blind";
 </script>
 
 {#if lastAction === "Winner"}
@@ -48,9 +50,16 @@
     </div>
 {/if}
 
-{#if lastAction === "Raise"}
+{#if lastAction === "Raise" || lastAction === "Big Blind"}
     <div
         class="border-2 border-yellow-900 rounded-md px-4 bg-yellow-400 text-yellow-900"
+    >
+        {lastAction}
+    </div>
+{/if}
+{#if lastAction === "Small Blind"}
+    <div
+        class="border-2 border-yellow-900 rounded-md px-4 bg-yellow-200 text-yellow-900"
     >
         {lastAction}
     </div>

@@ -13,7 +13,14 @@ export interface Player {
   stack: number;
   out: boolean;
   isCurrentPlayer: boolean;
-  lastAction: "Raise" | "Check" | "Call" | "Fold" | "None";
+  lastAction:
+    | "Raise"
+    | "Check"
+    | "Call"
+    | "Fold"
+    | "None"
+    | "Small Blind"
+    | "Big Blind";
   currentRaise: number;
   handStrength?: HandStrength;
 }
