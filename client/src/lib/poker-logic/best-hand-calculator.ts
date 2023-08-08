@@ -38,7 +38,11 @@ export function rateHand(cards: Card[]): number {
   const sortedCards = cards.sort(
     (cardA, cardB) => cardScore[cardB.value] - cardScore[cardA.value]
   );
-  const highCards = [sortedCards[0].value, sortedCards[1].value];
+  const highCards = [
+    sortedCards[0].value,
+    sortedCards[1].value,
+    sortedCards[2].value,
+  ];
 
   const valueFrequency = toValueFrequency(sortedCards);
   const suitFrequency = toSuitsFrequency(sortedCards);
@@ -97,16 +101,19 @@ export function rateHand(cards: Card[]): number {
     return 6000 + flushes[0];
   }
   if (quads.length > 0) {
-    return 5000 + quads[0];
+    return 5000 + quads[0] + highCards[0];
   }
   if (fullHouses.length > 0) {
-    return 4000 + 10 * fullHouses[0].trips + fullHouses[0].pair;
+    return 4000 + 14 * fullHouses[0].trips + fullHouses[0].pair;
   }
   if (trips.length > 0) {
-    return 3000 + trips[0];
+    return 3000 + 14 * trips[0] + highCards[0] + highCards[1];
+  }
+  if (pairs.length > 1) {
+    return 2000 + 28 * pairs[0] + 14 * pairs[1] + highCards[0];
   }
   if (pairs.length > 0) {
-    return 2000 + pairs[0];
+    return 2000 + 14 * pairs[0] + highCards[0] + highCards[1] + highCards[2];
   }
   if (highCards.length > 0) {
     return 1000 + highCards[0];
