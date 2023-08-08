@@ -4,8 +4,16 @@
 </script>
 
 <div
-    class="rounded-full border-2 bg-neutral-400 w-16 h-16 text-2xl flex items-center
-    justify-center gap-1 text-white relative"
+    class="rounded-full border-2 w-16 h-16 text-2xl flex items-center
+    justify-center gap-1 relative"
+    class:bg-red-400={suit === "Hearts"}
+    class:bg-green-400={suit === "Diamonds"}
+    class:bg-black={suit === "Spades"}
+    class:bg-white={suit === "Clubs"}
+    class:text-neutral-600={suit === "Clubs"}
+    class:border-neutral-600={suit === "Clubs"}
+    class:bg-neutral-400={suit === "Hidden"}
+    class:text-white={suit !== "Clubs"}
 >
     {#if suit === "Hidden"}
         <i class="fa-solid fa-eye-slash" />
@@ -28,20 +36,6 @@
             {/if}
             {#if value === 13}
                 <i class="fa-solid fa-chess-king" />
-            {/if}
-        </div>
-        <div class="text-xl top-0 right-0 absolute">
-            {#if suit === "Hearts"}
-                <i class="fa-solid fa-heart text-red-800" />
-            {/if}
-            {#if suit === "Diamonds"}
-                <i class="fa-solid fa-diamond text-red-800" />
-            {/if}
-            {#if suit === "Spades"}
-                <i class="fa-solid fa-star text-black" />
-            {/if}
-            {#if suit === "Clubs"}
-                <i class="fa-solid fa-cloud text-black" />
             {/if}
         </div>
     {/if}
