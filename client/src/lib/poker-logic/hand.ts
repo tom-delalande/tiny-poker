@@ -132,6 +132,13 @@ function finishRound(pokerState: PokerState): PokerState {
     (seat) => seat.out || seat.stack == 0
   );
   if (round === "Turn" || everyoneAllIn) {
+    pokerState.seats = pokerState.seats.map((seat) => {
+      seat.handStrength = rateHand([
+        ...seat.cards,
+        ...pokerState.communityCards,
+      ]).handStrength;
+      return seat;
+    });
     pokerState.winners = calculateWinners(pokerState);
     pokerState = handlePayouts(pokerState);
     pokerState.finished = true;
@@ -141,10 +148,16 @@ function finishRound(pokerState: PokerState): PokerState {
 
 function calculateWinners(pokerState: PokerState): number[] {
   const handRatings = pokerState.seats.map((seat) => {
-    return rateHand([...seat.cards, ...pokerState.communityCards]);
+    const score = rateHand([...seat.cards, ...pokerState.communityCards]).score;
+    console.debug({
+      cards: seat.cards,
+      score: score,
+    });
+    return score;
   });
 
-  const winningRating = handRatings.sort((a, b) => b - a)[0];
+  const winningRating = [...handRatings].sort((a, b) => b - a)[0];
+  console.log(winningRating);
 
   const winners = handRatings
     .map((it, index) => {

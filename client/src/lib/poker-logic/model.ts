@@ -15,6 +15,7 @@ export interface Player {
   isCurrentPlayer: boolean;
   lastAction: "Raise" | "Check" | "Call" | "Fold" | "None";
   currentRaise: number;
+  handStrength?: HandStrength;
 }
 
 export interface CurrentAction {
@@ -34,3 +35,18 @@ export interface PokerState {
   winners: number[];
 }
 
+export type HandStrength =
+  | "High Card"
+  | "Pair"
+  | "Two Pair"
+  | "Three of a Kind"
+  | "Full House"
+  | "Four of a Kind"
+  | "Flush"
+  | "Straight"
+  | "Straight Flush";
+
+export interface HandRating {
+  score: number;
+  handStrength: HandStrength;
+}

@@ -10,7 +10,12 @@
         prepareNextHand,
     } from "./poker-logic/hand";
     import type { PokerState } from "./poker-logic/model";
-    import { playerCall, playerCheck, playerFold, playerRaise } from "./poker-logic/player-actions";
+    import {
+        playerCall,
+        playerCheck,
+        playerFold,
+        playerRaise,
+    } from "./poker-logic/player-actions";
     import { calculateShownCommunityCards } from "./poker-logic/utility";
 
     const initialPlayers = [
@@ -99,6 +104,9 @@
             {/each}
         </div>
         <Stack value={opponent.stack} />
+        {#if pokerState.finished && opponent.handStrength}
+            {opponent.handStrength}
+        {/if}
         {#if pokerState.winners.includes(opponentSeat)}
             <LastActionLabel lastAction={"Winner"} />
         {:else}
@@ -123,6 +131,9 @@
             <LastActionLabel lastAction={"Winner"} />
         {:else}
             <LastActionLabel lastAction={player.lastAction} />
+        {/if}
+        {#if pokerState.finished && player.handStrength}
+            {player.handStrength}
         {/if}
         <Stack value={player.stack} />
         <div class="flex gap-2 justify-center">

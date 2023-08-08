@@ -1,4 +1,4 @@
-import type { Card } from "./model";
+import type { Card, HandRating } from "./model";
 
 function toValueFrequency(cards: Card[]): { [key: number]: number } {
   const map = {};
@@ -24,7 +24,7 @@ function toSuitsFrequency(cards: Card[]): { [key: string]: number } {
   return map;
 }
 
-export function rateHand(cards: Card[]): number {
+export function rateHand(cards: Card[]): HandRating {
   const pairs = [];
   const trips = [];
   const fullHouses = [];
@@ -38,12 +38,7 @@ export function rateHand(cards: Card[]): number {
   const sortedCards = cards.sort(
     (cardA, cardB) => cardScore[cardB.value] - cardScore[cardA.value]
   );
-  const highCards = [
-    sortedCards[0].value,
-    sortedCards[1].value,
-    sortedCards[2].value,
-  ];
-
+  const highCards = sortedCards.map((it) => it.value);
   const valueFrequency = toValueFrequency(sortedCards);
   const suitFrequency = toSuitsFrequency(sortedCards);
 
@@ -92,31 +87,80 @@ export function rateHand(cards: Card[]): number {
   });
 
   if (straightFlushes.length > 0) {
-    return 8000 + straightFlushes[0];
+    removeHighcards(straightFlushes[0], highCards);
+    return {
+      score: 8_000_000 + 4500 * straightFlushes[0],
+      handStrength: "Straight Flush",
+    };
   }
   if (straights.length > 0) {
-    return 7000 + straights[0];
+    removeHighcards(straights[0], highCards);
+    return { score: 7_000_000 + 4500 * straights[0], handStrength: "Straight" };
   }
   if (flushes.length > 0) {
-    return 6000 + flushes[0];
+    removeHighcards(flushes[0], highCards);
+    return { score: 6_000_000 + 4500 * flushes[0], handStrength: "Flush" };
   }
   if (quads.length > 0) {
-    return 5000 + quads[0] + highCards[0];
+    removeHighcards(quads[0], highCards);
+    return {
+      score: 5_000_000 + 4500 * quads[0] + 300 * highCards[0],
+      handStrength: "Four of a Kind",
+    };
   }
   if (fullHouses.length > 0) {
-    return 4000 + 14 * fullHouses[0].trips + fullHouses[0].pair;
+    removeHighcards(fullHouses[0].trips, highCards);
+    removeHighcards(fullHouses[0].pairs, highCards);
+    return {
+      score: 4_000_000 + 4500 * fullHouses[0].trips + 300 * fullHouses[0].pair,
+      handStrength: "Full House",
+    };
   }
   if (trips.length > 0) {
-    return 3000 + 14 * trips[0] + highCards[0] + highCards[1];
+    removeHighcards(trips[0], highCards);
+    return {
+      score:
+        3_000_000 + 4500 * trips[0] + 300 * highCards[0] + 15 * highCards[1],
+      handStrength: "Three of a Kind",
+    };
   }
   if (pairs.length > 1) {
-    return 2000 + 28 * pairs[0] + 14 * pairs[1] + highCards[0];
+    removeHighcards(pairs[0], highCards);
+    removeHighcards(pairs[1], highCards);
+    return {
+      score: 2_000_000 + 4500 * pairs[0] + 300 * pairs[1] + 15 * highCards[0],
+      handStrength: "Two Pair",
+    };
   }
   if (pairs.length > 0) {
-    return 2000 + 14 * pairs[0] + highCards[0] + highCards[1] + highCards[2];
+    removeHighcards(pairs[0], highCards);
+    return {
+      score:
+        1_000_000 +
+        4500 * pairs[0] +
+        300 * highCards[0] +
+        15 * highCards[1] +
+        1 * highCards[2],
+      handStrength: "Pair",
+    };
   }
-  if (highCards.length > 0) {
-    return 1000 + highCards[0];
+  return {
+    score:
+      70000 * highCards[0] +
+      4500 * highCards[1] +
+      300 * highCards[2] +
+      15 * highCards[3] +
+      1 * highCards[4],
+    handStrength: "High Card",
+  };
+}
+
+function removeHighcards(card: number, highCards: number[]) {
+  const index = highCards.findIndex((it) => it === card);
+  if (index > 0) {
+    highCards.splice(index, 1);
   }
-  return 1;
+  if (highCards.length === 0) {
+    highCards.push(0);
+  }
 }
