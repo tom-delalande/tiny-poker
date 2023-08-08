@@ -10,6 +10,7 @@
         prepareNextHand,
     } from "./poker-logic/hand";
     import type { PokerState } from "./poker-logic/model";
+    import { playerCall, playerCheck, playerFold, playerRaise } from "./poker-logic/player-actions";
     import { calculateShownCommunityCards } from "./poker-logic/utility";
 
     const initialPlayers = [
