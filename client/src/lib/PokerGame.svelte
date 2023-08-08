@@ -3,19 +3,14 @@
     import Card from "./Card.svelte";
     import LastActionLabel from "./LastActionLabel.svelte";
     import Stack from "./Stack.svelte";
+    import { performEnemyActions } from "./poker-logic/ai";
     import {
         createInitalHandState,
-        type PokerState,
-        calculateShownCommunityCards,
-        playerFold,
-        performEnemyActions,
-        playerCall,
-        playerRaise,
-        playerCheck,
         finishTurn,
         prepareNextHand,
-        type Player,
-    } from "./poker-logic";
+    } from "./poker-logic/hand";
+    import type { PokerState } from "./poker-logic/model";
+    import { calculateShownCommunityCards } from "./poker-logic/utility";
 
     const initialPlayers = [
         {
@@ -42,7 +37,6 @@
         action: (seat: number, state: PokerState) => PokerState
     ) {
         pokerState = action(playerSeat, pokerState);
-        console.debug(JSON.parse(JSON.stringify(pokerState)));
         setTimeout(() => {
             pokerState = finishTurn(pokerState);
             setTimeout(() => {
@@ -82,9 +76,7 @@
             pokerState = createInitalHandState(initialPlayers);
             return;
         }
-        const nextHand: Player | PokerState = prepareNextHand(pokerState);
-        if ("cards" in nextHand) return;
-        pokerState = nextHand;
+        pokerState = prepareNextHand(pokerState);
         setTimeout(() => {
             pokerState = performEnemyActions(opponentSeat, pokerState);
             setTimeout(() => {
