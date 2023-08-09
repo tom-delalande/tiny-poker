@@ -23,7 +23,7 @@ export function performEnemyActions(
     } else {
       const amount = Math.min(
         pokerState.seats[seat].stack,
-        pokerState.currentAction.minRaise + Math.floor((Math.random() * 10) % 5)
+        pokerState.currentAction.minRaise + Math.floor((Math.random() * 10) % 4) + 1
       );
       return playerRaise(seat, pokerState, amount);
     }
