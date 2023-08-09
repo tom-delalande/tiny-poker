@@ -3,32 +3,23 @@
 @tailwind utilities;
 
 body {
-  height: calc(100vh - 78pt);
-  margin-top: 44pt;
-  margin-bottom: 34pt;
+  min-height: 100vh;
   /* mobile viewport bug fix */
-  height: calc(-webkit-fill-available - 78pt);
+  min-height: -webkit-fill-available;
 }
 
 html {
-  height: calc(-webkit-fill-available - 78pt);
-  background-color: rgb(212 212 212);
+  height: -webkit-fill-available;
 }
 
 #app {
-  height: calc(100vh - 78pt);
-  margin-top: 44pt;
-  margin-bottom: 34pt;
+  height: 100vh;
   /* mobile viewport bug fix */
-  height: calc(-webkit-fill-available - 78pt);
+  height: -webkit-fill-available;
 }
 
 .app-container {
-  height: calc(100vh - 78pt);
-  margin-top: 44pt;
-  margin-bottom: 34pt;
+  height: 100vh;
   /* mobile viewport bug fix */
-  height: calc(-webkit-fill-available - 78pt);
-  position: relative;
+  height: -webkit-fill-available;
 }
-
