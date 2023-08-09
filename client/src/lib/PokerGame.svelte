@@ -92,7 +92,9 @@
     }
 </script>
 
-<div class="flex flex-col justify-around h-full bg-neutral-300 max-height">
+<div
+    class="flex flex-col justify-around h-full bg-neutral-300 safari-height-fix"
+>
     <div class="flex flex-col gap-2 items-center">
         <div class="flex gap-2 justify-center">
             {#each opponent.cards as card}

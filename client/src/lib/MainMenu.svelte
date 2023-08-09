@@ -4,7 +4,8 @@
 </script>
 
 <div
-    class="flex flex-col justify-center items-center gap-4 h-full bg-neutral-300 max-height"
+    class="flex flex-col justify-center items-center gap-4 h-full bg-neutral-300
+    safari-height-fix"
 >
     <h1 class="text-5xl font-thin">Pocket Poker</h1>
     <Button action={() => goToPage("Game")}>Play</Button>

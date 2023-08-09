@@ -10,7 +10,7 @@
     }
 </script>
 
-<div class="max-height">
+<div class="app-container">
     <MuteButton />
     {#if page === "Game"}
         <PokerGame />
