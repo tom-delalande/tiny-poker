@@ -19,7 +19,10 @@
         <i class="fa-solid fa-eye-slash" />
     {:else}
         <div class="text-2xl">
-            {#if value < 10}
+            {#if value === 1}
+                <i class="fa-solid fa-a" />
+            {/if}
+            {#if value < 10 && value > 1}
                 <i class="fa-solid fa-{value}" />
             {/if}
             {#if value === 10}
