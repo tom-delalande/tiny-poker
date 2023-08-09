@@ -81,6 +81,9 @@ function handlePayouts(pokerState: PokerState): PokerState {
 }
 
 export function finishTurn(pokerState: PokerState): PokerState {
+  console.debug({
+    message: "Finishing turn.",
+  });
   const playersIn = pokerState.seats.filter((it) => !it.out);
   if (playersIn.length === 1) {
     pokerState.winners = [pokerState.seats.findIndex((it) => !it.out)];
@@ -96,13 +99,22 @@ export function finishTurn(pokerState: PokerState): PokerState {
   }
   if (seatInTurn === pokerState.currentAction.lastSeatToRaise) {
     pokerState = finishRound(pokerState);
+  } else if (pokerState.currentAction.lastSeatToRaise === -1) {
+    console.debug({
+      message: "Updating last seat to raise",
+      previous: pokerState.currentAction.lastSeatToRaise,
+      new: pokerState.currentAction.seatInTurn,
+    });
+    pokerState.currentAction.lastSeatToRaise =
+      pokerState.currentAction.seatInTurn;
+    pokerState.currentAction.seatInTurn = seatInTurn;
   }
-  pokerState.currentAction.seatInTurn = seatInTurn;
 
   return pokerState;
 }
 
 function finishRound(pokerState: PokerState): PokerState {
+  console.debug({ message: "Round finished", pokerState });
   pokerState.currentAction = {
     seatInTurn: 0,
     minRaise: 0,

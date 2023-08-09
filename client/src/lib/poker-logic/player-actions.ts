@@ -3,13 +3,24 @@ import type { PokerState } from "./model";
 export function playerCheck(seat: number, pokerState: PokerState): PokerState {
   if (isActionIsOutOfTurn(seat, pokerState)) return pokerState;
   if (pokerState.currentAction.minRaise > 0) return pokerState;
+  console.debug({
+    message: "Action performed.",
+    action: "Check",
+    seat,
+    pokerState,
+  });
   pokerState.seats[seat].lastAction = "Check";
-  pokerState.currentAction.lastSeatToRaise = seat;
   return pokerState;
 }
 
 export function playerFold(seat: number, pokerState: PokerState): PokerState {
   if (isActionIsOutOfTurn(seat, pokerState)) return pokerState;
+  console.debug({
+    message: "Action performed.",
+    action: "Fold",
+    seat,
+    pokerState,
+  });
   pokerState.seats[seat].lastAction = "Fold";
   pokerState.seats[seat].out = true;
   return pokerState;
@@ -17,6 +28,12 @@ export function playerFold(seat: number, pokerState: PokerState): PokerState {
 
 export function playerCall(seat: number, pokerState: PokerState): PokerState {
   if (isActionIsOutOfTurn(seat, pokerState)) return pokerState;
+  console.debug({
+    message: "Action performed.",
+    action: "Call",
+    seat,
+    pokerState,
+  });
   pokerState.seats[seat].lastAction = "Call";
   const callAmount = Math.min(
     pokerState.seats[seat].stack,
@@ -33,6 +50,13 @@ export function playerRaise(
   raiseAmount: number
 ): PokerState {
   if (isActionIsOutOfTurn(seat, pokerState)) return pokerState;
+  console.debug({
+    message: "Action performed.",
+    action: "Raise",
+    seat,
+    raiseAmount,
+    pokerState,
+  });
   const player = pokerState.seats[seat];
   pokerState.seats[seat].lastAction = "Raise";
   const totalRaiseAmount = raiseAmount;

@@ -46,11 +46,16 @@
         setTimeout(() => {
             pokerState = finishTurn(pokerState);
             setTimeout(() => {
-                pokerState = performEnemyActions(opponentSeat, pokerState);
-                setTimeout(() => {
-                    pokerState = finishTurn(pokerState);
-                    console.debug(pokerState);
-                }, 500);
+                if (
+                    !pokerState.seats[pokerState.currentAction.seatInTurn]
+                        .isCurrentPlayer
+                ) {
+                    pokerState = performEnemyActions(opponentSeat, pokerState);
+                    setTimeout(() => {
+                        pokerState = finishTurn(pokerState);
+                        console.debug(pokerState);
+                    }, 500);
+                }
             }, 500);
         }, 200);
     }

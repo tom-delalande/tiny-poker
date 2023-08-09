@@ -10,11 +10,9 @@ export function performEnemyActions(
   seat: number,
   pokerState: PokerState
 ): PokerState {
-  if (pokerState.seats[pokerState.currentAction.seatInTurn].isCurrentPlayer)
-    return pokerState;
-
   const seed = Math.random();
-  let mustRespondToRaise = pokerState.currentAction.minRaise > 0;
+  let mustRespondToRaise =
+    pokerState.currentAction.minRaise > pokerState.seats[seat].currentRaise;
 
   // If no raise is currently active, 1/2 chance to Raise / Check
   if (!mustRespondToRaise) {
@@ -23,7 +21,9 @@ export function performEnemyActions(
     } else {
       const amount = Math.min(
         pokerState.seats[seat].stack,
-        pokerState.currentAction.minRaise + Math.floor((Math.random() * 10) % 4) + 1
+        pokerState.currentAction.minRaise +
+          Math.floor((Math.random() * 10) % 4) +
+          1
       );
       return playerRaise(seat, pokerState, amount);
     }
