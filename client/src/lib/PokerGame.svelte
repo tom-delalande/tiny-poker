@@ -53,7 +53,6 @@
                     pokerState = performEnemyActions(opponentSeat, pokerState);
                     setTimeout(() => {
                         pokerState = finishTurn(pokerState);
-                        console.debug(pokerState);
                     }, 500);
                 }
             }, 500);
@@ -177,7 +176,7 @@
                     {/each}
                 </div>
             {:else}
-                {#if pokerState.currentAction.minRaise > 0}
+                {#if pokerState.currentAction.minRaise > pokerState.seats[playerSeat].currentRaise}
                     <Button
                         disabled={pokerState.currentAction.seatInTurn !==
                             playerSeat}
@@ -196,7 +195,9 @@
                 {/if}
                 <Button
                     disabled={pokerState.currentAction.seatInTurn !==
-                        playerSeat || pokerState.currentAction.minRaise === 0}
+                        playerSeat ||
+                        pokerState.currentAction.minRaise <=
+                            pokerState.seats[playerSeat].currentRaise}
                     action={() => playerAction(playerFold)}>Fold</Button
                 >
                 <Button

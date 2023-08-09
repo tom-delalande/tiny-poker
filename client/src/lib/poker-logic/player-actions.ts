@@ -2,7 +2,8 @@ import type { PokerState } from "./model";
 
 export function playerCheck(seat: number, pokerState: PokerState): PokerState {
   if (isActionIsOutOfTurn(seat, pokerState)) return pokerState;
-  if (pokerState.currentAction.minRaise > 0) return pokerState;
+  if (pokerState.currentAction.minRaise > pokerState.seats[seat].currentRaise)
+    return pokerState;
   console.debug({
     message: "Action performed.",
     action: "Check",

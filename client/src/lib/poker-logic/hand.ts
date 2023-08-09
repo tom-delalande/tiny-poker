@@ -42,9 +42,9 @@ export function createInitalHandState(
     seats: seats,
     round: "Blinds",
     currentAction: {
-      seatInTurn: 0,
+      seatInTurn: (1 + 1) % seats.length, // Left of big blind
       minRaise: bigBlind,
-      lastSeatToRaise: 1,
+      lastSeatToRaise: -1,
     },
     communityCards: communityCards,
     pot: smallBlind + bigBlind,
@@ -107,8 +107,8 @@ export function finishTurn(pokerState: PokerState): PokerState {
     });
     pokerState.currentAction.lastSeatToRaise =
       pokerState.currentAction.seatInTurn;
-    pokerState.currentAction.seatInTurn = seatInTurn;
   }
+  pokerState.currentAction.seatInTurn = seatInTurn;
 
   return pokerState;
 }
