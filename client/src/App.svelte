@@ -1,5 +1,6 @@
 <script lang="ts">
     import MainMenu from "./lib/MainMenu.svelte";
+    import MuteButton from "./lib/MuteButton.svelte";
     import PokerGame from "./lib/PokerGame.svelte";
     type Page = "Home" | "Game";
     let page: Page = "Home";
@@ -10,6 +11,7 @@
 </script>
 
 <div class="max-height">
+    <MuteButton />
     {#if page === "Game"}
         <PokerGame />
     {/if}

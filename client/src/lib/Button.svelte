@@ -1,11 +1,18 @@
 <script lang="ts">
+    import { playAudio } from "./ui-logic/audio";
+
     export let action: () => void | undefined;
     export let disabled: boolean = false;
+
+    function performAction() {
+        playAudio("playerAction");
+        action();
+    }
 </script>
 
 <button
     class="px-4 py-2 bg-gray-50 border-2 rounded-md active:scale-90
 transition disabled:bg-neutral-300 min-w-fit w-24"
     {disabled}
-    on:click={action}><slot /></button
+    on:click={performAction}><slot /></button
 >
