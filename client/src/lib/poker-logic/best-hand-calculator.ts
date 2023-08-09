@@ -35,9 +35,14 @@ export function rateHand(cards: Card[]): HandRating {
 
   const cardScore = [undefined, 14, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
 
-  const sortedCards = cards.sort(
-    (cardA, cardB) => cardScore[cardB.value] - cardScore[cardA.value]
-  );
+  const sortedCards = cards
+    .map((card) => {
+      return {
+        value: cardScore[card.value],
+        suit: card.suit,
+      };
+    })
+    .sort((cardA, cardB) => cardB.value - cardA.value);
   const highCards = sortedCards.map((it) => it.value);
   const valueFrequency = toValueFrequency(sortedCards);
   const suitFrequency = toSuitsFrequency(sortedCards);
