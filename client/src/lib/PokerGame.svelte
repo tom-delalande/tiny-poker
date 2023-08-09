@@ -191,7 +191,7 @@
                 {/if}
                 <Button
                     disabled={pokerState.currentAction.seatInTurn !==
-                        playerSeat}
+                        playerSeat || pokerState.currentAction.minRaise === 0}
                     action={() => playerAction(playerFold)}>Fold</Button
                 >
                 <Button
