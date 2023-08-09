@@ -12,6 +12,7 @@ body {
 
 html {
   height: calc(-webkit-fill-available - 78pt);
+  background-color: rgb(212 212 212);
 }
 
 #app {
@@ -31,6 +32,3 @@ html {
   position: relative;
 }
 
-.safari-height-fix {
-  height: calc(-webkit-fill-available - 78pt);
-}
