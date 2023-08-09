@@ -6,7 +6,7 @@
     import { performEnemyActions } from "./poker-logic/ai";
     import {
         createInitalHandState,
-        finishTurn,
+        finishTurnForPlayer,
         prepareNextHand,
     } from "./poker-logic/hand";
     import type { PokerState } from "./poker-logic/model";
@@ -44,7 +44,7 @@
     ) {
         pokerState = action(playerSeat, pokerState);
         setTimeout(() => {
-            pokerState = finishTurn(pokerState);
+            pokerState = finishTurnForPlayer(playerSeat, pokerState);
             setTimeout(() => {
                 if (
                     !pokerState.seats[pokerState.currentAction.seatInTurn]
@@ -52,7 +52,10 @@
                 ) {
                     pokerState = performEnemyActions(opponentSeat, pokerState);
                     setTimeout(() => {
-                        pokerState = finishTurn(pokerState);
+                        pokerState = finishTurnForPlayer(
+                            opponentSeat,
+                            pokerState
+                        );
                     }, 500);
                 }
             }, 500);
@@ -90,7 +93,7 @@
         setTimeout(() => {
             pokerState = performEnemyActions(opponentSeat, pokerState);
             setTimeout(() => {
-                pokerState = finishTurn(pokerState);
+                pokerState = finishTurnForPlayer(opponentSeat, pokerState);
             }, 500);
         }, 500);
     }

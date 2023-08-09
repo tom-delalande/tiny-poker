@@ -80,7 +80,7 @@ function handlePayouts(pokerState: PokerState): PokerState {
   return pokerState;
 }
 
-export function finishTurn(pokerState: PokerState): PokerState {
+function finishTurn(pokerState: PokerState): PokerState {
   console.debug({
     message: "Finishing turn.",
   });
@@ -111,6 +111,21 @@ export function finishTurn(pokerState: PokerState): PokerState {
   pokerState.currentAction.seatInTurn = seatInTurn;
 
   return pokerState;
+}
+
+export function finishTurnForPlayer(
+  seat: number,
+  pokerState: PokerState
+): PokerState {
+  if (pokerState.currentAction.seatInTurn !== seat) {
+    console.debug({
+      message: "Attempted to finish turn for wrong user.",
+      seat: seat,
+      seatInTurn: pokerState.currentAction.seatInTurn,
+    });
+    return pokerState;
+  }
+  return finishTurn(pokerState);
 }
 
 function finishRound(pokerState: PokerState): PokerState {
