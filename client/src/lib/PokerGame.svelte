@@ -29,7 +29,7 @@
         },
     ];
 
-    let pokerState: PokerState = createInitalHandState(initialPlayers);
+    let pokerState: PokerState = createInitalHandState(initialPlayers, 0);
     if (pokerState.seats.length > 2)
         throw Error("Tables bigger than 2 are not supported");
 

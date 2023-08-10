@@ -3,7 +3,8 @@ import { rateHand } from "./best-hand-calculator";
 import type { InitialPlayer, Player, PokerState } from "./model";
 
 export function createInitalHandState(
-  initialPlayers: InitialPlayer[]
+  initialPlayers: InitialPlayer[],
+  pot: number
 ): PokerState {
   const smallBlind = 1;
   const bigBlind = 2;
@@ -47,7 +48,7 @@ export function createInitalHandState(
       lastSeatToRaise: -1,
     },
     communityCards: communityCards,
-    pot: smallBlind + bigBlind,
+    pot: pot + smallBlind + bigBlind,
     deck: deck,
     finished: false,
     winners: [],
@@ -68,7 +69,7 @@ export function prepareNextHand(pokerState: PokerState): PokerState {
   const lastSeat = seats.pop();
   seats.unshift(lastSeat);
 
-  return createInitalHandState(seats);
+  return createInitalHandState(seats, pokerState.pot);
 }
 
 function handlePayouts(pokerState: PokerState): PokerState {
