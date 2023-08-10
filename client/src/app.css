@@ -4,8 +4,7 @@
 
 body {
   height: calc(
-    100vh - env(safe-area-inset-top, 0) -
-      env(safe-area-inset-bottom, 0)
+    100vh - env(safe-area-inset-top, 0) - env(safe-area-inset-bottom, 0)
   );
   height: calc(
     calc(var(--vh, 1vh) * 100) - env(safe-area-inset-top, 0) -
@@ -15,6 +14,11 @@ body {
 
 html {
   background-color: rgb(212 212 212);
+
+  /* WebKit adds a gray box whenvener you click on a button */
+  -webkit-tap-highlight-color: transparent;
+  /* WebKit zooms in when you double tap */
+  touch-action: manipulation;
 }
 
 .app-container,
@@ -22,8 +26,7 @@ html {
   margin-top: env(safe-area-inset-top, 0);
   margin-bottom: env(safe-area-inset-bottom, 0);
   height: calc(
-    100vh - env(safe-area-inset-top, 0) -
-      env(safe-area-inset-bottom, 0)
+    100vh - env(safe-area-inset-top, 0) - env(safe-area-inset-bottom, 0)
   );
   height: calc(
     calc(var(--vh, 1vh) * 100) - env(safe-area-inset-top, 0) -
