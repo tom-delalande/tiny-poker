@@ -12,7 +12,7 @@
     </div>
     <div
         class="flex flex-col gap-2 items-center justify-center font-thin
-        justify-self-end py-10"
+        justify-self-end py-10 italic"
     >
         <p>We'd love to hear what you think</p>
         <div class="flex gap-2 text-sm font-normal items-center justify-center">
