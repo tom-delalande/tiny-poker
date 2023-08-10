@@ -3,8 +3,14 @@
 @tailwind utilities;
 
 body {
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
+  height: calc(
+    100vh - env(safe-area-inset-top, 0) -
+      env(safe-area-inset-bottom, 0)
+  );
+  height: calc(
+    calc(var(--vh, 1vh) * 100) - env(safe-area-inset-top, 0) -
+      env(safe-area-inset-bottom, 0)
+  );
 }
 
 html {
@@ -16,10 +22,12 @@ html {
   margin-top: env(safe-area-inset-top, 0);
   margin-bottom: env(safe-area-inset-bottom, 0);
   height: calc(
-    -webkit-fill-available - env(safe-area-inset-top, 0) - env(safe-area-inset-bottom, 0)
+    100vh - env(safe-area-inset-top, 0) -
+      env(safe-area-inset-bottom, 0)
   );
   height: calc(
-    100vh - env(safe-area-inset-top, 0) - env(safe-area-inset-bottom, 0)
+    calc(var(--vh, 1vh) * 100) - env(safe-area-inset-top, 0) -
+      env(safe-area-inset-bottom, 0)
   );
 }
 
