@@ -73,10 +73,11 @@ export function prepareNextHand(pokerState: PokerState): PokerState {
 
 function handlePayouts(pokerState: PokerState): PokerState {
   const winnings = Math.floor(pokerState.pot / pokerState.winners.length);
+  const excess = pokerState.pot - winnings * pokerState.winners.length;
   pokerState.winners.forEach((seat) => {
     pokerState.seats[seat].stack += winnings;
   });
-  pokerState.pot = 0;
+  pokerState.pot = excess;
   return pokerState;
 }
 
