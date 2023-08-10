@@ -1,4 +1,5 @@
 <script lang="ts">
+    import BackButton from "./BackButton.svelte";
     import Button from "./Button.svelte";
     import Card from "./Card.svelte";
     import LastActionLabel from "./LastActionLabel.svelte";
@@ -17,6 +18,8 @@
         playerRaise,
     } from "./poker-logic/player-actions";
     import { calculateShownCommunityCards } from "./poker-logic/utility";
+
+    export let goToPage: (page: "Home") => void;
 
     const initialPlayers = [
         {
@@ -100,6 +103,7 @@
 </script>
 
 <div class="flex flex-col justify-around h-full bg-neutral-300">
+    <BackButton action={() => goToPage("Home")} />
     <div class="flex flex-col gap-2 items-center">
         <div class="flex gap-2 justify-center">
             {#each opponent.cards as card}

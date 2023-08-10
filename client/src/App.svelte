@@ -29,7 +29,7 @@
 <div class="app-container">
     <MuteButton />
     {#if page === "Game"}
-        <PokerGame />
+        <PokerGame {goToPage} />
     {/if}
     {#if page === "Home"}
         <MainMenu {goToPage} />
