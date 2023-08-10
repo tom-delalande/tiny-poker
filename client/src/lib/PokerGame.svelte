@@ -4,6 +4,9 @@
     import Card from "./Card.svelte";
     import LastActionLabel from "./LastActionLabel.svelte";
     import Stack from "./Stack.svelte";
+    import ActionsMenu from "./game/ActionsMenu.svelte";
+    import NewGameMenu from "./game/NewGameMenu.svelte";
+    import RaiseMenu from "./game/RaiseMenu.svelte";
     import { performEnemyActions } from "./poker-logic/ai";
     import {
         createInitalHandState,
@@ -11,12 +14,6 @@
         prepareNextHand,
     } from "./poker-logic/hand";
     import type { PokerState } from "./poker-logic/model";
-    import {
-        playerCall,
-        playerCheck,
-        playerFold,
-        playerRaise,
-    } from "./poker-logic/player-actions";
     import { calculateShownCommunityCards } from "./poker-logic/utility";
 
     export let goToPage: (page: "Home") => void;
@@ -66,27 +63,9 @@
     }
 
     let raiseMenuOpen = false;
-    $: raiseAmounts = [
-        ...new Set([
-            Math.min(pokerState.currentAction.minRaise + 1, player.stack),
-            Math.floor(
-                pokerState.currentAction.minRaise +
-                    (player.stack - pokerState.currentAction.minRaise) / 4
-            ),
-            Math.floor(
-                pokerState.currentAction.minRaise +
-                    (player.stack - pokerState.currentAction.minRaise) / 2
-            ),
-            Math.floor(
-                pokerState.currentAction.minRaise +
-                    (player.stack - pokerState.currentAction.minRaise) / 1.5
-            ),
-            player.stack,
-        ]),
-    ];
-
     $: gameFinished =
         pokerState.seats.filter((it) => it.stack === 0).length === 1;
+
     function playAgain() {
         if (gameFinished) {
             pokerState = createInitalHandState(initialPlayers, 0);
@@ -154,66 +133,21 @@
         </div>
         <div class="flex gap-2 justify-center">
             {#if pokerState.finished}
-                <Button action={playAgain}
-                    >{#if gameFinished}
-                        New Game
-                    {:else}
-                        Continue
-                    {/if}
-                </Button>
+                <NewGameMenu {gameFinished} {playAgain} />
             {:else if raiseMenuOpen}
-                <div
-                    class="flex flex-wrap gap-2 items-center justify-center
-                    max-w-xs"
-                >
-                    <Button action={() => (raiseMenuOpen = false)}
-                        >Cancel</Button
-                    >
-                    {#each raiseAmounts as amount}
-                        <Button
-                            action={() => {
-                                raiseMenuOpen = false;
-                                playerAction(() =>
-                                    playerRaise(playerSeat, pokerState, amount)
-                                );
-                            }}
-                            >{amount}
-                            <i class="fa-solid fa-gem" />
-                        </Button>
-                    {/each}
-                </div>
+                <RaiseMenu
+                    back={() => (raiseMenuOpen = false)}
+                    {playerAction}
+                    {pokerState}
+                    {playerSeat}
+                />
             {:else}
-                {#if pokerState.currentAction.minRaise > pokerState.seats[playerSeat].currentRaise}
-                    <Button
-                        disabled={pokerState.currentAction.seatInTurn !==
-                            playerSeat}
-                        action={() => playerAction(playerCall)}
-                        >Call {#if pokerState.currentAction.seatInTurn === playerSeat}({pokerState
-                                .currentAction.minRaise -
-                                pokerState.seats[playerSeat].currentRaise}
-                            <i class="fa-solid fa-gem" />
-
-                            ){/if}</Button
-                    >
-                {:else}
-                    <Button
-                        disabled={pokerState.currentAction.seatInTurn !==
-                            playerSeat}
-                        action={() => playerAction(playerCheck)}>Check</Button
-                    >
-                {/if}
-                <Button
-                    disabled={pokerState.currentAction.seatInTurn !==
-                        playerSeat ||
-                        pokerState.currentAction.minRaise <=
-                            pokerState.seats[playerSeat].currentRaise}
-                    action={() => playerAction(playerFold)}>Fold</Button
-                >
-                <Button
-                    disabled={pokerState.currentAction.seatInTurn !==
-                        playerSeat}
-                    action={() => (raiseMenuOpen = true)}>Raise</Button
-                >
+                <ActionsMenu
+                    {pokerState}
+                    {playerAction}
+                    {playerSeat}
+                    openRaiseMenu={() => (raiseMenuOpen = true)}
+                />
             {/if}
         </div>
     </div>

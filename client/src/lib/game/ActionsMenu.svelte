@@ -1,0 +1,44 @@
+<script lang="ts">
+    import Button from "../Button.svelte";
+    import type { PokerState } from "../poker-logic/model";
+    import {
+        playerCall,
+        playerCheck,
+        playerFold,
+    } from "../poker-logic/player-actions";
+
+    export let pokerState: PokerState;
+    export let playerSeat: number;
+    export let playerAction: (
+        action: (seat: number, state: PokerState) => PokerState
+    ) => void;
+    export let openRaiseMenu: () => void;
+</script>
+
+{#if pokerState.currentAction.minRaise > pokerState.seats[playerSeat].currentRaise}
+    <Button
+        disabled={pokerState.currentAction.seatInTurn !== playerSeat}
+        action={() => playerAction(playerCall)}
+        >Call
+        {#if pokerState.currentAction.seatInTurn === playerSeat}
+            ({pokerState.currentAction.minRaise -
+                pokerState.seats[playerSeat].currentRaise}
+            <i class="fa-solid fa-gem" />)
+        {/if}
+    </Button>
+{:else}
+    <Button
+        disabled={pokerState.currentAction.seatInTurn !== playerSeat}
+        action={() => playerAction(playerCheck)}>Check</Button
+    >
+{/if}
+<Button
+    disabled={pokerState.currentAction.seatInTurn !== playerSeat ||
+        pokerState.currentAction.minRaise <=
+            pokerState.seats[playerSeat].currentRaise}
+    action={() => playerAction(playerFold)}>Fold</Button
+>
+<Button
+    disabled={pokerState.currentAction.seatInTurn !== playerSeat}
+    action={openRaiseMenu}>Raise</Button
+>
