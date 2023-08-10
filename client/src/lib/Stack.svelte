@@ -3,5 +3,5 @@
 </script>
 <div class="flex items-center gap-1">
     <p>{value}</p>
-    <i class="fa-solid fa-coins" />
+    <i class="fa-solid fa-gem" />
 </div>

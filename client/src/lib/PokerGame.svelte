@@ -174,7 +174,7 @@
                                 );
                             }}
                             >{amount}
-                            <i class="fa-solid fa-coins" />
+                            <i class="fa-solid fa-gem" />
                         </Button>
                     {/each}
                 </div>
@@ -186,8 +186,10 @@
                         action={() => playerAction(playerCall)}
                         >Call {#if pokerState.currentAction.seatInTurn === playerSeat}({pokerState
                                 .currentAction.minRaise -
-                                pokerState.seats[playerSeat]
-                                    .currentRaise}){/if}</Button
+                                pokerState.seats[playerSeat].currentRaise}
+                            <i class="fa-solid fa-gem" />
+
+                            ){/if}</Button
                     >
                 {:else}
                     <Button
