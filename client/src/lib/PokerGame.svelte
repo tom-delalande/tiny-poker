@@ -86,7 +86,7 @@
         pokerState.seats.filter((it) => it.stack === 0).length === 1;
     function playAgain() {
         if (gameFinished) {
-            pokerState = createInitalHandState(initialPlayers);
+            pokerState = createInitalHandState(initialPlayers, 0);
             return;
         }
         pokerState = prepareNextHand(pokerState);

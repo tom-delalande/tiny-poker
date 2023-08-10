@@ -4,7 +4,7 @@ import type { InitialPlayer, Player, PokerState } from "./model";
 
 export function createInitalHandState(
   initialPlayers: InitialPlayer[],
-  pot: number
+  pot: number,
 ): PokerState {
   const smallBlind = 1;
   const bigBlind = 2;
