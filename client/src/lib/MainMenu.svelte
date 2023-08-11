@@ -8,7 +8,7 @@
     class="flex flex-col justify-center items-center gap-4 h-full bg-neutral-300"
 >
     <div class="justify-self-center flex flex-col items-center m-auto gap-6">
-        <h1 class="text-5xl font-thin">Pocket Poker</h1>
+        <h1 class="text-5xl font-thin">Tiny Poker</h1>
         <Button action={() => goToPage("Ranked")}
             ><i class="fa-solid fa-robot" /> Play Bots
         </Button>
