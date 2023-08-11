@@ -9,13 +9,16 @@
 >
     <div class="justify-self-center flex flex-col items-center m-auto gap-6">
         <h1 class="text-5xl font-thin">Pocket Poker</h1>
-        <Button action={() => goToPage("Game")}>Quick Play</Button>
         <Button action={() => goToPage("Ranked")}
-            >Ranked
-            {#if currentRank !== undefined}
-                ({currentRank} <i class="fa-solid fa-diamond" />)
-            {/if}
+            ><i class="fa-solid fa-robot" /> Play Bots
         </Button>
+        <div class="flex flex-col justify-center items-center gap-4
+            bg-neutral-200 rounded-md p-5">
+            <p>Coming Soon...</p>
+            <Button action={() => {}} disabled={true}>Puzzles</Button>
+            <Button action={() => {}} disabled={true}>Ring Game</Button>
+            <Button action={() => {}} disabled={true}>Tournament</Button>
+        </div>
     </div>
     <div
         class="flex flex-col gap-2 items-center justify-center font-thin
