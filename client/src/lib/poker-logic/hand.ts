@@ -1,10 +1,12 @@
 import { createInitalDeck } from "./deck";
 import { rateHand } from "./best-hand-calculator";
-import type { InitialPlayer, Player, PokerState } from "./model";
+import type { Game, InitialPlayer, Player, PokerState } from "./model";
+import { Preferences } from "@capacitor/preferences";
 
 export function createInitalHandState(
   initialPlayers: InitialPlayer[],
   pot: number,
+  game: Game
 ): PokerState {
   const smallBlind = 1;
   const bigBlind = 2;
@@ -52,6 +54,7 @@ export function createInitalHandState(
     deck: deck,
     finished: false,
     winners: [],
+    game: game,
   };
 }
 
@@ -69,7 +72,7 @@ export function prepareNextHand(pokerState: PokerState): PokerState {
   const lastSeat = seats.pop();
   seats.unshift(lastSeat);
 
-  return createInitalHandState(seats, pokerState.pot);
+  return createInitalHandState(seats, pokerState.pot, pokerState.game);
 }
 
 function handlePayouts(pokerState: PokerState): PokerState {
@@ -82,6 +85,27 @@ function handlePayouts(pokerState: PokerState): PokerState {
   return pokerState;
 }
 
+function finishHand(pokerState: PokerState): PokerState {
+  pokerState = handlePayouts(pokerState);
+  pokerState.finished = true;
+  if (pokerState.game.type === "Ranked") {
+    let newRank = Math.max(0, pokerState.game.currentRank - 5);
+    if (
+      pokerState.winners.filter(
+        (winnerSeat) => pokerState.seats[winnerSeat].isCurrentPlayer
+      ).length > 0
+    ) {
+      newRank = pokerState.game.currentRank + 5;
+    }
+    Preferences.set({
+      key: "currentRank",
+      value: JSON.stringify(newRank),
+    });
+    pokerState.game.currentRank = newRank;
+  }
+  return pokerState;
+}
+
 function finishTurn(pokerState: PokerState): PokerState {
   console.debug({
     message: "Finishing turn.",
@@ -89,9 +113,7 @@ function finishTurn(pokerState: PokerState): PokerState {
   const playersIn = pokerState.seats.filter((it) => !it.out);
   if (playersIn.length === 1) {
     pokerState.winners = [pokerState.seats.findIndex((it) => !it.out)];
-    pokerState = handlePayouts(pokerState);
-    pokerState.finished = true;
-    return pokerState;
+    return finishHand(pokerState);
   }
 
   let seatInTurn = pokerState.currentAction.seatInTurn;
@@ -170,8 +192,7 @@ function finishRound(pokerState: PokerState): PokerState {
       return seat;
     });
     pokerState.winners = calculateWinners(pokerState);
-    pokerState = handlePayouts(pokerState);
-    pokerState.finished = true;
+    return finishHand(pokerState);
   }
   return pokerState;
 }
@@ -187,7 +208,6 @@ function calculateWinners(pokerState: PokerState): number[] {
   });
 
   const winningRating = [...handRatings].sort((a, b) => b - a)[0];
-  console.log(winningRating);
 
   const winners = handRatings
     .map((it, index) => {

@@ -1,6 +1,5 @@
 <script lang="ts">
     import BackButton from "./BackButton.svelte";
-    import Button from "./Button.svelte";
     import Card from "./Card.svelte";
     import LastActionLabel from "./LastActionLabel.svelte";
     import Stack from "./Stack.svelte";
@@ -13,10 +12,11 @@
         finishTurnForPlayer,
         prepareNextHand,
     } from "./poker-logic/hand";
-    import type { PokerState } from "./poker-logic/model";
+    import type { Game, PokerState } from "./poker-logic/model";
     import { calculateShownCommunityCards } from "./poker-logic/utility";
 
     export let goToPage: (page: "Home") => void;
+    export let game: Game;
 
     const initialPlayers = [
         {
@@ -29,7 +29,7 @@
         },
     ];
 
-    let pokerState: PokerState = createInitalHandState(initialPlayers, 0);
+    let pokerState: PokerState = createInitalHandState(initialPlayers, 0, game);
     if (pokerState.seats.length > 2)
         throw Error("Tables bigger than 2 are not supported");
 
@@ -68,7 +68,11 @@
 
     function playAgain() {
         if (gameFinished) {
-            pokerState = createInitalHandState(initialPlayers, 0);
+            pokerState = createInitalHandState(
+                initialPlayers,
+                0,
+                pokerState.game
+            );
             return;
         }
         pokerState = prepareNextHand(pokerState);
@@ -84,6 +88,12 @@
 <div class="flex flex-col justify-around h-full bg-neutral-300">
     <BackButton action={() => goToPage("Home")} />
     <div class="flex flex-col gap-2 items-center">
+        {#if pokerState.game.type === "Ranked"}
+            <div class="mx-10 font-thin self-start">
+                Rank: {pokerState.game.currentRank}
+                <i class="fa-solid fa-diamond" />
+            </div>
+        {/if}
         <div class="flex gap-2 justify-center">
             {#each opponent.cards as card}
                 {#if pokerState.finished}

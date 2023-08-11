@@ -1,6 +1,7 @@
 <script lang="ts">
     import Button from "./Button.svelte";
-    export let goToPage: (page: "Game") => void;
+    export let goToPage: (page: "Game" | "Ranked") => void;
+    export let currentRank: number | undefined;
 </script>
 
 <div
@@ -8,7 +9,13 @@
 >
     <div class="justify-self-center flex flex-col items-center m-auto gap-6">
         <h1 class="text-5xl font-thin">Pocket Poker</h1>
-        <Button action={() => goToPage("Game")}>Play</Button>
+        <Button action={() => goToPage("Game")}>Quick Play</Button>
+        <Button action={() => goToPage("Ranked")}
+            >Ranked
+            {#if currentRank !== undefined}
+                ({currentRank} <i class="fa-solid fa-diamond" />)
+            {/if}
+        </Button>
     </div>
     <div
         class="flex flex-col gap-2 items-center justify-center font-thin

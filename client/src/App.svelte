@@ -4,15 +4,29 @@
     import MuteButton from "./lib/MuteButton.svelte";
     import PokerGame from "./lib/PokerGame.svelte";
     import { loadAudio } from "./lib/ui-logic/audio";
-    type Page = "Home" | "Game";
+    import { Preferences } from "@capacitor/preferences";
+    type Page = "Home" | "Game" | "Ranked";
     let page: Page = "Home";
 
     function goToPage(newPage: Page) {
+        refresh();
         page = newPage;
+    }
+
+    let currentRank: number;
+    function refresh() {
+        Preferences.get({ key: "currentRank" }).then((rank) => {
+            if (rank.value) {
+                currentRank = parseInt(rank.value);
+            } else {
+                currentRank = 0;
+            }
+        });
     }
 
     onMount(() => {
         loadAudio();
+        refresh();
 
         // fix viewport height
         // https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
@@ -28,10 +42,16 @@
 
 <div class="app-container">
     <MuteButton />
-    {#if page === "Game"}
-        <PokerGame {goToPage} />
-    {/if}
     {#if page === "Home"}
-        <MainMenu {goToPage} />
+        <MainMenu {goToPage} {currentRank} />
+    {/if}
+    {#if page === "Game"}
+        <PokerGame {goToPage} game={{ type: "Casual" }} />
+    {/if}
+    {#if page === "Ranked"}
+        <PokerGame
+            {goToPage}
+            game={{ type: "Ranked", currentRank: currentRank }}
+        />
     {/if}
 </div>

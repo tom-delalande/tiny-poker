@@ -31,6 +31,15 @@ export interface CurrentAction {
   lastSeatToRaise: number;
 }
 
+export type Game = Ranked | Casual;
+
+export interface Ranked {
+  type: "Ranked";
+  currentRank: number;
+}
+
+export interface Casual { type: "Casual" };
+
 export interface PokerState {
   seats: Player[];
   currentAction: CurrentAction;
@@ -40,6 +49,7 @@ export interface PokerState {
   deck: Card[];
   finished: boolean;
   winners: number[];
+  game: Game;
 }
 
 export type HandStrength =
