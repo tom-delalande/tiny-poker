@@ -89,7 +89,7 @@
     <BackButton action={() => goToPage("Home")} />
     <div class="flex flex-col gap-2 items-center">
         {#if pokerState.game.type === "Ranked"}
-            <div class="mx-10 font-thin self-start">
+            <div class="font-thin absolute top-14 left-5">
                 Rank: {pokerState.game.currentRank}
                 <i class="fa-solid fa-diamond" />
             </div>
