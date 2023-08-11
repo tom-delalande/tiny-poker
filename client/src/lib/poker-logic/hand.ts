@@ -88,7 +88,9 @@ function handlePayouts(pokerState: PokerState): PokerState {
 function finishHand(pokerState: PokerState): PokerState {
   pokerState = handlePayouts(pokerState);
   pokerState.finished = true;
-  if (pokerState.game.type === "Ranked") {
+  const gameFinished =
+    pokerState.seats.filter((it) => it.stack === 0).length === 1;
+  if (gameFinished && pokerState.game.type === "Ranked") {
     let newRank = Math.max(0, pokerState.game.currentRank - 5);
     if (
       pokerState.winners.filter(
