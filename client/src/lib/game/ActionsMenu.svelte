@@ -17,15 +17,11 @@
 
 {#if pokerState.currentAction.minRaise > pokerState.seats[playerSeat].currentRaise}
     <Button
-        disabled={pokerState.currentAction.seatInTurn !== playerSeat}
-        action={() => playerAction(playerCall)}
-        >Call
-        {#if pokerState.currentAction.seatInTurn === playerSeat}
-            ({pokerState.currentAction.minRaise -
+        disabled={pokerState.currentAction.seatInTurn !== playerSeat ||
+            pokerState.currentAction.minRaise <=
                 pokerState.seats[playerSeat].currentRaise}
-            <i class="fa-solid fa-gem" />)
-        {/if}
-    </Button>
+        action={() => playerAction(playerFold)}>Fold</Button
+    >
 {:else}
     <Button
         disabled={pokerState.currentAction.seatInTurn !== playerSeat}
@@ -36,8 +32,14 @@
     disabled={pokerState.currentAction.seatInTurn !== playerSeat ||
         pokerState.currentAction.minRaise <=
             pokerState.seats[playerSeat].currentRaise}
-    action={() => playerAction(playerFold)}>Fold</Button
->
+    action={() => playerAction(playerCall)}
+    >Call
+    {#if pokerState.currentAction.seatInTurn === playerSeat && pokerState.currentAction.minRaise > pokerState.seats[playerSeat].currentRaise}
+        ({pokerState.currentAction.minRaise -
+            pokerState.seats[playerSeat].currentRaise}
+        <i class="fa-solid fa-gem" />)
+    {/if}
+</Button>
 <Button
     disabled={pokerState.currentAction.seatInTurn !== playerSeat}
     action={openRaiseMenu}>Raise</Button
