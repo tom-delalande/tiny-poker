@@ -12,7 +12,7 @@
     p-2 rounded-md active:scale-90 transition"
 >
     <div class="flex items-center justify-center gap-2">
-        <p>{enemyInformation.name}</p>
+        <p class="text-sm">{enemyInformation.name}</p>
     </div>
     <img class="w-24 h-24" src={bot1Avatar} alt="Bot 1 Avatar" />
 </button>
