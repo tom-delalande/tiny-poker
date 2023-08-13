@@ -6,7 +6,10 @@
     import ActionsMenu from "./game/ActionsMenu.svelte";
     import NewGameMenu from "./game/NewGameMenu.svelte";
     import RaiseMenu from "./game/RaiseMenu.svelte";
-    import { performEnemyActions } from "./poker-logic/ai";
+    import {
+        performEnemyActions,
+        performEnemyActions_v2,
+    } from "./poker-logic/ai";
     import {
         createInitalHandState,
         finishTurnForPlayer,
@@ -50,7 +53,12 @@
                     !pokerState.seats[pokerState.currentAction.seatInTurn]
                         .isCurrentPlayer
                 ) {
-                    pokerState = performEnemyActions(opponentSeat, pokerState);
+                    pokerState = performEnemyActions_v2(
+                        opponentSeat,
+                        pokerState,
+                        0.9,
+                        0.2
+                    );
                     setTimeout(() => {
                         pokerState = finishTurnForPlayer(
                             opponentSeat,
@@ -77,7 +85,12 @@
         }
         pokerState = prepareNextHand(pokerState);
         setTimeout(() => {
-            pokerState = performEnemyActions(opponentSeat, pokerState);
+            pokerState = performEnemyActions_v2(
+                opponentSeat,
+                pokerState,
+                0.9,
+                0.2
+            );
             setTimeout(() => {
                 pokerState = finishTurnForPlayer(opponentSeat, pokerState);
             }, 500);

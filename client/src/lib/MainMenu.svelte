@@ -1,7 +1,6 @@
 <script lang="ts">
     import Button from "./Button.svelte";
     export let goToPage: (page: "Game" | "Ranked") => void;
-    export let currentRank: number | undefined;
 </script>
 
 <div
