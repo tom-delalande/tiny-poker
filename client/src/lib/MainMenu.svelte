@@ -2,6 +2,27 @@
     import Button from "./Button.svelte";
     export let goToPage: (page: "CharacterCard" | "Ranked") => void;
     export let characterCardSeen = false;
+
+    let puzzlesNotified = false;
+    function notifyPuzzles() {
+        puzzlesNotified = true;
+        tournaments = false;
+        bots = false;
+    }
+
+    let tournaments = false;
+    function notifyTournaments() {
+        tournaments = true;
+        bots = false;
+        puzzlesNotified = false;
+    }
+
+    let bots = false;
+    function notifyBots() {
+        bots = true;
+        tournaments = false;
+        puzzlesNotified = false;
+    }
 </script>
 
 <div
@@ -18,11 +39,52 @@
         </Button>
         <div
             class="flex flex-col justify-center items-center gap-4
-            bg-neutral-200 rounded-md p-5"
+            bg-neutral-200 rounded-md p-5 max-w-md text-center"
         >
             <p>Coming Soon...</p>
-            <Button action={() => {}} disabled={true}>Puzzles</Button>
-            <Button action={() => {}} disabled={true}>Tournaments</Button>
+            <div>
+                <Button action={() => {}} disabled={true}>Puzzles</Button>
+                <button
+                    on:click={notifyPuzzles}
+                    class="bg-gray-50 p-2 rounded-md transition-all"
+                    class:bg-green-500={puzzlesNotified}
+                    >{#if puzzlesNotified}
+                        <i class="fa-solid fa-check" />
+                    {:else}
+                        <i class="fa-solid fa-bell" />
+                    {/if}
+                </button>
+            </div>
+            <div>
+                <Button action={() => {}} disabled={true}>Tournaments</Button>
+                <button
+                    on:click={notifyTournaments}
+                    class="bg-gray-50 p-2 rounded-md transition-all"
+                    class:bg-green-500={tournaments}
+                    >{#if tournaments}
+                        <i class="fa-solid fa-check" />
+                    {:else}
+                        <i class="fa-solid fa-bell" />
+                    {/if}
+                </button>
+            </div>
+            <div>
+                <Button action={() => {}} disabled={true}>More Bots</Button>
+                <button
+                    on:click={notifyBots}
+                    class="bg-gray-50 p-2 rounded-md transition-all"
+                    class:bg-green-500={bots}
+                    >{#if bots}
+                        <i class="fa-solid fa-check" />
+                    {:else}
+                        <i class="fa-solid fa-bell" />
+                    {/if}
+                </button>
+            </div>
+            <p>
+                Press <i class="fa-solid fa-bell" /> to enter the early access waitlist
+                for one feature.
+            </p>
         </div>
     </div>
     <div
