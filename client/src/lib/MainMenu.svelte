@@ -39,10 +39,10 @@
         </Button>
         <div
             class="flex flex-col justify-center items-center gap-4
-            bg-neutral-200 rounded-md p-5 max-w-md text-center mx-5"
+            bg-neutral-200 rounded-md py-5 max-w-md text-center mx-5"
         >
             <p>Coming Soon...</p>
-            <div>
+            <div class="flex gap-1">
                 <Button action={() => {}} disabled={true}>Puzzles</Button>
                 <button
                     on:click={notifyPuzzles}
@@ -55,7 +55,7 @@
                     {/if}
                 </button>
             </div>
-            <div>
+            <div class="flex gap-1">
                 <Button action={() => {}} disabled={true}>Tournaments</Button>
                 <button
                     on:click={notifyTournaments}
@@ -68,7 +68,7 @@
                     {/if}
                 </button>
             </div>
-            <div>
+            <div class="flex gap-1">
                 <Button action={() => {}} disabled={true}>More Bots</Button>
                 <button
                     on:click={notifyBots}
@@ -81,7 +81,7 @@
                     {/if}
                 </button>
             </div>
-            <p>
+            <p class="px-5">
                 Press <i class="fa-solid fa-bell" /> to enter the early access waitlist
                 for one feature.
             </p>
