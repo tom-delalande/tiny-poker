@@ -1,4 +1,5 @@
 <script lang="ts">
+    import Avatar from "./Avatar.svelte";
     import BackButton from "./BackButton.svelte";
     import Card from "./Card.svelte";
     import LastActionLabel from "./LastActionLabel.svelte";
@@ -6,20 +7,22 @@
     import ActionsMenu from "./game/ActionsMenu.svelte";
     import NewGameMenu from "./game/NewGameMenu.svelte";
     import RaiseMenu from "./game/RaiseMenu.svelte";
-    import {
-        performEnemyActions,
-        performEnemyActions_v2,
-    } from "./poker-logic/ai";
+    import { performEnemyActions_v2 } from "./poker-logic/ai";
     import {
         createInitalHandState,
         finishTurnForPlayer,
         prepareNextHand,
     } from "./poker-logic/hand";
-    import type { Game, PokerState } from "./poker-logic/model";
+    import type {
+        EnemyInformation,
+        Game,
+        PokerState,
+    } from "./poker-logic/model";
     import { calculateShownCommunityCards } from "./poker-logic/utility";
 
-    export let goToPage: (page: "Home") => void;
+    export let back: (state: PokerState) => void;
     export let game: Game;
+    export let enemyInformation: EnemyInformation = undefined;
 
     const initialPlayers = [
         {
@@ -32,7 +35,11 @@
         },
     ];
 
-    let pokerState: PokerState = createInitalHandState(initialPlayers, 0, game);
+    export let pokerState: PokerState = createInitalHandState(
+        initialPlayers,
+        0,
+        game
+    );
     if (pokerState.seats.length > 2)
         throw Error("Tables bigger than 2 are not supported");
 
@@ -96,25 +103,35 @@
             }, 500);
         }, 500);
     }
+
+    export let openCharacterCard: (state: PokerState) => void;
 </script>
 
 <div class="flex flex-col justify-around h-full bg-neutral-300">
-    <BackButton action={() => goToPage("Home")} />
+    <BackButton action={() => back(pokerState)} />
     <div class="flex flex-col gap-2 items-center">
         {#if pokerState.game.type === "Ranked"}
             <div class="font-thin absolute top-14 left-5">
-                Rank: {pokerState.game.currentRank}
+                {pokerState.game.currentRank}
                 <i class="fa-solid fa-diamond" />
             </div>
         {/if}
         <div class="flex gap-2 justify-center">
-            {#each opponent.cards as card}
-                {#if pokerState.finished}
-                    <Card suit={card.suit} value={card.value} />
-                {:else}
-                    <Card suit="Hidden" value={1} />
-                {/if}
-            {/each}
+            <div>
+                <Avatar
+                    openCharacterCard={() => openCharacterCard(pokerState)}
+                    {enemyInformation}
+                />
+                <div class="flex gap-2 -mt-5 justify-center">
+                    {#each opponent.cards as card}
+                        {#if pokerState.finished}
+                            <Card suit={card.suit} value={card.value} />
+                        {:else}
+                            <Card suit="Hidden" value={1} />
+                        {/if}
+                    {/each}
+                </div>
+            </div>
         </div>
         <Stack value={opponent.stack} />
         {#if pokerState.finished && opponent.handStrength}

@@ -5,7 +5,9 @@
     import PokerGame from "./lib/PokerGame.svelte";
     import { loadAudio } from "./lib/ui-logic/audio";
     import { Preferences } from "@capacitor/preferences";
-    type Page = "Home" | "Game" | "Ranked";
+    import CharacterCard from "./lib/CharacterCard.svelte";
+    import type { PokerState } from "./lib/poker-logic/model";
+    type Page = "Home" | "CharacterCard" | "Ranked";
     let page: Page = "Home";
 
     function goToPage(newPage: Page) {
@@ -14,17 +16,26 @@
     }
 
     let currentRank: number;
+    let characterCardSeen: boolean;
     function refresh() {
-        Preferences.get({ key: "currentRank" }).then((rank) => {
+        Preferences.get({ key: "wonChipsAgainstBot1" }).then((rank) => {
             if (rank.value) {
                 currentRank = parseInt(rank.value);
             } else {
                 currentRank = 0;
             }
         });
+        Preferences.get({ key: "characterCardSeenBot1" }).then((result) => {
+            if (result.value) {
+                characterCardSeen = JSON.parse(result.value);
+            } else {
+                characterCardSeen = false;
+            }
+        });
     }
 
-    onMount(() => {
+    let wonChipsAgainstBot1 = 0;
+    onMount(async () => {
         loadAudio();
         refresh();
 
@@ -38,20 +49,50 @@
         const doc = document.documentElement;
         doc.style.setProperty("--vh", window.innerHeight * 0.01 + "px");
     }
+
+    let previousPokerState: PokerState = undefined;
+    function openCharacterCard(pokerState: PokerState) {
+        previousPokerState = pokerState;
+        goToPage("CharacterCard");
+    }
+    function exitGame(pokerState: PokerState) {
+        previousPokerState = pokerState;
+        goToPage("Home");
+    }
 </script>
 
 <div class="app-container">
     <MuteButton />
     {#if page === "Home"}
-        <MainMenu {goToPage} {currentRank} />
-    {/if}
-    {#if page === "Game"}
-        <PokerGame {goToPage} game={{ type: "Casual" }} />
+        <MainMenu {goToPage} {characterCardSeen} />
     {/if}
     {#if page === "Ranked"}
         <PokerGame
-            {goToPage}
+            pokerState={previousPokerState}
+            back={exitGame}
+            {openCharacterCard}
             game={{ type: "Ranked", currentRank: currentRank }}
+            enemyInformation={{
+                name: 'Tim "Easygoing" Thompson',
+                looseness: 1,
+                aggression: 0,
+                currentChips: 0,
+                totalChips: 0,
+            }}
+        />
+    {/if}
+    {#if page === "CharacterCard"}
+        <CharacterCard
+            wonChips={wonChipsAgainstBot1}
+            characterIntroSeen={characterCardSeen}
+            close={async () => {
+                Preferences.set({
+                    key: "characterCardSeenBot1",
+                    value: "true",
+                }).then(() => {
+                    goToPage("Ranked");
+                });
+            }}
         />
     {/if}
 </div>

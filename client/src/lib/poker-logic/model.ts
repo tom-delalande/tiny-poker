@@ -38,7 +38,9 @@ export interface Ranked {
   currentRank: number;
 }
 
-export interface Casual { type: "Casual" };
+export interface Casual {
+  type: "Casual";
+}
 
 export interface PokerState {
   seats: Player[];
@@ -66,4 +68,12 @@ export type HandStrength =
 export interface HandRating {
   score: number;
   handStrength: HandStrength;
+}
+
+export interface EnemyInformation {
+  name: string;
+  looseness: number;
+  aggression: number;
+  currentChips: number;
+  totalChips: number;
 }

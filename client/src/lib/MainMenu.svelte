@@ -1,6 +1,7 @@
 <script lang="ts">
     import Button from "./Button.svelte";
-    export let goToPage: (page: "Game" | "Ranked") => void;
+    export let goToPage: (page: "CharacterCard" | "Ranked") => void;
+    export let characterCardSeen = false;
 </script>
 
 <div
@@ -8,15 +9,20 @@
 >
     <div class="justify-self-center flex flex-col items-center m-auto gap-6">
         <h1 class="text-5xl font-thin">Tiny Poker</h1>
-        <Button action={() => goToPage("Ranked")}
+        <Button
+            action={() =>
+                characterCardSeen
+                    ? goToPage("Ranked")
+                    : goToPage("CharacterCard")}
             ><i class="fa-solid fa-robot" /> Play Bots
         </Button>
-        <div class="flex flex-col justify-center items-center gap-4
-            bg-neutral-200 rounded-md p-5">
+        <div
+            class="flex flex-col justify-center items-center gap-4
+            bg-neutral-200 rounded-md p-5"
+        >
             <p>Coming Soon...</p>
             <Button action={() => {}} disabled={true}>Puzzles</Button>
-            <Button action={() => {}} disabled={true}>Ring Game</Button>
-            <Button action={() => {}} disabled={true}>Tournament</Button>
+            <Button action={() => {}} disabled={true}>Tournaments</Button>
         </div>
     </div>
     <div
