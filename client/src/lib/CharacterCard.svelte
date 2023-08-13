@@ -9,7 +9,7 @@
 
 <div
     class="flex flex-col items-center justify-around gap-2
-    p-2 h-full max-w-md m-auto"
+    p-2 min-h-full max-w-md m-auto"
 >
     <div class="flex items-center justify-center flex-col">
         <img class="w-24 h-24" src={bot1Avatar} alt="Bot 1 Avatar" />
