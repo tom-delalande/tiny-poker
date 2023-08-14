@@ -1,3 +1,4 @@
+import { parse } from "svelte/compiler";
 import type { Card, HandRating } from "./model";
 
 function toValueFrequency(cards: Card[]): { [key: number]: number } {
@@ -66,14 +67,21 @@ export function rateHand(cards: Card[]): HandRating {
     }
   });
 
-  Object.keys(suitFrequency).forEach((key) => {
-    if (valueFrequency[key] >= 5) {
-      flushes.push(parseInt(key));
+  const suitFrequencyValues = Object.values(suitFrequency);
+  Object.keys(suitFrequency).forEach((key, index) => {
+    if (suitFrequencyValues[index] >= 5) {
+      const highestCardInFlush = sortedCards.find(
+        (card) => card.suit === key
+      );
+      flushes.push(highestCardInFlush.value);
     }
   });
-  let frequencyKeys = Object.keys(valueFrequency);
+  let frequencyKeys = Object.keys(valueFrequency).map((it) => parseInt(it));
+  if (frequencyKeys.includes(14)) {
+    frequencyKeys = [1, ...frequencyKeys];
+  }
   frequencyKeys.forEach((key, index) => {
-    if (frequencyKeys.length < index + 4) return;
+    if (frequencyKeys.length < index + 5) return;
 
     if (
       frequencyKeys[index + 1] == key + 1 &&
@@ -81,10 +89,11 @@ export function rateHand(cards: Card[]): HandRating {
       frequencyKeys[index + 3] == key + 3 &&
       frequencyKeys[index + 4] == key + 4
     ) {
-      straights.push(parseInt(key));
+      straights.push(key + 4);
     }
   });
 
+  console.log({ straights, flushes });
   straights.forEach((value) => {
     if (flushes.includes(value)) {
       straightFlushes.push(value);
