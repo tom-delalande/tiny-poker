@@ -1,13 +1,12 @@
 import { createInitalDeck } from "./deck";
 import { rateHand } from "./best-hand-calculator";
-import type { Game, InitialPlayer, Player, PokerState } from "./model";
+import type { Game, InitialPlayer, Player, HandState } from "./model";
 import { Preferences } from "@capacitor/preferences";
 
 export function createInitalHandState(
   initialPlayers: InitialPlayer[],
   pot: number,
-  game: Game
-): PokerState {
+): HandState {
   const smallBlind = 1;
   const bigBlind = 2;
   const deck = createInitalDeck();
@@ -54,11 +53,10 @@ export function createInitalHandState(
     deck: deck,
     finished: false,
     winners: [],
-    game: game,
   };
 }
 
-export function prepareNextHand(pokerState: PokerState): PokerState {
+export function prepareNextHand(pokerState: HandState): HandState {
   if (pokerState.seats.filter((it) => it.stack === 0).length === 1) {
     return pokerState;
   }
@@ -72,10 +70,10 @@ export function prepareNextHand(pokerState: PokerState): PokerState {
   const lastSeat = seats.pop();
   seats.unshift(lastSeat);
 
-  return createInitalHandState(seats, pokerState.pot, pokerState.game);
+  return createInitalHandState(seats, pokerState.pot);
 }
 
-function handlePayouts(pokerState: PokerState): PokerState {
+function handlePayouts(pokerState: HandState): HandState {
   const winnings = Math.floor(pokerState.pot / pokerState.winners.length);
   const excess = pokerState.pot - winnings * pokerState.winners.length;
   pokerState.winners.forEach((seat) => {
@@ -85,30 +83,30 @@ function handlePayouts(pokerState: PokerState): PokerState {
   return pokerState;
 }
 
-function finishHand(pokerState: PokerState): PokerState {
+function finishHand(pokerState: HandState): HandState {
   pokerState = handlePayouts(pokerState);
   pokerState.finished = true;
   const gameFinished =
     pokerState.seats.filter((it) => it.stack === 0).length === 1;
-  if (gameFinished && pokerState.game.type === "Ranked") {
-    let newRank = Math.max(0, pokerState.game.currentRank - 5);
-    if (
-      pokerState.winners.filter(
-        (winnerSeat) => pokerState.seats[winnerSeat].isCurrentPlayer
-      ).length > 0
-    ) {
-      newRank = pokerState.game.currentRank + 5;
-    }
-    Preferences.set({
-      key: "currentRank",
-      value: JSON.stringify(newRank),
-    });
-    pokerState.game.currentRank = newRank;
-  }
+  // if (gameFinished && pokerState.game.type === "Ranked") {
+  //   let newRank = Math.max(0, pokerState.game.currentRank - 5);
+  //   if (
+  //     pokerState.winners.filter(
+  //       (winnerSeat) => pokerState.seats[winnerSeat].isCurrentPlayer
+  //     ).length > 0
+  //   ) {
+  //     newRank = pokerState.game.currentRank + 5;
+  //   }
+  //   Preferences.set({
+  //     key: "currentRank",
+  //     value: JSON.stringify(newRank),
+  //   });
+  //   pokerState.game.currentRank = newRank;
+  // }
   return pokerState;
 }
 
-function finishTurn(pokerState: PokerState): PokerState {
+function finishTurn(pokerState: HandState): HandState {
   console.debug({
     message: "Finishing turn.",
   });
@@ -141,8 +139,8 @@ function finishTurn(pokerState: PokerState): PokerState {
 
 export function finishTurnForPlayer(
   seat: number,
-  pokerState: PokerState
-): PokerState {
+  pokerState: HandState
+): HandState {
   if (pokerState.currentAction.seatInTurn !== seat) {
     console.debug({
       message: "Attempted to finish turn for wrong user.",
@@ -154,7 +152,7 @@ export function finishTurnForPlayer(
   return finishTurn(pokerState);
 }
 
-function finishRound(pokerState: PokerState): PokerState {
+function finishRound(pokerState: HandState): HandState {
   console.debug({ message: "Round finished", pokerState });
   pokerState.currentAction = {
     seatInTurn: 0,
@@ -199,7 +197,7 @@ function finishRound(pokerState: PokerState): PokerState {
   return pokerState;
 }
 
-function calculateWinners(pokerState: PokerState): number[] {
+function calculateWinners(pokerState: HandState): number[] {
   const handRatings = pokerState.seats.map((seat) => {
     const score = rateHand([...seat.cards, ...pokerState.communityCards]).score;
     console.debug({

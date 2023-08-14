@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Avatar from "./Avatar.svelte";
+    import Avatar from "./GenericAvatar.svelte";
     import BackButton from "./BackButton.svelte";
     import Card from "./Card.svelte";
     import LastActionLabel from "./LastActionLabel.svelte";
@@ -13,16 +13,13 @@
         finishTurnForPlayer,
         prepareNextHand,
     } from "./poker-logic/hand";
-    import type {
-        EnemyInformation,
-        Game,
-        PokerState,
-    } from "./poker-logic/model";
+    import type { HandState } from "./poker-logic/model";
     import { calculateShownCommunityCards } from "./poker-logic/utility";
+    import type { Bot } from "./poker-logic/ai/bots";
+    import { route } from "./ui-logic/navigation";
+    import { handState } from "./ui-logic/state";
 
-    export let back: (state: PokerState) => void;
-    export let game: Game;
-    export let enemyInformation: EnemyInformation = undefined;
+    export let bot: Bot;
 
     const initialPlayers = [
         {
@@ -34,12 +31,14 @@
             stack: 20,
         },
     ];
-
-    export let pokerState: PokerState = createInitalHandState(
-        initialPlayers,
-        0,
-        game
-    );
+    export let pokerState: HandState;
+    handState.subscribe((state) => {
+        console.log(state);
+        pokerState = state;
+    });
+    if (pokerState === undefined || pokerState === null) {
+        handState.set(createInitalHandState(initialPlayers, 0));
+    }
     if (pokerState.seats.length > 2)
         throw Error("Tables bigger than 2 are not supported");
 
@@ -50,26 +49,27 @@
     $: communityCards = calculateShownCommunityCards(pokerState);
 
     function playerAction(
-        action: (seat: number, state: PokerState) => PokerState
+        action: (seat: number, state: HandState) => HandState
     ) {
-        pokerState = action(playerSeat, pokerState);
+        handState.set(action(playerSeat, pokerState));
         setTimeout(() => {
-            pokerState = finishTurnForPlayer(playerSeat, pokerState);
+            handState.set(finishTurnForPlayer(playerSeat, pokerState));
             setTimeout(() => {
                 if (
                     !pokerState.seats[pokerState.currentAction.seatInTurn]
                         .isCurrentPlayer
                 ) {
-                    pokerState = performEnemyActions_v2(
-                        opponentSeat,
-                        pokerState,
-                        enemyInformation.aggression,
-                        enemyInformation.looseness,
+                    handState.set(
+                        performEnemyActions_v2(
+                            opponentSeat,
+                            pokerState,
+                            bot.aggression,
+                            bot.looseness
+                        )
                     );
                     setTimeout(() => {
-                        pokerState = finishTurnForPlayer(
-                            opponentSeat,
-                            pokerState
+                        handState.set(
+                            finishTurnForPlayer(opponentSeat, pokerState)
                         );
                     }, 500);
                 }
@@ -83,44 +83,39 @@
 
     function playAgain() {
         if (gameFinished) {
-            pokerState = createInitalHandState(
-                initialPlayers,
-                0,
-                pokerState.game
-            );
+            handState.set(createInitalHandState(initialPlayers, 0));
             return;
         }
-        pokerState = prepareNextHand(pokerState);
+        handState.set(prepareNextHand(pokerState));
         setTimeout(() => {
-            pokerState = performEnemyActions_v2(
-                opponentSeat,
-                pokerState,
-                enemyInformation.aggression,
-                enemyInformation.looseness
+            handState.set(
+                performEnemyActions_v2(
+                    opponentSeat,
+                    pokerState,
+                    bot.aggression,
+                    bot.looseness
+                )
             );
             setTimeout(() => {
-                pokerState = finishTurnForPlayer(opponentSeat, pokerState);
+                handState.set(finishTurnForPlayer(opponentSeat, pokerState));
             }, 500);
         }, 500);
     }
-
-    export let openCharacterCard: (state: PokerState) => void;
 </script>
 
 <div class="flex flex-col justify-around h-full bg-neutral-300">
-    <BackButton action={() => back(pokerState)} />
+    <BackButton action={() => route.set("Home")} />
     <div class="flex flex-col gap-2 items-center">
-        {#if pokerState.game.type === "Ranked"}
-            <div class="font-thin absolute top-14 left-5">
-                {pokerState.game.currentRank}
-                <i class="fa-solid fa-diamond" />
-            </div>
-        {/if}
+        <div class="font-thin absolute top-14 left-5">
+            {0}
+            <i class="fa-solid fa-diamond" />
+        </div>
         <div class="flex gap-2 justify-center">
             <div>
                 <Avatar
-                    openCharacterCard={() => openCharacterCard(pokerState)}
-                    {enemyInformation}
+                    openCharacterCard={() => route.set("CharacterCard")}
+                    image={bot.avatar}
+                    name={bot.name}
                 />
                 <div class="flex gap-2 -mt-5 justify-center">
                     {#each opponent.cards as card}

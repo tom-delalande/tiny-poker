@@ -1,5 +1,5 @@
 import { cardNotation, cardScore } from "./ai/common";
-import type { Card, PokerState } from "./model";
+import type { Card, HandState } from "./model";
 import {
   playerCall,
   playerCheck,
@@ -9,8 +9,8 @@ import {
 
 export function performEnemyActions(
   seat: number,
-  pokerState: PokerState
-): PokerState {
+  pokerState: HandState
+): HandState {
   const seed = Math.random();
   let mustRespondToRaise =
     pokerState.currentAction.minRaise > pokerState.seats[seat].currentRaise;
@@ -47,7 +47,7 @@ export function performEnemyActions(
 
 export function performEnemyActions_v2(
   seat: number,
-  pokerState: PokerState,
+  pokerState: HandState,
   aggression: number, // 0 -> 1 how likely the player is to raise
   looseness: number // 0 -> 1 how likely the player is to play a hand
 ) {
@@ -60,7 +60,7 @@ export function performEnemyActions_v2(
 
 function performPreflopActions(
   seat: number,
-  pokerState: PokerState,
+  pokerState: HandState,
   aggression: number, // 0 -> 1 how likely the player is to raise
   looseness: number // 0 -> 1 how likely the player is to play a hand
 ) {

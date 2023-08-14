@@ -1,13 +1,13 @@
 <script lang="ts">
     import Button from "../Button.svelte";
-    import type { PokerState } from "../poker-logic/model";
+    import type { HandState } from "../poker-logic/model";
     import { playerRaise } from "../poker-logic/player-actions";
 
     export let back: () => void;
     export let playerAction: (
-        action: (seat: number, state: PokerState) => PokerState
+        action: (seat: number, state: HandState) => HandState
     ) => void;
-    export let pokerState: PokerState;
+    export let pokerState: HandState;
     export let playerSeat: number;
 
     const player = pokerState.seats[playerSeat];

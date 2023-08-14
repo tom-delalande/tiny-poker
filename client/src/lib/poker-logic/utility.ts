@@ -1,6 +1,6 @@
-import type { Card, PokerState } from "./model";
+import type { Card, HandState } from "./model";
 
-export function calculateShownCommunityCards(pokerState: PokerState): Card[] {
+export function calculateShownCommunityCards(pokerState: HandState): Card[] {
   const communityCards: Card[] = [
     { value: -1, suit: "Hidden" },
     { value: -1, suit: "Hidden" },

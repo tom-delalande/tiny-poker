@@ -1,6 +1,6 @@
-import type { PokerState } from "./model";
+import type { HandState } from "./model";
 
-export function playerCheck(seat: number, pokerState: PokerState): PokerState {
+export function playerCheck(seat: number, pokerState: HandState): HandState {
   if (isActionIsOutOfTurn(seat, pokerState)) return pokerState;
   if (pokerState.currentAction.minRaise > pokerState.seats[seat].currentRaise)
     return pokerState;
@@ -14,7 +14,7 @@ export function playerCheck(seat: number, pokerState: PokerState): PokerState {
   return pokerState;
 }
 
-export function playerFold(seat: number, pokerState: PokerState): PokerState {
+export function playerFold(seat: number, pokerState: HandState): HandState {
   if (isActionIsOutOfTurn(seat, pokerState)) return pokerState;
   console.debug({
     message: "Action performed.",
@@ -27,7 +27,7 @@ export function playerFold(seat: number, pokerState: PokerState): PokerState {
   return pokerState;
 }
 
-export function playerCall(seat: number, pokerState: PokerState): PokerState {
+export function playerCall(seat: number, pokerState: HandState): HandState {
   if (isActionIsOutOfTurn(seat, pokerState)) return pokerState;
   console.debug({
     message: "Action performed.",
@@ -47,9 +47,9 @@ export function playerCall(seat: number, pokerState: PokerState): PokerState {
 
 export function playerRaise(
   seat: number,
-  pokerState: PokerState,
+  pokerState: HandState,
   raiseAmount: number
-): PokerState {
+): HandState {
   if (isActionIsOutOfTurn(seat, pokerState)) return pokerState;
   console.debug({
     message: "Action performed.",
@@ -69,7 +69,7 @@ export function playerRaise(
   return pokerState;
 }
 
-function isActionIsOutOfTurn(seat: number, pokerState: PokerState): boolean {
+function isActionIsOutOfTurn(seat: number, pokerState: HandState): boolean {
   if (pokerState.currentAction.seatInTurn !== seat) {
     console.debug({
       message: "Seat attempted to act out of turn.",

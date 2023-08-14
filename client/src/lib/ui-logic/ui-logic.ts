@@ -1,2 +1,2 @@
-import type { PokerState } from "../poker-logic/model";
+import type { HandState } from "../poker-logic/model";
 

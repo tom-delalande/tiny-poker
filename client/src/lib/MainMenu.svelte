@@ -1,6 +1,6 @@
 <script lang="ts">
     import Button from "./Button.svelte";
-    export let goToPage: (page: "CharacterCard" | "Ranked") => void;
+    import { route } from "./ui-logic/navigation";
     export let characterCardSeen = false;
 
     let puzzlesNotified = false;
@@ -33,8 +33,8 @@
         <Button
             action={() =>
                 characterCardSeen
-                    ? goToPage("Ranked")
-                    : goToPage("CharacterCard")}
+                    ? route.set("BotsGame")
+                    : route.set("CharacterCard")}
             ><i class="fa-solid fa-robot" /> Play Bots
         </Button>
         <div

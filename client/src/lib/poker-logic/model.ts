@@ -31,18 +31,7 @@ export interface CurrentAction {
   lastSeatToRaise: number;
 }
 
-export type Game = Ranked | Casual;
-
-export interface Ranked {
-  type: "Ranked";
-  currentRank: number;
-}
-
-export interface Casual {
-  type: "Casual";
-}
-
-export interface PokerState {
+export interface HandState {
   seats: Player[];
   currentAction: CurrentAction;
   round: "Blinds" | "Flop" | "River" | "Turn";
@@ -51,7 +40,6 @@ export interface PokerState {
   deck: Card[];
   finished: boolean;
   winners: number[];
-  game: Game;
 }
 
 export type HandStrength =
@@ -68,6 +56,13 @@ export type HandStrength =
 export interface HandRating {
   score: number;
   handStrength: HandStrength;
+}
+
+export interface GameState {
+  currentBotIndex: number;
+  currentScore: number;
+  targetScore: number;
+  characterCardSeen: boolean;
 }
 
 export interface EnemyInformation {

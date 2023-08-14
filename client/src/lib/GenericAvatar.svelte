@@ -1,8 +1,7 @@
 <script lang="ts">
-    import type { EnemyInformation } from "./poker-logic/model";
-    import bot1Avatar from "./../assets/bot-1-avatar.png";
+    export let image: string;
+    export let name: string;
 
-    export let enemyInformation: EnemyInformation;
     export let openCharacterCard: () => void;
 </script>
 
@@ -12,7 +11,7 @@
     p-2 rounded-md active:scale-90 transition"
 >
     <div class="flex items-center justify-center gap-2">
-        <p class="text-sm">{enemyInformation.name}</p>
+        <p class="text-sm">{name}</p>
     </div>
-    <img class="w-20 h-20" src={bot1Avatar} alt="Bot 1 Avatar" />
+    <img class="w-20 h-20" src={image} alt="Bot 1 Avatar" />
 </button>
