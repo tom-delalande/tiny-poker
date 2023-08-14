@@ -2,9 +2,7 @@
     import { onMount } from "svelte";
     import MuteButton from "./lib/MuteButton.svelte";
     import { loadAudio } from "./lib/ui-logic/audio";
-    import { Preferences } from "@capacitor/preferences";
     import Router from "./lib/Router.svelte";
-    import { botGameState } from "./lib/ui-logic/state";
 
     onMount(async () => {
         loadAudio();

@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { Preferences } from "@capacitor/preferences";
     import Button from "./Button.svelte";
     import { route } from "./ui-logic/navigation";
     export let characterCardSeen = false;
@@ -8,6 +9,7 @@
         puzzlesNotified = true;
         tournaments = false;
         bots = false;
+        Preferences.set({ key: "NotificationChoice", value: "Puzzles" });
     }
 
     let tournaments = false;
@@ -15,6 +17,7 @@
         tournaments = true;
         bots = false;
         puzzlesNotified = false;
+        Preferences.set({ key: "NotificationChoice", value: "Tournaments" });
     }
 
     let bots = false;
@@ -22,7 +25,21 @@
         bots = true;
         tournaments = false;
         puzzlesNotified = false;
+        Preferences.set({ key: "NotificationChoice", value: "Story" });
     }
+
+    Preferences.get({ key: "NotificationChoice" }).then((result) => {
+        if (puzzlesNotified || tournaments || bots) return;
+        if (result.value === "Puzzles") {
+            puzzlesNotified = true;
+        }
+        if (result.value === "Tournaments") {
+            tournaments = true;
+        }
+        if (result.value === "Story") {
+            bots = true;
+        }
+    });
 </script>
 
 <div
