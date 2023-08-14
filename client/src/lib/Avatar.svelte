@@ -14,5 +14,5 @@
     <div class="flex items-center justify-center gap-2">
         <p class="text-sm">{enemyInformation.name}</p>
     </div>
-    <img class="w-24 h-24" src={bot1Avatar} alt="Bot 1 Avatar" />
+    <img class="w-20 h-20" src={bot1Avatar} alt="Bot 1 Avatar" />
 </button>
