@@ -42,8 +42,12 @@
             bg-neutral-200 rounded-md py-5 max-w-md text-center mx-5"
         >
             <p>Coming Soon...</p>
-            <div class="flex gap-1">
-                <Button action={() => {}} disabled={true}>Puzzles</Button>
+            <div class="grid grid-cols-4 gap-2">
+                <button
+                    class="px-4 py-2 bg-gray-50 border-2 rounded-md active:scale-90
+transition disabled:bg-neutral-300 min-w-max col-span-3"
+                    disabled={true}>Puzzles</button
+                >
                 <button
                     on:click={notifyPuzzles}
                     class="bg-gray-50 p-2 rounded-md transition-all"
@@ -54,9 +58,11 @@
                         <i class="fa-solid fa-bell" />
                     {/if}
                 </button>
-            </div>
-            <div class="flex gap-1">
-                <Button action={() => {}} disabled={true}>Tournaments</Button>
+                <button
+                    class="px-4 py-2 bg-gray-50 border-2 rounded-md active:scale-90
+transition disabled:bg-neutral-300 min-w-max col-span-3"
+                    disabled={true}>Tournaments</button
+                >
                 <button
                     on:click={notifyTournaments}
                     class="bg-gray-50 p-2 rounded-md transition-all"
@@ -67,9 +73,11 @@
                         <i class="fa-solid fa-bell" />
                     {/if}
                 </button>
-            </div>
-            <div class="flex gap-1">
-                <Button action={() => {}} disabled={true}>More Bots</Button>
+                <button
+                    class="px-4 py-2 bg-gray-50 border-2 rounded-md active:scale-90
+transition disabled:bg-neutral-300 min-w-max col-span-3"
+                    disabled={true}>Story Mode</button
+                >
                 <button
                     on:click={notifyBots}
                     class="bg-gray-50 p-2 rounded-md transition-all"
