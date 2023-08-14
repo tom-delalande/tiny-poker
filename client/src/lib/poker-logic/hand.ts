@@ -1,11 +1,11 @@
 import { createInitalDeck } from "./deck";
 import { rateHand } from "./best-hand-calculator";
-import type { Game, InitialPlayer, Player, HandState } from "./model";
-import { Preferences } from "@capacitor/preferences";
+import type { InitialPlayer, Player, HandState } from "./model";
+import { botGameState, currentBotGameState } from "../ui-logic/state";
 
 export function createInitalHandState(
   initialPlayers: InitialPlayer[],
-  pot: number,
+  pot: number
 ): HandState {
   const smallBlind = 1;
   const bigBlind = 2;
@@ -88,21 +88,18 @@ function finishHand(pokerState: HandState): HandState {
   pokerState.finished = true;
   const gameFinished =
     pokerState.seats.filter((it) => it.stack === 0).length === 1;
-  // if (gameFinished && pokerState.game.type === "Ranked") {
-  //   let newRank = Math.max(0, pokerState.game.currentRank - 5);
-  //   if (
-  //     pokerState.winners.filter(
-  //       (winnerSeat) => pokerState.seats[winnerSeat].isCurrentPlayer
-  //     ).length > 0
-  //   ) {
-  //     newRank = pokerState.game.currentRank + 5;
-  //   }
-  //   Preferences.set({
-  //     key: "currentRank",
-  //     value: JSON.stringify(newRank),
-  //   });
-  //   pokerState.game.currentRank = newRank;
-  // }
+  if (gameFinished) {
+    let newRank = Math.max(0, -5);
+    if (
+      pokerState.winners.filter(
+        (winnerseat) => pokerState.seats[winnerseat].isCurrentPlayer
+      ).length > 0
+    ) {
+      newRank = currentBotGameState.currentScore + 5;
+    }
+    currentBotGameState.currentScore = newRank;
+    botGameState.set(currentBotGameState);
+  }
   return pokerState;
 }
 

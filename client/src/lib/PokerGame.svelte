@@ -13,11 +13,11 @@
         finishTurnForPlayer,
         prepareNextHand,
     } from "./poker-logic/hand";
-    import type { HandState } from "./poker-logic/model";
+    import type { GameState, HandState } from "./poker-logic/model";
     import { calculateShownCommunityCards } from "./poker-logic/utility";
     import type { Bot } from "./poker-logic/ai/bots";
     import { route } from "./ui-logic/navigation";
-    import { handState } from "./ui-logic/state";
+    import { botGameState, handState } from "./ui-logic/state";
 
     export let bot: Bot;
 
@@ -101,13 +101,15 @@
             }, 500);
         }, 500);
     }
+    let currentBotGameState: GameState;
+    botGameState.subscribe((value) => (currentBotGameState = value));
 </script>
 
 <div class="flex flex-col justify-around h-full bg-neutral-300">
     <BackButton action={() => route.set("Home")} />
     <div class="flex flex-col gap-2 items-center">
         <div class="font-thin absolute top-14 left-5">
-            {0}
+            {currentBotGameState.currentScore}
             <i class="fa-solid fa-diamond" />
         </div>
         <div class="flex gap-2 justify-center">

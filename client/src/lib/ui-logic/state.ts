@@ -25,9 +25,11 @@ Preferences.get({ key: "handState" }).then((result) => {
   }
 });
 
+export let currentBotGameState: GameState;
 botGameState.subscribe((value) => {
   if (value === undefined || value === null) return;
   Preferences.set({ key: "gameState", value: JSON.stringify(value) });
+  currentBotGameState = value;
 });
 
 handState.subscribe((value) => {
