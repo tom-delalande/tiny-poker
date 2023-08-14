@@ -70,9 +70,7 @@ export function rateHand(cards: Card[]): HandRating {
   const suitFrequencyValues = Object.values(suitFrequency);
   Object.keys(suitFrequency).forEach((key, index) => {
     if (suitFrequencyValues[index] >= 5) {
-      const highestCardInFlush = sortedCards.find(
-        (card) => card.suit === key
-      );
+      const highestCardInFlush = sortedCards.find((card) => card.suit === key);
       flushes.push(highestCardInFlush.value);
     }
   });
@@ -103,22 +101,22 @@ export function rateHand(cards: Card[]): HandRating {
   if (straightFlushes.length > 0) {
     removeHighcards(straightFlushes[0], highCards);
     return {
-      score: 8_000_000 + 4500 * straightFlushes[0],
+      score: 0.8 + 0.001 * straightFlushes[0],
       handStrength: "Straight Flush",
     };
   }
   if (straights.length > 0) {
     removeHighcards(straights[0], highCards);
-    return { score: 7_000_000 + 4500 * straights[0], handStrength: "Straight" };
+    return { score: 0.7 + 0.001 * straights[0], handStrength: "Straight" };
   }
   if (flushes.length > 0) {
     removeHighcards(flushes[0], highCards);
-    return { score: 6_000_000 + 4500 * flushes[0], handStrength: "Flush" };
+    return { score: 0.6 + 0.001 * flushes[0], handStrength: "Flush" };
   }
   if (quads.length > 0) {
     removeHighcards(quads[0], highCards);
     return {
-      score: 5_000_000 + 4500 * quads[0] + 300 * highCards[0],
+      score: 0.5 + 0.001 * quads[0] + 0.00001 * highCards[0],
       handStrength: "Four of a Kind",
     };
   }
@@ -126,7 +124,7 @@ export function rateHand(cards: Card[]): HandRating {
     removeHighcards(fullHouses[0].trips, highCards);
     removeHighcards(fullHouses[0].pairs, highCards);
     return {
-      score: 4_000_000 + 4500 * fullHouses[0].trips + 300 * fullHouses[0].pair,
+      score: 0.4 + 0.001 * fullHouses[0].trips + 0.00001 * fullHouses[0].pair,
       handStrength: "Full House",
     };
   }
@@ -134,7 +132,10 @@ export function rateHand(cards: Card[]): HandRating {
     removeHighcards(trips[0], highCards);
     return {
       score:
-        3_000_000 + 4500 * trips[0] + 300 * highCards[0] + 15 * highCards[1],
+        0.3 +
+        0.001 * trips[0] +
+        0.00001 * highCards[0] +
+        0.0000001 * highCards[1],
       handStrength: "Three of a Kind",
     };
   }
@@ -142,7 +143,8 @@ export function rateHand(cards: Card[]): HandRating {
     removeHighcards(pairs[0], highCards);
     removeHighcards(pairs[1], highCards);
     return {
-      score: 2_000_000 + 4500 * pairs[0] + 300 * pairs[1] + 15 * highCards[0],
+      score:
+        0.2 + 0.001 * pairs[0] + 0.00001 * pairs[1] + 0.0000001 * highCards[0],
       handStrength: "Two Pair",
     };
   }
@@ -150,21 +152,21 @@ export function rateHand(cards: Card[]): HandRating {
     removeHighcards(pairs[0], highCards);
     return {
       score:
-        1_000_000 +
-        4500 * pairs[0] +
-        300 * highCards[0] +
-        15 * highCards[1] +
-        1 * highCards[2],
+        0.1 +
+        0.001 * pairs[0] +
+        0.00001 * highCards[0] +
+        0.0000001 * highCards[1] +
+        0.000000001 * highCards[2],
       handStrength: "Pair",
     };
   }
   return {
     score:
-      70000 * highCards[0] +
-      4500 * highCards[1] +
-      300 * highCards[2] +
-      15 * highCards[3] +
-      1 * highCards[4],
+      0.001 * highCards[0] +
+      0.00001 * highCards[1] +
+      0.0000001 * highCards[2] +
+      0.000000001 * highCards[3] +
+      0.00000000001 * highCards[4],
     handStrength: "High Card",
   };
 }
