@@ -72,18 +72,20 @@ function performPreflopActions(
     aggression,
     pokerState.pot
   );
+
+  const currentAction = pokerState.currentAction;
+  const effectiveCurrentMinRaise = currentAction.minRaise - player.currentRaise;
   console.debug({
     message: "Performing pre-flop actions for AI",
+    tags: ["ai"],
     looseness,
     aggression,
     minRaise: actions.minRaise,
     maxCall: actions.maxCall,
     cards: startingHand,
     currentMinRaise: pokerState.currentAction.minRaise,
+    effectiveCurrentMinRaise,
   });
-
-  const currentAction = pokerState.currentAction;
-  const effectiveCurrentMinRaise = currentAction.minRaise - player.currentRaise;
   if (effectiveCurrentMinRaise > actions.maxCall) {
     return playerFold(seat, pokerState);
   }
@@ -108,6 +110,13 @@ function calculateStartingHandAcceptedActions(
   );
 
   const handRating = 1 - startinHandProbabilities[notation] / 100;
+  console.debug({
+    message: "Converting pocket cards to expected value",
+    tags: ["ai"],
+    cards: pocketCards,
+    notation,
+    handRating,
+  });
   const maxCall = Math.floor(((handRating + looseness) / 2) * pot * 2);
   const minRaise = Math.floor(maxCall * aggression);
   return {

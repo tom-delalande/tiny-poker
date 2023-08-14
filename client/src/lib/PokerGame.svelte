@@ -63,8 +63,8 @@
                     pokerState = performEnemyActions_v2(
                         opponentSeat,
                         pokerState,
-                        0.9,
-                        0.2
+                        enemyInformation.aggression,
+                        enemyInformation.looseness,
                     );
                     setTimeout(() => {
                         pokerState = finishTurnForPlayer(
@@ -95,8 +95,8 @@
             pokerState = performEnemyActions_v2(
                 opponentSeat,
                 pokerState,
-                0.9,
-                0.2
+                enemyInformation.aggression,
+                enemyInformation.looseness
             );
             setTimeout(() => {
                 pokerState = finishTurnForPlayer(opponentSeat, pokerState);
