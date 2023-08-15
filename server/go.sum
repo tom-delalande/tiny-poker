@@ -1,4 +1,12 @@
+github.com/amacneil/dbmate v1.16.2 h1:ovhzYRR2JT5EZbISNtg7MZmLM51ZrHLKoEKMPhiFz5E=
+github.com/amacneil/dbmate v1.16.2/go.mod h1:d+2u+wE7GpLepbKxi231FXoi7thXuI1AND5CRG18RcI=
+github.com/amacneil/dbmate/v2 v2.5.0 h1:cl9r5HUO2BFdG6fNR1XwH8UiNcml4ctoKodRzUOLVNk=
+github.com/amacneil/dbmate/v2 v2.5.0/go.mod h1:8aMVByXD3o1d13TS6wd24rZzRzYNfz/SKmhWXMaA6wU=
 github.com/go-chi/chi v1.5.4 h1:QHdzF2szwjqVV4wmByUnTcsbIg7UGaQ0tPF2t5GcAIs=
 github.com/go-chi/chi v1.5.4/go.mod h1:uaf8YgoFazUOkPBG7fxPftUylNumIev9awIWOENIuEg=
 github.com/go-chi/chi/v5 v5.0.10 h1:rLz5avzKpjqxrYwXNfmjkrYYXOyLJd37pz53UFHC6vk=
 github.com/go-chi/chi/v5 v5.0.10/go.mod h1:DslCQbL2OYiznFReuXYUmQ2hGd1aDpCnlMNITLSKoi8=
+github.com/lib/pq v1.10.9 h1:YXG7RB+JIjhP29X+OtkiDnYaXQwpS4JEWq7dtCCRUEw=
+github.com/lib/pq v1.10.9/go.mod h1:AlVN5x4E4T544tWzH6hKfbfQvm3HdbOxrmggDNAPY9o=
+github.com/mattn/go-sqlite3 v1.14.17 h1:mCRHCLDUBXgpKAqIKsaAaAsrAlbkeomtRFKXh2L6YIM=
+github.com/mattn/go-sqlite3 v1.14.17/go.mod h1:2eHXhiwb8IkHr+BDWZGa96P6+rkvnG63S2DGjv9HUNg=
