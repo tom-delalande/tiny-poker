@@ -13,9 +13,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build docker images
-        run: docker-compose up
+        run: docker-compose build
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Publish docker images
-        run: docker push ghcr.io/thomas-delalande/poker-server:latest
+        run: docker-compose push
       # - name: Setup SSH
       #   run: |
       #     mkdir -p ~/.ssh/
@@ -26,4 +28,3 @@ jobs:
       # - name: Deploy
       #   run: |
       #     ssh ${{ secrets.SERVER_IP_ADDRESS }} "/app/deploy.sh"
-
