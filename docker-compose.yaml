@@ -3,6 +3,7 @@ services:
     build:
       dockerfile: client.dockerfile
       context: client
+    image: ghcr.io/thomas-delalande/tiny-poker-client
     container_name: client
     volumes:
       - client:/app/dist
@@ -10,6 +11,7 @@ services:
     build:
       dockerfile: server.dockerfile
       context: server
+    image: ghcr.io/thomas-delalande/tiny-poker-server
     environment:
       DATABASE_URL: "sqlite:db/database.sqlite3"
     ports:
