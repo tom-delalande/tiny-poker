@@ -23,7 +23,7 @@ services:
       context: nginx
     container_name: nginx
     ports:
-      - 8000:80
+      - 9029:80
     volumes:
       - client:/app/dist
     restart: always
