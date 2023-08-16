@@ -26,12 +26,15 @@ func main() {
 	router := chi.NewRouter()
 	router.Use(middleware.Logger)
 
-	router.Get("/health-check", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-	})
+	router.Route("/api", func(router chi.Router) {
+		router.Get("/health-check", func(w http.ResponseWriter, r *http.Request) {
+			w.WriteHeader(http.StatusOK)
+		})
 
-	router.Route("/analytics", func(r chi.Router) {
-		analytics.AnalyticsEndpoints(r, db)
+		router.Route("/analytics", func(r chi.Router) {
+			analytics.AnalyticsEndpoints(r, db)
+		})
+
 	})
 
 	log.Default().Println("Listening on port 6006...")
