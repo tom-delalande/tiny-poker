@@ -21,6 +21,7 @@ services:
     build:
       dockerfile: nginx.dockerfile
       context: nginx
+    image: ghcr.io/thomas-delalande/tiny-poker-nginx
     container_name: nginx
     ports:
       - 9029:80
