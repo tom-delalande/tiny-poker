@@ -7,9 +7,9 @@ deploy_nginx() {
 }
 
 deploy_client() {
-    mkdir -p /www/tiny-poker/
+    mkdir -p /www/tiny-poker/app
     mkdir -p client/dist
-    ln -s $(pwd)/client/dist /www/tiny-poker/web
+    ln -s $(pwd)/client/dist /www/tiny-poker/app
 
     cd client
     npm install
