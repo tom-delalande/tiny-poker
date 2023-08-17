@@ -1,5 +1,9 @@
 deploy_nginx() {
-    nginx -s reload -c $(pwd)/nginx/nginx.conf
+    if [ -n "$(lsof -t -i :9029)" ]; then
+        nginx -s reload -c $(pwd)/nginx/nginx.conf
+    else
+        nginx -c $(pwd)/nginx/nginx.conf &
+    fi
 }
 
 deploy_client() {
