@@ -7,9 +7,9 @@ deploy_nginx() {
 }
 
 deploy_client() {
-    sudo mkdir -p /www/tiny-poker/
-    sudo mkdir -p client/dist
-    sudo ln $(pwd)/client/dist /www/tiny-poker/web
+    mkdir -p /www/tiny-poker/
+    mkdir -p client/dist
+    ln -s $(pwd)/client/dist /www/tiny-poker/web
 
     cd client
     npm install
@@ -32,11 +32,12 @@ deploy_server() {
     old_pid=$(lsof -t -i :$old_port)
 
     if [ -n "$old_pid" ]; then
-        sudo kill $old_pid
+        kill $old_pid
     fi
     cd ..
 }
 
+sudo su
 deploy_nginx
 deploy_client
 deploy_server
