@@ -1,8 +1,9 @@
 deploy_nginx() {
+    cp $(pwd)/nginx/nginx.conf /etc/nginx/nginx.conf
     if [ -n "$(lsof -t -i :9029)" ]; then
         nginx -s reload -c $(pwd)/nginx/nginx.conf
     else
-        nginx -c $(pwd)/nginx/nginx.conf &
+        systemctl start nginx
     fi
 }
 
