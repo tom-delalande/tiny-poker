@@ -1,10 +1,14 @@
 package main
 
 import (
+	"context"
 	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
+	"os"
+	"os/signal"
 	"tiny-poker/server/src/analytics"
 
 	"github.com/amacneil/dbmate/v2/pkg/dbmate"
@@ -34,11 +38,19 @@ func main() {
 		router.Route("/analytics", func(r chi.Router) {
 			analytics.AnalyticsEndpoints(r, db)
 		})
-
 	})
 
-	log.Default().Println("Listening on port 6006...")
-	http.ListenAndServe(":6006", router)
+	port := os.Getenv("PORT")
+	server := &http.Server{Addr: fmt.Sprintf(":%s", port), Handler: router}
+	log.Default().Println(fmt.Sprintf("Listening on port %s...", port))
+	server.ListenAndServe()
+
+	// Graceful shutdown
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt)
+	<-stop
+	server.Shutdown(context.Background())
+
 }
 
 func setupDatabase() error {
