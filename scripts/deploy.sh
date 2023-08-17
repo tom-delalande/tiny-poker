@@ -1,7 +1,3 @@
-pull_changes() {
-    git pull
-}
-
 deploy_nginx() {
     nginx -s reload -c $(pwd)/nginx/nginx.conf
 }
