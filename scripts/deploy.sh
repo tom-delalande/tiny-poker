@@ -37,7 +37,6 @@ deploy_server() {
     cd ..
 }
 
-sudo su
 deploy_nginx
 deploy_client
 deploy_server
