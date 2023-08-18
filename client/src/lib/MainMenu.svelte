@@ -133,6 +133,7 @@ transition disabled:bg-neutral-300 min-w-max col-span-3"
         <div class="flex gap-2 text-sm font-normal items-center justify-center">
             <Button
                 action={() => {
+                    logEvent("open-discord-button-pressed");
                     window.open("https://discord.gg/yR9uquvCkS", "_blank");
                 }}
                 ><span class="flex gap-2 items-center justify-center"
@@ -141,6 +142,7 @@ transition disabled:bg-neutral-300 min-w-max col-span-3"
             >
             <Button
                 action={() => {
+                    logEvent("open-email-button-pressed");
                     window.open("mailto:poker@getnada.com", "_blank");
                 }}
                 ><span class="flex gap-2 items-center justify-center"
