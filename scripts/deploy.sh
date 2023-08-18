@@ -1,5 +1,4 @@
 deploy_nginx() {
-    cp $(pwd)/nginx/nginx.conf /etc/nginx/nginx.conf
     if [ -n "$(lsof -t -i :9029)" ]; then
         docker exec nginx nginx -s reload
     else
@@ -36,4 +35,3 @@ deploy_server() {
 
 deploy_client
 deploy_server
-deploy_nginx

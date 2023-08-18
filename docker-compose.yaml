@@ -4,8 +4,7 @@ services:
       dockerfile: nginx/nginx.dockerfile
       context: .
     container_name: nginx
-    ports:
-      - 9029:80
+    network_mode: host
     volumes:
       - ./client/dist:/app/www/
     restart: always
