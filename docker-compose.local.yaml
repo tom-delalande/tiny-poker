@@ -7,3 +7,11 @@ services:
     ports:
       - 9999:80
     restart: always
+  server:
+    build:
+      context: server
+      dockerfile: server.dockerfile
+    network_mode: host
+    environment:
+      PORT: 9001
+    restart: always

@@ -2,3 +2,8 @@
 !nginx/nginx.conf
 !nginx/nginx-local.conf
 !client/dist
+
+!server/src
+!server/go.mod
+!server/go.sum
+!server/db/migrations

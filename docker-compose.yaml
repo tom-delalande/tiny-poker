@@ -4,7 +4,19 @@ services:
       dockerfile: nginx/nginx.dockerfile
       context: .
     container_name: nginx
-    network_mode: host
     volumes:
       - ./client/dist:/app/www/
+    ports:
+      - 9022:80
+    restart: always
+    depends_on:
+      - server
+  server:
+    build:
+      context: server
+      dockerfile: server.dockerfile
+    environment:
+      PORT: 9001
+    volumes:
+      - ./server/db:/db
     restart: always
