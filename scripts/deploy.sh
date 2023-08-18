@@ -1,21 +1,16 @@
 deploy_nginx() {
     cp $(pwd)/nginx/nginx.conf /etc/nginx/nginx.conf
     if [ -n "$(lsof -t -i :9029)" ]; then
-        nginx -s reload -c $(pwd)/nginx/nginx.conf
+        docker exec nginx nginx -s reload
     else
-        systemctl start nginx
+        docker-compose up --build
     fi
 }
 
 deploy_client() {
-    mkdir -p /www/tiny-poker/app
-    mkdir -p client/dist
-    ln -s $(pwd)/client/dist/* /www/tiny-poker/app
-
     cd client
     npm install
     npm run build
-    cd ..
 }
 
 deploy_server() {

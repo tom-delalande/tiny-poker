@@ -1,0 +1,11 @@
+services:
+  nginx:
+    build:
+      dockerfile: nginx/nginx.dockerfile
+      context: .
+    container_name: nginx
+    ports:
+      - 9029:80
+    volumes:
+      - ./client/dist:/app/www/
+    restart: always
