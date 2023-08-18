@@ -6,11 +6,11 @@
     import { logEvent } from "./lib/analytics/analytics";
     import { Capacitor } from "@capacitor/core";
 
+    logEvent("session-started", {
+        platform: Capacitor.getPlatform(),
+    });
     onMount(async () => {
         loadAudio();
-        logEvent("session-started", {
-            platform: Capacitor.getPlatform(),
-        });
 
         // fix viewport height
         // https://css-tricks.com/the-trick-to-viewport-units-on-mobile/

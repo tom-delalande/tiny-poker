@@ -16,7 +16,9 @@ export function performEnemyActions(
   let mustRespondToRaise =
     pokerState.currentAction.minRaise > pokerState.seats[seat].currentRaise;
 
-  logEvent("ai-action-performed", {
+  logEvent("ai-action-calculated", {
+    mustRespondToRaise,
+    seed,
     round: pokerState.round,
   });
   // If no raise is currently active, 1/2 chance to Raise / Check
@@ -79,7 +81,7 @@ function performPreflopActions(
 
   const currentAction = pokerState.currentAction;
   const effectiveCurrentMinRaise = currentAction.minRaise - player.currentRaise;
-  logEvent("ai-action-performed", {
+  logEvent("ai-action-calculated", {
     round: pokerState.round,
     looseness,
     aggression,

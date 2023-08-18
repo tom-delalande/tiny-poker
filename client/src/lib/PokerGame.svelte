@@ -118,8 +118,8 @@
     onMount(() => {
         logEvent("poker-game-page-opened", {
             bot,
-            handState,
-            botGameState,
+            handState: pokerState,
+            gameState: currentBotGameState,
         });
     });
 </script>

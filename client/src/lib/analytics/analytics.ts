@@ -6,7 +6,7 @@ export async function logEvent(eventType: string, data?: any) {
   const device = await Device.getId();
   const deviceId = device.identifier;
   const sessionId = getSessionId();
-  const timestamp = moment();
+  const timestamp = moment().format();
 
   const event = {
     deviceId,
@@ -16,10 +16,7 @@ export async function logEvent(eventType: string, data?: any) {
     ...data,
   };
 
-  console.debug({
-    message: "logging event",
-    event,
-  });
+  console.debug(event);
   // wretch("/api/analytics/event").post(event);
 }
 
