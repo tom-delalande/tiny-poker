@@ -3,7 +3,12 @@
     import MuteButton from "./lib/MuteButton.svelte";
     import { loadAudio } from "./lib/ui-logic/audio";
     import Router from "./lib/Router.svelte";
+    import { logEvent } from "./lib/analytics/analytics";
+    import { Capacitor } from "@capacitor/core";
 
+    logEvent("session-started", {
+        platform: Capacitor.getPlatform(),
+    });
     onMount(async () => {
         loadAudio();
 

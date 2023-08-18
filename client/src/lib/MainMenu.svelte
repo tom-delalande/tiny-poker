@@ -2,10 +2,17 @@
     import { Preferences } from "@capacitor/preferences";
     import Button from "./Button.svelte";
     import { route } from "./ui-logic/navigation";
+    import { logEvent } from "./analytics/analytics";
+    import { onMount } from "svelte";
     export let characterCardSeen = false;
+
+    onMount(() => {
+        logEvent("main-menu-page-opened");
+    });
 
     let puzzlesNotified = false;
     function notifyPuzzles() {
+        logEvent("notify-puzzles-button-pressed");
         puzzlesNotified = true;
         tournaments = false;
         bots = false;
@@ -14,6 +21,7 @@
 
     let tournaments = false;
     function notifyTournaments() {
+        logEvent("notify-tournaments-button-pressed");
         tournaments = true;
         bots = false;
         puzzlesNotified = false;
@@ -22,6 +30,7 @@
 
     let bots = false;
     function notifyBots() {
+        logEvent("notify-story-button-pressed");
         bots = true;
         tournaments = false;
         puzzlesNotified = false;
@@ -48,10 +57,14 @@
     <div class="justify-self-center flex flex-col items-center m-auto gap-6">
         <h1 class="text-5xl font-thin">Tiny Poker</h1>
         <Button
-            action={() =>
+            action={() => {
+                logEvent("play-button-pressed", {
+                    characterCardSeen,
+                });
                 characterCardSeen
                     ? route.set("BotsGame")
-                    : route.set("CharacterCard")}
+                    : route.set("CharacterCard");
+            }}
             ><i class="fa-solid fa-robot" /> Play Bots
         </Button>
         <div
@@ -120,6 +133,7 @@ transition disabled:bg-neutral-300 min-w-max col-span-3"
         <div class="flex gap-2 text-sm font-normal items-center justify-center">
             <Button
                 action={() => {
+                    logEvent("open-discord-button-pressed");
                     window.open("https://discord.gg/yR9uquvCkS", "_blank");
                 }}
                 ><span class="flex gap-2 items-center justify-center"
@@ -128,6 +142,7 @@ transition disabled:bg-neutral-300 min-w-max col-span-3"
             >
             <Button
                 action={() => {
+                    logEvent("open-email-button-pressed");
                     window.open("mailto:poker@getnada.com", "_blank");
                 }}
                 ><span class="flex gap-2 items-center justify-center"

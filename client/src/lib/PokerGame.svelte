@@ -18,6 +18,8 @@
     import type { Bot } from "./poker-logic/ai/bots";
     import { route } from "./ui-logic/navigation";
     import { botGameState, handState } from "./ui-logic/state";
+    import { onMount } from "svelte";
+    import { logEvent } from "./analytics/analytics";
 
     export let bot: Bot;
 
@@ -49,8 +51,15 @@
     $: communityCards = calculateShownCommunityCards(pokerState);
 
     function playerAction(
-        action: (seat: number, state: HandState) => HandState
+        action: (seat: number, state: HandState) => HandState,
+        actionName: string,
+        chipAmount?: number
     ) {
+        logEvent("player-action-button-pressed", {
+            actionName,
+            chipAmount,
+            pokerState,
+        });
         handState.set(action(playerSeat, pokerState));
         setTimeout(() => {
             handState.set(finishTurnForPlayer(playerSeat, pokerState));
@@ -82,6 +91,9 @@
         pokerState.seats.filter((it) => it.stack === 0).length === 1;
 
     function playAgain() {
+        logEvent("play-again-button-pressed", {
+            gameFinished,
+        });
         if (gameFinished) {
             handState.set(createInitalHandState(initialPlayers, 0));
             return;
@@ -103,6 +115,13 @@
     }
     let currentBotGameState: GameState;
     botGameState.subscribe((value) => (currentBotGameState = value));
+    onMount(() => {
+        logEvent("poker-game-page-opened", {
+            bot,
+            handState: pokerState,
+            gameState: currentBotGameState,
+        });
+    });
 </script>
 
 <div class="flex flex-col justify-around h-full bg-neutral-300">
@@ -173,7 +192,10 @@
                 <NewGameMenu {gameFinished} {playAgain} />
             {:else if raiseMenuOpen}
                 <RaiseMenu
-                    back={() => (raiseMenuOpen = false)}
+                    back={() => {
+                        logEvent("close-raise-menu-button-pressed");
+                        raiseMenuOpen = false;
+                    }}
                     {playerAction}
                     {pokerState}
                     {playerSeat}
@@ -183,7 +205,10 @@
                     {pokerState}
                     {playerAction}
                     {playerSeat}
-                    openRaiseMenu={() => (raiseMenuOpen = true)}
+                    openRaiseMenu={() => {
+                        logEvent("raise-menu-button-pressed");
+                        raiseMenuOpen = true;
+                    }}
                 />
             {/if}
         </div>

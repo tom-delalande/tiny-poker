@@ -1,6 +1,16 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     import bot1Avatar from "./../assets/bot-1-avatar.png";
     import Button from "./Button.svelte";
+    import { logEvent } from "./analytics/analytics";
+
+    onMount(() => {
+        logEvent("character-card-page-opened", {
+            botName: 'Tim "Easygoing" Thompson',
+            characterIntroSeen,
+            wonChips,
+        });
+    });
 
     export let wonChips: number;
     export let characterIntroSeen: boolean;

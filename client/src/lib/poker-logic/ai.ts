@@ -1,3 +1,4 @@
+import { logEvent } from "../analytics/analytics";
 import { cardNotation, cardScore } from "./ai/common";
 import type { Card, HandState } from "./model";
 import {
@@ -15,6 +16,11 @@ export function performEnemyActions(
   let mustRespondToRaise =
     pokerState.currentAction.minRaise > pokerState.seats[seat].currentRaise;
 
+  logEvent("ai-action-calculated", {
+    mustRespondToRaise,
+    seed,
+    round: pokerState.round,
+  });
   // If no raise is currently active, 1/2 chance to Raise / Check
   if (!mustRespondToRaise) {
     if (seed < 0.5 || pokerState.seats[seat].stack === 0) {
@@ -75,9 +81,8 @@ function performPreflopActions(
 
   const currentAction = pokerState.currentAction;
   const effectiveCurrentMinRaise = currentAction.minRaise - player.currentRaise;
-  console.debug({
-    message: "Performing pre-flop actions for AI",
-    tags: ["ai"],
+  logEvent("ai-action-calculated", {
+    round: pokerState.round,
     looseness,
     aggression,
     minRaise: actions.minRaise,

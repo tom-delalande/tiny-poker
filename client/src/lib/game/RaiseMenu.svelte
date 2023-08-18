@@ -5,7 +5,9 @@
 
     export let back: () => void;
     export let playerAction: (
-        action: (seat: number, state: HandState) => HandState
+        action: (seat: number, state: HandState) => HandState,
+        actionName: string,
+        chipAmount: number
     ) => void;
     export let pokerState: HandState;
     export let playerSeat: number;
@@ -41,7 +43,11 @@
         <Button
             action={() => {
                 back();
-                playerAction(() => playerRaise(playerSeat, pokerState, amount));
+                playerAction(
+                    () => playerRaise(playerSeat, pokerState, amount),
+                    "raise",
+                    amount
+                );
             }}
             >{amount}
             <i class="fa-solid fa-gem" />
