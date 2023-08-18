@@ -3,7 +3,7 @@ deploy_nginx() {
     if [ -n "$(lsof -t -i :9029)" ]; then
         docker exec nginx nginx -s reload
     else
-        docker-compose up --build
+        docker compose up --build
     fi
 }
 
@@ -11,6 +11,7 @@ deploy_client() {
     cd client
     npm install
     npm run build
+    cd ..
 }
 
 deploy_server() {
@@ -33,6 +34,6 @@ deploy_server() {
     cd ..
 }
 
-deploy_nginx
 deploy_client
 deploy_server
+deploy_nginx
