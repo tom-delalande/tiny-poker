@@ -3,9 +3,14 @@
     import MuteButton from "./lib/MuteButton.svelte";
     import { loadAudio } from "./lib/ui-logic/audio";
     import Router from "./lib/Router.svelte";
+    import { logEvent } from "./lib/analytics/analytics";
+    import { Capacitor } from "@capacitor/core";
 
     onMount(async () => {
         loadAudio();
+        logEvent("session-started", {
+            platform: Capacitor.getPlatform(),
+        });
 
         // fix viewport height
         // https://css-tricks.com/the-trick-to-viewport-units-on-mobile/

@@ -2,6 +2,7 @@ import { createInitalDeck } from "./deck";
 import { rateHand } from "./best-hand-calculator";
 import type { InitialPlayer, Player, HandState } from "./model";
 import { botGameState, currentBotGameState } from "../ui-logic/state";
+import { logEvent } from "../analytics/analytics";
 
 export function createInitalHandState(
   initialPlayers: InitialPlayer[],
@@ -100,6 +101,9 @@ function finishHand(pokerState: HandState): HandState {
     currentBotGameState.currentScore = newRank;
     botGameState.set(currentBotGameState);
   }
+  logEvent("hand-finished", {
+    gameFinished,
+  });
   return pokerState;
 }
 
@@ -107,6 +111,7 @@ function finishTurn(pokerState: HandState): HandState {
   console.debug({
     message: "Finishing turn.",
   });
+  logEvent("turn-finished");
   const playersIn = pokerState.seats.filter((it) => !it.out);
   if (playersIn.length === 1) {
     pokerState.winners = [pokerState.seats.findIndex((it) => !it.out)];
@@ -151,6 +156,7 @@ export function finishTurnForPlayer(
 
 function finishRound(pokerState: HandState): HandState {
   console.debug({ message: "Round finished", pokerState });
+  logEvent("round-finished");
   pokerState.currentAction = {
     seatInTurn: 0,
     minRaise: 0,

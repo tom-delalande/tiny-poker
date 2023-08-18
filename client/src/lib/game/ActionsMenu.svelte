@@ -10,7 +10,9 @@
     export let pokerState: HandState;
     export let playerSeat: number;
     export let playerAction: (
-        action: (seat: number, state: HandState) => HandState
+        action: (seat: number, state: HandState) => HandState,
+        actionName: string,
+        chipAmount?: number
     ) => void;
     export let openRaiseMenu: () => void;
 </script>
@@ -20,19 +22,25 @@
         disabled={pokerState.currentAction.seatInTurn !== playerSeat ||
             pokerState.currentAction.minRaise <=
                 pokerState.seats[playerSeat].currentRaise}
-        action={() => playerAction(playerFold)}>Fold</Button
+        action={() => playerAction(playerFold, "fold")}>Fold</Button
     >
 {:else}
     <Button
         disabled={pokerState.currentAction.seatInTurn !== playerSeat}
-        action={() => playerAction(playerCheck)}>Check</Button
+        action={() => playerAction(playerCheck, "check")}>Check</Button
     >
 {/if}
 <Button
     disabled={pokerState.currentAction.seatInTurn !== playerSeat ||
         pokerState.currentAction.minRaise <=
             pokerState.seats[playerSeat].currentRaise}
-    action={() => playerAction(playerCall)}
+    action={() =>
+        playerAction(
+            playerCall,
+            "call",
+            pokerState.currentAction.minRaise -
+                pokerState.seats[playerSeat].currentRaise
+        )}
     >Call
     {#if pokerState.currentAction.seatInTurn === playerSeat && pokerState.currentAction.minRaise > pokerState.seats[playerSeat].currentRaise}
         ({pokerState.currentAction.minRaise -

@@ -1,24 +1,25 @@
+import { logEvent } from "../analytics/analytics";
 import type { HandState } from "./model";
 
 export function playerCheck(seat: number, pokerState: HandState): HandState {
   if (isActionIsOutOfTurn(seat, pokerState)) return pokerState;
   if (pokerState.currentAction.minRaise > pokerState.seats[seat].currentRaise)
     return pokerState;
-  console.debug({
-    message: "Action performed.",
-    action: "Check",
+
+  logEvent("action-performed", {
+    action: "check",
     seat,
     pokerState,
   });
+
   pokerState.seats[seat].lastAction = "Check";
   return pokerState;
 }
 
 export function playerFold(seat: number, pokerState: HandState): HandState {
   if (isActionIsOutOfTurn(seat, pokerState)) return pokerState;
-  console.debug({
-    message: "Action performed.",
-    action: "Fold",
+  logEvent("action-performed", {
+    action: "fold",
     seat,
     pokerState,
   });
@@ -29,9 +30,8 @@ export function playerFold(seat: number, pokerState: HandState): HandState {
 
 export function playerCall(seat: number, pokerState: HandState): HandState {
   if (isActionIsOutOfTurn(seat, pokerState)) return pokerState;
-  console.debug({
-    message: "Action performed.",
-    action: "Call",
+  logEvent("action-performed", {
+    action: "call",
     seat,
     pokerState,
   });
@@ -51,12 +51,11 @@ export function playerRaise(
   raiseAmount: number
 ): HandState {
   if (isActionIsOutOfTurn(seat, pokerState)) return pokerState;
-  console.debug({
-    message: "Action performed.",
-    action: "Raise",
+  logEvent("action-performed", {
+    action: "raise",
     seat,
-    raiseAmount,
     pokerState,
+    raiseAmount,
   });
   const player = pokerState.seats[seat];
   pokerState.seats[seat].lastAction = "Raise";
