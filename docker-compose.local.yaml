@@ -1,0 +1,9 @@
+services:
+  nginx:
+    build:
+      dockerfile: nginx/nginx-local.dockerfile
+      context: .
+    container_name: nginx
+    ports:
+      - 9999:80
+    restart: always

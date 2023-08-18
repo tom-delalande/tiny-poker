@@ -1,3 +1,4 @@
 *
 !nginx/nginx.conf
+!nginx/nginx-local.conf
 !client/dist

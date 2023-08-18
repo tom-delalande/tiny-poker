@@ -17,11 +17,11 @@ func AnalyticsEndpoints(router chi.Router, db *sql.DB) chi.Router {
 			return
 		}
 		deviceId := event["deviceId"]
-		sessionId := event["sessionId"]
+		sessionId := int(event["sessionId"].(float64))
 		timestamp := event["timestamp"]
 		eventType := event["eventType"]
 
-		if deviceId == nil || timestamp == nil || eventType == nil || sessionId == nil {
+		if deviceId == nil || timestamp == nil || eventType == nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
@@ -31,15 +31,20 @@ func AnalyticsEndpoints(router chi.Router, db *sql.DB) chi.Router {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		db.Exec(`
+		_, err = db.Exec(`
 			INSERT INTO event_logs (
 				device_id,
 				session_id,
 				timestamp,
 				event_type,
 				event_data
-			) VALUES ($1, $2, $3, $4)
-		`, deviceId, timestamp, eventType, eventData)
+			) VALUES ($1, $2, $3, $4, $5)
+		`, deviceId, sessionId, timestamp, eventType, eventData)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 	})
 	return router
 }
