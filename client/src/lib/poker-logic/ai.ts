@@ -1,7 +1,6 @@
 import { logEvent } from "../analytics/analytics";
-import { cardNotation, cardScore } from "./ai/common";
 import { getStartingHandToRanking } from "./ai/starting-hand-rankings";
-import type { Card, HandState } from "./model";
+import type { HandState } from "./model";
 import {
   playerCall,
   playerCheck,
