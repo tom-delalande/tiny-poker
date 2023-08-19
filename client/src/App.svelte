@@ -7,6 +7,8 @@
     import { Capacitor } from "@capacitor/core";
 
     logEvent("session-started", {
+        width: window.innerWidth,
+        height: window.innerHeight,
         platform: Capacitor.getPlatform(),
     });
     onMount(async () => {
@@ -19,6 +21,10 @@
     });
 
     function setAppHeight() {
+        logEvent("window-size-changed", {
+            width: window.innerWidth,
+            height: window.innerHeight,
+        });
         const doc = document.documentElement;
         doc.style.setProperty("--vh", window.innerHeight * 0.01 + "px");
     }
