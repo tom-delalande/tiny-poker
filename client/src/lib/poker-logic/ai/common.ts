@@ -15,19 +15,3 @@ export const cardScore = [
   13,
 ];
 
-export const cardNotation = [
-  undefined,
-  'A',
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  'T',
-  'J',
-  'Q',
-  'K',
-];
