@@ -6,7 +6,7 @@ export async function logEvent(eventType: string, data?: any) {
   const device = await Device.getId();
   const deviceId = device.identifier;
   const sessionId = getSessionId();
-  const timestamp = moment().format();
+  const timestamp = moment().utc().format();
 
   const event = {
     deviceId,
