@@ -5,6 +5,7 @@
     import Router from "./lib/Router.svelte";
     import { logEvent } from "./lib/analytics/analytics";
     import { Capacitor } from "@capacitor/core";
+    import versionInfo from "./version-info.json";
 
     logEvent("session-started", {
         width: window.innerWidth,
@@ -13,6 +14,9 @@
     });
     onMount(async () => {
         loadAudio();
+
+        // this needs to be imported for the file to be included by Vite
+        console.debug(versionInfo);
 
         // fix viewport height
         // https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
