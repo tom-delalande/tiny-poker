@@ -12,7 +12,9 @@
 
     let puzzlesNotified = false;
     function notifyPuzzles() {
-        logEvent("notify-puzzles-button-pressed");
+        logEvent("feature-notification-preference-changed", {
+            preference: "puzzles",
+        });
         puzzlesNotified = true;
         tournaments = false;
         bots = false;
@@ -21,7 +23,9 @@
 
     let tournaments = false;
     function notifyTournaments() {
-        logEvent("notify-tournaments-button-pressed");
+        logEvent("feature-notification-preference-changed", {
+            preference: "tournaments",
+        });
         tournaments = true;
         bots = false;
         puzzlesNotified = false;
@@ -30,7 +34,9 @@
 
     let bots = false;
     function notifyBots() {
-        logEvent("notify-story-button-pressed");
+        logEvent("feature-notification-preference-changed", {
+            preference: "story",
+        });
         bots = true;
         tournaments = false;
         puzzlesNotified = false;
