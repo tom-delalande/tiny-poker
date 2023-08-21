@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"net/http"
+	"os"
 
 	"github.com/go-chi/chi"
 )
@@ -20,6 +21,7 @@ func AnalyticsEndpoints(router chi.Router, db *sql.DB) chi.Router {
 		sessionId := int(event["sessionId"].(float64))
 		timestamp := event["timestamp"]
 		eventType := event["eventType"]
+		event["serverBuildVersion"] = os.Getenv("BUILD_VERSION")
 
 		if deviceId == nil || timestamp == nil || eventType == nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)

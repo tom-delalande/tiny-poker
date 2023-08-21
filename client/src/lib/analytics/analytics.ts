@@ -1,20 +1,20 @@
 import moment from "moment";
 import wretch from "wretch";
 import { Device } from "@capacitor/device";
-import versionInfo from "../../version-info.json";
+import buildVersionData from "../../build-version.json";
 
 export async function logEvent(eventType: string, data?: any) {
   const device = await Device.getId();
   const deviceId = device.identifier;
   const sessionId = getSessionId();
   const timestamp = moment().utc().format();
-  const gitCommitHash = versionInfo.gitCommitHash;
+  const clientBuildversion = buildVersionData.buildVersion;
 
   const event = {
     deviceId,
     sessionId,
     timestamp,
-    gitCommitHash,
+    clientBuildversion,
     eventType,
     ...data,
   };

@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "version-info": "node src/version-info.js",
-    "dev": "npm run version-info && vite --host",
-    "build": "npm run version-info && npx tailwindcss -i ./src/app.css -o ./dist/output.css && vite build",
-    "preview": "npm run version-info && vite preview",
+    "update-build-version": "node src/update-build-version.js",
+    "dev": "npm run update-build-version && vite --host",
+    "build": "npm run update-build-version && npx tailwindcss -i ./src/app.css -o ./dist/output.css && vite build",
+    "preview": "npm run update-build-version && vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "test": "jest",
     "tailwind": "npx tailwindcss -i ./src/app.css -o ./dist/output.css --watch"
