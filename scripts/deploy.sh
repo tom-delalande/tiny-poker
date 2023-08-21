@@ -16,7 +16,7 @@ if [[ `git status --porcelain` ]]; then
 
     echo "Releasing new server version"
     BUILD_VERSION=$BUILD_VERSION docker rollout server
-    BUILD_VERSION=$BUILD_VERSION docker-compose up -d --no-deps --scale $service_name=1 --no-recreate $service_name
+    BUILD_VERSION=$BUILD_VERSION docker-compose up -d --no-deps --scale server=1 --no-recreate server
 else
     echo "No changes detected in git"
 fi
