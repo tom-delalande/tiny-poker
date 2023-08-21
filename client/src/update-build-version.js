@@ -9,7 +9,7 @@ const main = () => {
 		gitCommitHash
 	}
 
-	const filePath = resolve('src', 'version-info.json')
+	const filePath = resolve('src', 'build-version.json')
 	const fileContents = JSON.stringify(obj, null, 2)
 
 	writeFileSync(filePath, fileContents)
