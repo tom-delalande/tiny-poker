@@ -18,7 +18,7 @@ services:
       dockerfile: server.dockerfile
     environment:
       - PORT=9001
-      - BUILD_VERSION
+      - BUILD_VERSION=${BUILD_VERSION}
     volumes:
       - ./server/db:/db
     restart: always
@@ -27,7 +27,7 @@ services:
       context: client
       dockerfile: client.dockerfile
     environment:
-      - BUILD_VERSION
+      - BUILD_VERSION=${BUILD_VERSION}
     container_name: client
     volumes:
       - ./client/dist:/app/dist
