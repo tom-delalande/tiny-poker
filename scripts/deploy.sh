@@ -3,7 +3,9 @@
 echo "Fetching remote repository..."
 git fetch
 
-if [[ `git status --porcelain` ]]; then
+if git diff-index --quiet HEAD --; then
+    echo "No changes detected in git"
+else
     BUILD_VERSION=$(git rev-parse HEAD)
     echo "Changes detected, deploying new version: $BUILD_VERSION"
     git pull
@@ -17,6 +19,4 @@ if [[ `git status --porcelain` ]]; then
     echo "Releasing new server version"
     BUILD_VERSION=$BUILD_VERSION docker rollout server
     BUILD_VERSION=$BUILD_VERSION docker-compose up -d --no-deps --scale server=1 --no-recreate server
-else
-    echo "No changes detected in git"
 fi
