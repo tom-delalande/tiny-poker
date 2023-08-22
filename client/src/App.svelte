@@ -5,6 +5,7 @@
     import Router from "./lib/Router.svelte";
     import { logEvent } from "./lib/analytics/analytics";
     import { Capacitor } from "@capacitor/core";
+    import buildVersionData from "../../build-version.json";
 
     logEvent("session-started", {
         width: window.innerWidth,
@@ -13,6 +14,9 @@
     });
     onMount(async () => {
         loadAudio();
+        console.debug({
+            buildVersion: buildVersionData.buildVersion,
+        });
 
         // fix viewport height
         // https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
