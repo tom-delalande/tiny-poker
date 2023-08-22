@@ -3,7 +3,14 @@
 echo "Fetching remote repository..."
 git fetch
 
-if git diff-index --quiet HEAD --; then
+UPSTREAM=${1:-'@{u}'}
+LOCAL=$(git rev-parse @)
+REMOTE=$(git rev-parse "$UPSTREAM")
+BASE=$(git merge-base @ "$UPSTREAM")
+
+if [ $LOCAL = $REMOTE ]; then
+    echo "No changes detected in git"
+elif [ $LOCAL = $BASE ]; then
     BUILD_VERSION=$(git rev-parse HEAD)
     echo "Changes detected, deploying new version: $BUILD_VERSION"
     git pull
@@ -17,6 +24,9 @@ if git diff-index --quiet HEAD --; then
     echo "Releasing new server version"
     BUILD_VERSION=$BUILD_VERSION docker rollout server
     BUILD_VERSION=$BUILD_VERSION docker-compose up -d --no-deps --scale server=1 --no-recreate server
+elif [ $REMOTE = $BASE ]; then
+     echo "Local changes detected, you may need to stashing"
+     git stash
 else
-    echo "No changes detected in git"
+     echo "Git is diverged, this is unexpected."
 fi
