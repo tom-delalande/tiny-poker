@@ -12,7 +12,7 @@
 
     let puzzlesNotified = false;
     function notifyPuzzles() {
-        logEvent("feature-notification-preference-changed", {
+        logEvent("feature-vote-changed", {
             preference: "puzzles",
         });
         puzzlesNotified = true;
@@ -23,7 +23,7 @@
 
     let tournaments = false;
     function notifyTournaments() {
-        logEvent("feature-notification-preference-changed", {
+        logEvent("feature-vote-changed", {
             preference: "tournaments",
         });
         tournaments = true;
@@ -34,7 +34,7 @@
 
     let bots = false;
     function notifyBots() {
-        logEvent("feature-notification-preference-changed", {
+        logEvent("feature-vote-changed", {
             preference: "story",
         });
         bots = true;
@@ -91,7 +91,7 @@ transition disabled:bg-neutral-300 min-w-max col-span-3"
                     >{#if puzzlesNotified}
                         <i class="fa-solid fa-check" />
                     {:else}
-                        <i class="fa-solid fa-bell" />
+                        <i class="fa-solid fa-check-to-slot" />
                     {/if}
                 </button>
                 <button
@@ -106,7 +106,7 @@ transition disabled:bg-neutral-300 min-w-max col-span-3"
                     >{#if tournaments}
                         <i class="fa-solid fa-check" />
                     {:else}
-                        <i class="fa-solid fa-bell" />
+                        <i class="fa-solid fa-check-to-slot" />
                     {/if}
                 </button>
                 <button
@@ -121,14 +121,13 @@ transition disabled:bg-neutral-300 min-w-max col-span-3"
                     >{#if bots}
                         <i class="fa-solid fa-check" />
                     {:else}
-                        <i class="fa-solid fa-bell" />
+                        <i class="fa-solid fa-check-to-slot" />
                     {/if}
                 </button>
             </div>
             <p class="px-5">
-                Press <i class="fa-solid fa-bell" /> to enter the early access waitlist
-                for one feature.
-            </p>
+                Press <i class="fa-solid fa-check-to-slot" /> to vote for a
+                    feature</p>
         </div>
     </div>
     <div
