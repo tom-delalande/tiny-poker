@@ -67,9 +67,7 @@
                 logEvent("play-button-pressed", {
                     characterCardSeen,
                 });
-                characterCardSeen
-                    ? route.set("BotsGame")
-                    : route.set("CharacterCard");
+                route.set("BotSelectionScreen");
             }}
             ><i class="fa-solid fa-robot" /> Play Bots
         </Button>
@@ -126,8 +124,8 @@ transition disabled:bg-neutral-300 min-w-max col-span-3"
                 </button>
             </div>
             <p class="px-5">
-                Press <i class="fa-solid fa-check-to-slot" /> to vote for a
-                    feature</p>
+                Press <i class="fa-solid fa-check-to-slot" /> to vote for a feature
+            </p>
         </div>
     </div>
     <div

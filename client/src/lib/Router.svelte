@@ -3,11 +3,8 @@
     import MainMenu from "./MainMenu.svelte";
     import PokerGame from "./PokerGame.svelte";
     import { bot1, bots } from "./poker-logic/ai/bots";
-    import type {
-        GameState,
-        HandState,
-        HandStrength,
-    } from "./poker-logic/model";
+    import type { GameState, HandState } from "./poker-logic/model";
+    import BotSelectionScreen from "./routes/BotSelectionScreen.svelte";
     import { route, type Route } from "./ui-logic/navigation";
     import { botGameState, handState } from "./ui-logic/state";
 
@@ -55,4 +52,7 @@
             route.set("BotsGame");
         }}
     />
+{/if}
+{#if currentRoute === "BotSelectionScreen"}
+    <BotSelectionScreen />
 {/if}

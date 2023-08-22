@@ -50,7 +50,7 @@
             <i class="fa-solid fa-gem" />
         </p>
         <Button action={close}
-            >{#if characterIntroSeen} Close {:else}Let's Go{/if}</Button
+            >Let's Go</Button
         >
     </div>
 </div>

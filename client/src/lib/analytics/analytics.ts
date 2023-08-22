@@ -20,7 +20,9 @@ export async function logEvent(eventType: string, data?: any) {
   };
 
   console.debug(event);
-  wretch("/api/analytics/event").post(event);
+  try {
+    wretch("/api/analytics/event").post(event);
+  } catch (e: any) {}
 }
 
 let sessionId = undefined;
