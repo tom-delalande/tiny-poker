@@ -17,7 +17,7 @@ export const bot1: Bot = {
   aggression: 0,
   characterCard: Bot1CharacterCard,
   avatar: bot1Avatar,
-  points: 100,
+  points: 200,
 };
 
 export const bots = [bot1];

@@ -90,13 +90,16 @@ function finishHand(pokerState: HandState): HandState {
   const gameFinished =
     pokerState.seats.filter((it) => it.stack === 0).length === 1;
   if (gameFinished) {
-    let newRank = Math.max(0, -5);
+    let newRank = Math.max(0, currentBotGameState.currentScore - 20);
     if (
       pokerState.winners.filter(
         (winnerseat) => pokerState.seats[winnerseat].isCurrentPlayer
       ).length > 0
     ) {
-      newRank = currentBotGameState.currentScore + 5;
+      newRank = Math.min(
+        currentBotGameState.targetScore,
+        currentBotGameState.currentScore + 20
+      );
     }
     currentBotGameState.currentScore = newRank;
     botGameState.set(currentBotGameState);

@@ -21,13 +21,14 @@
     let wonChips = 0;
     let introSeen = false;
     let gameState: GameState;
+    let targetGems: number;
     botGameState.subscribe((state) => {
-        console.log(state);
         if (!state) return;
         gameState = state;
         bot = bots[state.currentBotIndex];
         wonChips = state.currentScore;
         introSeen = state.characterCardSeen;
+        targetGems = state.targetScore;
     });
 
     let myHandState: HandState;
@@ -46,6 +47,7 @@
 {#if currentRoute === "CharacterCard"}
     <Bot1CharacterCard
         {wonChips}
+        {targetGems}
         characterIntroSeen={introSeen}
         close={() => {
             gameState.characterCardSeen = true;

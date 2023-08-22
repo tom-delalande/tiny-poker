@@ -128,8 +128,8 @@
     <BackButton action={() => route.set("Home")} />
     <div class="flex flex-col gap-2 items-center">
         <div class="font-thin absolute top-14 left-5">
-            {currentBotGameState.currentScore}
-            <i class="fa-solid fa-diamond" />
+            {currentBotGameState.currentScore}/{currentBotGameState.targetScore}
+            <i class="fa-solid fa-gem" />
         </div>
         <div class="flex gap-2 justify-center">
             <div>
