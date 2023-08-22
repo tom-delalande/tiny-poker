@@ -33,6 +33,8 @@ func main() {
 	router.Route("/api", func(router chi.Router) {
 		router.Get("/health-check", func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusOK)
+			buildVersion := os.Getenv("BUILD_VERSION")
+			w.Write([]byte(buildVersion))
 		})
 
 		router.Route("/analytics", func(r chi.Router) {
