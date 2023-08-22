@@ -1,9 +1,15 @@
+import { logEvent } from "../../analytics/analytics";
 import { Card } from "../model";
 import { cardScore } from "./common";
 
 export function getStartingHandToRanking(cards: Card[]): number {
   const notation = convertCardToStartingHandNotation(cards[0], cards[1]);
   const handRating = 1 - startingHandRatings[notation] / 100;
+  logEvent("ai-hand-ranking-calculated", {
+    street: "Blinds",
+    cards,
+    handRating,
+  });
   return handRating;
 }
 
@@ -21,7 +27,7 @@ function convertCardToStartingHandNotation(card1: Card, card2: Card): string {
 
 const cardNotation = [
   undefined,
-  'A',
+  "A",
   2,
   3,
   4,
@@ -30,10 +36,10 @@ const cardNotation = [
   7,
   8,
   9,
-  'T',
-  'J',
-  'Q',
-  'K',
+  "T",
+  "J",
+  "Q",
+  "K",
 ];
 
 const startingHandRatings = {
