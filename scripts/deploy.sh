@@ -11,10 +11,10 @@ BASE=$(git merge-base @ "$UPSTREAM")
 if [ $LOCAL = $REMOTE ]; then
     echo "No changes detected in git"
 elif [ $LOCAL = $BASE ]; then
-    BUILD_VERSION=$(git rev-parse HEAD)
-    echo "Changes detected, deploying new version: $BUILD_VERSION"
     git pull
 
+    BUILD_VERSION=$(git rev-parse HEAD)
+    echo "Changes detected, deploying new version: $BUILD_VERSION"
     echo "Running docker build"
     BUILD_VERSION=$BUILD_VERSION docker-compose build server nginx client
 
