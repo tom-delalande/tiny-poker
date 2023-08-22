@@ -5,7 +5,7 @@
     import Router from "./lib/Router.svelte";
     import { logEvent } from "./lib/analytics/analytics";
     import { Capacitor } from "@capacitor/core";
-    import buildVersionData from "../../build-version.json";
+    import buildVersionData from "./build-version.json";
 
     logEvent("session-started", {
         width: window.innerWidth,
