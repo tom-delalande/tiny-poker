@@ -5,6 +5,7 @@ services:
       context: .
     container_name: nginx
     volumes:
+      - ./nginx/nginx.conf:/app/nginx.conf
       - ./client/dist:/app/www/
     ports:
       - 9022:80
