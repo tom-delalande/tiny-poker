@@ -1,6 +1,11 @@
 import { createInitalDeck } from "./deck";
 import { rateHand } from "./best-hand-calculator";
-import type { InitialPlayer, Player, HandState } from "./model";
+import type {
+  InitialPlayer,
+  Player,
+  HandState,
+  BotState,
+} from "./model";
 import { botGameState, currentBotGameState } from "../ui-logic/state";
 import { logEvent } from "../analytics/analytics";
 
@@ -84,25 +89,36 @@ function handlePayouts(pokerState: HandState): HandState {
   return pokerState;
 }
 
+function saveBotData(pokerState: HandState) {
+  const gameFinished =
+    pokerState.seats.filter((it) => it.stack === 0).length === 1;
+  if (!gameFinished) return;
+  const playerWon =
+    pokerState.winners.filter(
+      (winnerseat) => pokerState.seats[winnerseat].isCurrentPlayer
+    ).length > 0;
+
+  const botIds = pokerState.seats.filter((it) => it.botId != undefined);
+  if (botIds.length != 1) return;
+  const botId = botIds[0].botId;
+  const bot: BotState = currentBotGameState.bots[botIds[0].botId];
+
+  let newGems = Math.max(0, bot.currentGems - 20);
+  if (playerWon) {
+    newGems = Math.min(bot.maxGems, bot.currentGems + 20);
+  }
+  bot.currentGems = newGems;
+  currentBotGameState.bots[botId] = bot;
+  botGameState.set(currentBotGameState);
+}
+
 function finishHand(pokerState: HandState): HandState {
   pokerState = handlePayouts(pokerState);
   pokerState.finished = true;
   const gameFinished =
     pokerState.seats.filter((it) => it.stack === 0).length === 1;
   if (gameFinished) {
-    let newRank = Math.max(0, currentBotGameState.currentScore - 20);
-    if (
-      pokerState.winners.filter(
-        (winnerseat) => pokerState.seats[winnerseat].isCurrentPlayer
-      ).length > 0
-    ) {
-      newRank = Math.min(
-        currentBotGameState.targetScore,
-        currentBotGameState.currentScore + 20
-      );
-    }
-    currentBotGameState.currentScore = newRank;
-    botGameState.set(currentBotGameState);
+    saveBotData(pokerState);
   }
   logEvent("hand-finished", {
     gameFinished,

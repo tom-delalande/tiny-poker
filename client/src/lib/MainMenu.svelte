@@ -4,7 +4,6 @@
     import { route } from "./ui-logic/navigation";
     import { logEvent } from "./analytics/analytics";
     import { onMount } from "svelte";
-    export let characterCardSeen = false;
 
     onMount(() => {
         logEvent("main-menu-page-opened");
@@ -64,10 +63,7 @@
         <h1 class="text-5xl font-thin">Tiny Poker</h1>
         <Button
             action={() => {
-                logEvent("play-button-pressed", {
-                    characterCardSeen,
-                });
-                route.set("BotSelectionScreen");
+                route.set({ route: "BotSelectionScreen" });
             }}
             ><i class="fa-solid fa-robot" /> Play Bots
         </Button>

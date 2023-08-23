@@ -13,15 +13,18 @@
         finishTurnForPlayer,
         prepareNextHand,
     } from "./poker-logic/hand";
-    import type { GameState, HandState } from "./poker-logic/model";
+    import type {
+        BotInformation,
+        BotState,
+        HandState,
+    } from "./poker-logic/model";
     import { calculateShownCommunityCards } from "./poker-logic/utility";
-    import type { Bot } from "./poker-logic/ai/bots";
     import { route } from "./ui-logic/navigation";
     import { botGameState, handState } from "./ui-logic/state";
     import { onMount } from "svelte";
     import { logEvent } from "./analytics/analytics";
 
-    export let bot: Bot;
+    export let bot: BotInformation;
 
     const initialPlayers = [
         {
@@ -35,7 +38,6 @@
     ];
     export let pokerState: HandState;
     handState.subscribe((state) => {
-        console.log(state);
         pokerState = state;
     });
     if (pokerState === undefined || pokerState === null) {
@@ -113,8 +115,12 @@
             }, 500);
         }, 500);
     }
-    let currentBotGameState: GameState;
-    botGameState.subscribe((value) => (currentBotGameState = value));
+    let currentBotGameState: BotState;
+    botGameState.subscribe((value) => {
+        if (pokerState.seats.length == 2) {
+            currentBotGameState = value.bots[bot.id];
+        }
+    });
     onMount(() => {
         logEvent("poker-game-page-opened", {
             bot,
@@ -125,16 +131,23 @@
 </script>
 
 <div class="flex flex-col justify-around h-full bg-neutral-300">
-    <BackButton action={() => route.set("Home")} />
+    <BackButton action={() => route.set({ route: "Home" })} />
     <div class="flex flex-col gap-2 items-center">
         <div class="font-thin absolute top-14 left-5">
-            {currentBotGameState.currentScore}/{currentBotGameState.targetScore}
+            {currentBotGameState.currentGems}/{currentBotGameState.maxGems}
             <i class="fa-solid fa-gem" />
         </div>
         <div class="flex gap-2 justify-center">
             <div>
                 <Avatar
-                    openCharacterCard={() => route.set("CharacterCard")}
+                    openCharacterCard={() =>
+                        route.set({
+                            route: "CharacterCard",
+                            props: {
+                                botInfo: bot,
+                                backEnabled: false,
+                            },
+                        })}
                     image={bot.avatar}
                     name={bot.name}
                 />

@@ -1,31 +1,18 @@
 <script lang="ts">
-    import Bot1CharacterCard from "./Bot1CharacterCard.svelte";
+    import CharacterCard from "./CharacterCard.svelte";
     import MainMenu from "./MainMenu.svelte";
     import PokerGame from "./PokerGame.svelte";
-    import { bot1, bots } from "./poker-logic/ai/bots";
-    import type { GameState, HandState } from "./poker-logic/model";
+    import type { HandState } from "./poker-logic/model";
     import BotSelectionScreen from "./routes/BotSelectionScreen.svelte";
     import { route, type Route } from "./ui-logic/navigation";
-    import { botGameState, handState } from "./ui-logic/state";
+    import { handState } from "./ui-logic/state";
 
     let currentRoute: Route;
+    let currentProps: any;
     route.subscribe((route) => {
         console.log(route);
-        currentRoute = route;
-    });
-
-    let bot = bot1;
-    let wonChips = 0;
-    let introSeen = false;
-    let gameState: GameState;
-    let targetGems: number;
-    botGameState.subscribe((state) => {
-        if (!state) return;
-        gameState = state;
-        bot = bots[state.currentBotIndex];
-        wonChips = state.currentScore;
-        introSeen = state.characterCardSeen;
-        targetGems = state.targetScore;
+        currentRoute = route.route;
+        currentProps = route.props;
     });
 
     let myHandState: HandState;
@@ -36,23 +23,14 @@
 </script>
 
 {#if currentRoute === "Home"}
-    <MainMenu characterCardSeen={introSeen} />
+    <MainMenu {...currentProps} />
 {/if}
 {#if currentRoute === "BotsGame"}
-    <PokerGame {bot} pokerState={myHandState} />
+    <PokerGame pokerState={myHandState} {...currentProps} />
 {/if}
 {#if currentRoute === "CharacterCard"}
-    <Bot1CharacterCard
-        {wonChips}
-        {targetGems}
-        characterIntroSeen={introSeen}
-        close={() => {
-            gameState.characterCardSeen = true;
-            botGameState.set(gameState);
-            route.set("BotsGame");
-        }}
-    />
+    <CharacterCard {...currentProps} />
 {/if}
 {#if currentRoute === "BotSelectionScreen"}
-    <BotSelectionScreen />
+    <BotSelectionScreen {...currentProps} />
 {/if}

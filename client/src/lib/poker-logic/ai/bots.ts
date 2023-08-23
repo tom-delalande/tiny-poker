@@ -1,23 +1,19 @@
-import type { SvelteComponent } from "svelte";
+import { BotInformation } from "../model";
 import bot1Avatar from "../../../assets/bot-1-avatar.png";
-import Bot1CharacterCard from "../../Bot1CharacterCard.svelte";
 
-export interface Bot {
-  name: string;
-  looseness: number;
-  aggression: number;
-  characterCard: typeof SvelteComponent;
-  avatar: string;
-  points: number;
-}
-
-export const bot1: Bot = {
+export const bot1: BotInformation = {
+  id: "tim",
   name: 'Tim "Easygoing" Thompson',
+  description:
+    "Tim's play-style is loose and passive. He rarely folds and prefers to call and check rather than raise. He enjoys seeing flops and relies on luck rather than aggressive tactics.",
+  tips: [
+    "Play strong starting hands against Tim's wide range.",
+    "Bet confidently with strong hands for maximum value.",
+  ],
   looseness: 1,
   aggression: 0,
-  characterCard: Bot1CharacterCard,
+  maxGems: 200,
   avatar: bot1Avatar,
-  points: 200,
 };
 
 export const bots = [bot1];

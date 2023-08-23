@@ -23,6 +23,7 @@ export interface Player {
     | "Big Blind";
   currentRaise: number;
   handStrength?: HandStrength;
+  botId?: string;
 }
 
 export interface CurrentAction {
@@ -32,6 +33,7 @@ export interface CurrentAction {
 }
 
 export interface HandState {
+  version: number; // Protocol version to check for breaking changes
   seats: Player[];
   currentAction: CurrentAction;
   round: "Blinds" | "Flop" | "Turn" | "River";
@@ -58,17 +60,29 @@ export interface HandRating {
   handStrength: HandStrength;
 }
 
-export interface GameState {
-  currentBotIndex: number;
-  currentScore: number;
-  targetScore: number;
-  characterCardSeen: boolean;
+export interface Bots {
+  tim: BotState;
 }
 
-export interface EnemyInformation {
+export interface GameState {
+  version: number; // Protocol version to check for breaking changes
+  bots: Bots;
+}
+
+export interface BotState {
+  botId: string;
+  unlocked: boolean;
+  currentGems: number;
+  maxGems: number;
+}
+
+export interface BotInformation {
+  id: string;
   name: string;
+  description: string;
+  tips: string[];
   looseness: number;
   aggression: number;
-  currentChips: number;
-  totalChips: number;
+  maxGems: number;
+  avatar: string;
 }
