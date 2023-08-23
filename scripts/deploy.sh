@@ -20,6 +20,7 @@ elif [ $LOCAL = $BASE ]; then
 
     echo "$(date --utc +%FT%TZ): Running client container"
     BUILD_VERSION=$BUILD_VERSION docker-compose run client
+    docker-compose rm -f
 
     echo "$(date --utc +%FT%TZ): Releasing new server version"
     BUILD_VERSION=$BUILD_VERSION docker rollout server
