@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  @font-face {
+    font-family: "gandia";
+    src: local("gandia") url("/fonts/GandiaBold.otf") format("otf");
+    font-weight: normal;
+    font-display: swap;
+  }
+}
+
 body {
   height: calc(
     100vh - env(safe-area-inset-top, 0) - env(safe-area-inset-bottom, 0)
@@ -10,6 +19,7 @@ body {
     calc(var(--vh, 1vh) * 100) - env(safe-area-inset-top, 0) -
       env(safe-area-inset-bottom, 0)
   );
+  font-family: "gandia";
 }
 
 html {
