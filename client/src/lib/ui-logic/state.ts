@@ -13,7 +13,7 @@ botGameState.subscribe((it) => {
 Preferences.get({ key: "gameState" }).then((result) => {
   if (result.value) {
     const state: GameState = JSON.parse(result.value);
-    if (state.version === 2) {
+    if (state.version === 4) {
       return botGameState.set(state);
     }
   }
@@ -30,7 +30,7 @@ Preferences.get({ key: "gameState" }).then((result) => {
     maxGems: bots[0].maxGems,
   };
   botGameState.set({
-    version: 2,
+    version: 4,
     bots: {
       tim: initialtTim,
       emma: initialtEmma,
@@ -40,7 +40,10 @@ Preferences.get({ key: "gameState" }).then((result) => {
 
 Preferences.get({ key: "handState" }).then((result) => {
   if (result.value !== undefined) {
-    handState.set(JSON.parse(result.value));
+    const state: HandState = JSON.parse(result.value);
+    if (state.version === 4) {
+      handState.set(JSON.parse(result.value));
+    }
   }
 });
 

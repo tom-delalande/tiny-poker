@@ -34,7 +34,7 @@ export interface CurrentAction {
 }
 
 export interface HandState {
-  version: number; // Protocol version to check for breaking changes
+  version: 4; // Protocol version to check for breaking changes
   seats: Player[];
   currentAction: CurrentAction;
   round: "Blinds" | "Flop" | "Turn" | "River";
@@ -67,7 +67,7 @@ export interface Bots {
 }
 
 export interface GameState {
-  version: number; // Protocol version to check for breaking changes
+  version: 4; // Protocol version to check for breaking changes
   bots: Bots;
 }
 
