@@ -15,13 +15,14 @@
         chipAmount?: number
     ) => void;
     export let openRaiseMenu: () => void;
+
+    const player = pokerState.seats[playerSeat];
 </script>
 
 {#if pokerState.currentAction.minRaise > pokerState.seats[playerSeat].currentRaise}
     <Button
         disabled={pokerState.currentAction.seatInTurn !== playerSeat ||
-            pokerState.currentAction.minRaise <=
-                pokerState.seats[playerSeat].currentRaise}
+            pokerState.currentAction.minRaise <= player.currentRaise}
         action={() => playerAction(playerFold, "fold")}>Fold</Button
     >
 {:else}
@@ -32,23 +33,22 @@
 {/if}
 <Button
     disabled={pokerState.currentAction.seatInTurn !== playerSeat ||
-        pokerState.currentAction.minRaise <=
-            pokerState.seats[playerSeat].currentRaise}
+        pokerState.currentAction.minRaise <= player.currentRaise}
     action={() =>
         playerAction(
             playerCall,
             "call",
-            pokerState.currentAction.minRaise -
-                pokerState.seats[playerSeat].currentRaise
+            pokerState.currentAction.minRaise - player.currentRaise
         )}
     >Call
-    {#if pokerState.currentAction.seatInTurn === playerSeat && pokerState.currentAction.minRaise > pokerState.seats[playerSeat].currentRaise}
-        ({pokerState.currentAction.minRaise -
-            pokerState.seats[playerSeat].currentRaise}
+    {#if pokerState.currentAction.seatInTurn === playerSeat && pokerState.currentAction.minRaise > player.currentRaise}
+        ({pokerState.currentAction.minRaise - player.currentRaise}
         <i class="fa-solid fa-gem" />)
     {/if}
 </Button>
 <Button
-    disabled={pokerState.currentAction.seatInTurn !== playerSeat}
+    disabled={pokerState.currentAction.seatInTurn !== playerSeat ||
+        pokerState.currentAction.minRaise > player.stack ||
+        player.stack === 0}
     action={openRaiseMenu}>Raise</Button
 >
