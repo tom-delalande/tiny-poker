@@ -8,12 +8,12 @@ import {
 import { Card, HandStrength } from "../model";
 
 export function rankPostFlopHand(
-  street: "Flop" | "River" | "Turn",
+  street: "Flop" | "Turn" | "River",
   cards: Card[],
   looseness: number,
   visibleCards: number
 ): number {
-  if ((street = "Turn")) {
+  if ((street = "River")) {
     return rateHand(cards).score;
   }
   const cardScore = [undefined, 14, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
@@ -106,7 +106,7 @@ interface HandScore {
   cards: number[];
 }
 
-type Street = "Flop" | "River" | "Turn";
+type Street = "Flop" | "Turn" | "River";
 
 function calculateAlmostHandScore(
   handStrength: string,
@@ -124,7 +124,7 @@ function calculateAlmostHandScore(
   if (street === "Flop") {
     probability *= 2;
   }
-  if (street === "Turn") {
+  if (street === "River") {
     probability *= 0;
   }
 

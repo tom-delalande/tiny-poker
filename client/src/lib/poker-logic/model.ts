@@ -34,7 +34,7 @@ export interface CurrentAction {
 export interface HandState {
   seats: Player[];
   currentAction: CurrentAction;
-  round: "Blinds" | "Flop" | "River" | "Turn";
+  round: "Blinds" | "Flop" | "Turn" | "River";
   communityCards: Card[];
   pot: number;
   deck: Card[];

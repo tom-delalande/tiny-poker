@@ -19,7 +19,7 @@ export function calculateShownCommunityCards(pokerState: HandState): Card[] {
     return communityCards;
 
   communityCards[3] = pokerState.communityCards[3];
-  if (pokerState.round === "River" && !pokerState.finished)
+  if (pokerState.round === "Turn" && !pokerState.finished)
     return communityCards;
 
   communityCards[4] = pokerState.communityCards[4];

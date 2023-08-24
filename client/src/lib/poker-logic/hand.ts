@@ -181,15 +181,15 @@ function finishRound(pokerState: HandState): HandState {
     pokerState.round = "Flop";
   }
   if (round === "Flop") {
-    pokerState.round = "River";
-  }
-  if (round === "River") {
     pokerState.round = "Turn";
+  }
+  if (round === "Turn") {
+    pokerState.round = "River";
   }
   const everyoneAllIn = pokerState.seats.every(
     (seat) => seat.out || seat.stack == 0
   );
-  if (round === "Turn" || everyoneAllIn) {
+  if (round === "River" || everyoneAllIn) {
     pokerState.seats = pokerState.seats.map((seat) => {
       seat.handStrength = rateHand([
         ...seat.cards,
