@@ -31,6 +31,11 @@ html {
   touch-action: manipulation;
 }
 
+* {
+  /* WebKit zooms in when you double tap */
+  touch-action: manipulation;
+}
+
 .app-container,
 #app {
   margin-top: env(safe-area-inset-top, 0);
