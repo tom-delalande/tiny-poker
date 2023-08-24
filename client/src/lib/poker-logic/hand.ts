@@ -12,6 +12,10 @@ export function createInitalHandState(
   const smallBlind = 1;
   const bigBlind = 2;
   const deck = createInitalDeck();
+  console.log({
+    message: "Creating hand with initial players",
+    initialPlayers,
+  });
   const seats = initialPlayers.map((player, index): Player => {
     let stack = player.stack;
     let lastAction: "None" | "Big Blind" | "Small Blind" = "None";
@@ -33,6 +37,7 @@ export function createInitalHandState(
       out: false,
       lastAction: lastAction,
       currentRaise: currentRaise,
+      botId: player.botId,
     };
   });
   const communityCards = [
@@ -43,6 +48,7 @@ export function createInitalHandState(
     deck.pop(),
   ];
   return {
+    version: 1,
     seats: seats,
     round: "Blinds",
     currentAction: {
@@ -87,7 +93,7 @@ function handlePayouts(pokerState: HandState): HandState {
 
 function saveBotData(pokerState: HandState) {
   const gameFinished =
-    pokerState.seats.filter((it) => it.stack === 0).length === 1;
+    pokerState.seats.filter((it) => it.stack !== 0).length === 1;
   if (!gameFinished) return;
   const playerWon =
     pokerState.winners.filter(
@@ -95,6 +101,7 @@ function saveBotData(pokerState: HandState) {
     ).length > 0;
 
   const botIds = pokerState.seats.filter((it) => it.botId != undefined);
+  console.log({ message: "getting bot ids", botIds });
   if (botIds.length != 1) return;
   const botId = botIds[0].botId;
   const bot: BotState = currentBotGameState.bots[botIds[0].botId];
@@ -120,7 +127,7 @@ function finishHand(pokerState: HandState): HandState {
   pokerState = handlePayouts(pokerState);
   pokerState.finished = true;
   const gameFinished =
-    pokerState.seats.filter((it) => it.stack === 0).length === 1;
+    pokerState.seats.filter((it) => it.stack !== 0).length === 1;
   if (gameFinished) {
     saveBotData(pokerState);
   }
@@ -193,6 +200,7 @@ function finishRound(pokerState: HandState): HandState {
       isCurrentPlayer: seat.isCurrentPlayer,
       lastAction: "None",
       currentRaise: 0,
+      botId: seat.botId,
     };
   });
 

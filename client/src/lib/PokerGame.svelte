@@ -34,6 +34,7 @@
         {
             isCurrentPlayer: false,
             stack: 20,
+            botId: bot.id,
         },
     ];
     export let pokerState: HandState;

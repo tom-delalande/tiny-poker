@@ -13,7 +13,7 @@ botGameState.subscribe((it) => {
 Preferences.get({ key: "gameState" }).then((result) => {
   if (result.value) {
     const state: GameState = JSON.parse(result.value);
-    if (state.version === 1) {
+    if (state.version === 2) {
       return botGameState.set(state);
     }
   }
@@ -23,10 +23,17 @@ Preferences.get({ key: "gameState" }).then((result) => {
     currentGems: 0,
     maxGems: bots[0].maxGems,
   };
+  const initialtEmma: BotSate = {
+    botId: bots[0].id,
+    unlocked: false,
+    currentGems: 0,
+    maxGems: bots[0].maxGems,
+  };
   botGameState.set({
-    version: 1,
+    version: 2,
     bots: {
       tim: initialtTim,
+      emma: initialtEmma,
     },
   });
 });

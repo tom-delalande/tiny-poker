@@ -1,5 +1,6 @@
 export interface InitialPlayer {
   isCurrentPlayer: boolean;
+  botId?: string;
   stack: number;
 }
 
@@ -62,6 +63,7 @@ export interface HandRating {
 
 export interface Bots {
   tim: BotState;
+  emma: BotState;
 }
 
 export interface GameState {
