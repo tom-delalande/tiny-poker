@@ -5,7 +5,7 @@
 @layer base {
   @font-face {
     font-family: "gandia";
-    src: local("gandia") url("/fonts/GandiaBold.otf") format("otf");
+    src: url("/fonts/GandiaBold.otf") format("opentype");
     font-weight: normal;
     font-display: swap;
   }
