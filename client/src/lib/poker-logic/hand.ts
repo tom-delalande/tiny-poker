@@ -1,13 +1,9 @@
 import { createInitalDeck } from "./deck";
 import { rateHand } from "./best-hand-calculator";
-import type {
-  InitialPlayer,
-  Player,
-  HandState,
-  BotState,
-} from "./model";
+import type { InitialPlayer, Player, HandState, BotState } from "./model";
 import { botGameState, currentBotGameState } from "../ui-logic/state";
 import { logEvent } from "../analytics/analytics";
+import { botCompleted } from "./ai/bots";
 
 export function createInitalHandState(
   initialPlayers: InitialPlayer[],
@@ -105,9 +101,17 @@ function saveBotData(pokerState: HandState) {
 
   let newGems = Math.max(0, bot.currentGems - 20);
   if (playerWon) {
-    newGems = Math.min(bot.maxGems, bot.currentGems + 20);
+    newGems = bot.currentGems + 20;
   }
-  bot.currentGems = newGems;
+
+  if (bot.currentGems < bot.maxGems && newGems >= bot.maxGems) {
+    botCompleted(bot.botId);
+  }
+
+  // dont let a player drop below if they've already beaten the bot
+  if (bot.currentGems < bot.maxGems) {
+    bot.currentGems = newGems;
+  }
   currentBotGameState.bots[botId] = bot;
   botGameState.set(currentBotGameState);
 }

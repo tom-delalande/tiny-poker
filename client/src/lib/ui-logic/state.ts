@@ -5,6 +5,10 @@ import { bots } from "../poker-logic/ai/bots";
 
 export const handState = writable<HandState>();
 export const botGameState = writable<GameState>();
+export let gameStateRead: GameState;
+botGameState.subscribe((it) => {
+  gameStateRead = it;
+});
 
 Preferences.get({ key: "gameState" }).then((result) => {
   if (result.value) {
