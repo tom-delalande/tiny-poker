@@ -1,7 +1,25 @@
-<script>
+<script lang="ts">
     import BackButton from "../BackButton.svelte";
     import { bots } from "../poker-logic/ai/bots";
     import { router } from "../ui-logic/navigation";
+    import type { BotInformation } from "../poker-logic/model";
+    import { localHands } from "../ui-logic/state";
+
+    function selectBot(bot: BotInformation) {
+        const hand = $localHands?.hands[bot.id];
+        if (hand !== undefined) {
+            router.set({
+                route: "BotsGame",
+                bot,
+                startingStack: -1,
+            });
+        } else {
+            router.set({
+                route: "CharacterCard",
+                bot,
+            });
+        }
+    }
 </script>
 
 <BackButton action={() => router.set({ route: "Home" })} />
@@ -14,12 +32,7 @@
             <button
                 class="flex flex-col items-center justify-center bg-neutral-200
                 p-2 rounded-md h-full w-full"
-                on:click={() => {
-                    router.set({
-                        route: "CharacterCard",
-                        bot,
-                    });
-                }}
+                on:click={() => selectBot(bot)}
             >
                 <img class="w-24 h-24" src={bot.avatar} alt={bot.name} />
                 <p>{bot.name}</p>

@@ -68,7 +68,7 @@
         setTimeout(() => {
             updateHandForBot(
                 bot.id,
-                finishTurnForPlayer(playerSeat, pokerState)
+                finishTurnForPlayer(playerSeat, pokerState, bot.id)
             );
             setTimeout(() => {
                 if (
@@ -87,7 +87,11 @@
                     setTimeout(() => {
                         updateHandForBot(
                             bot.id,
-                            finishTurnForPlayer(opponentSeat, pokerState)
+                            finishTurnForPlayer(
+                                opponentSeat,
+                                pokerState,
+                                bot.id
+                            )
                         );
                     }, 500);
                 }
@@ -104,7 +108,6 @@
             gameFinished,
         });
         if (gameFinished) {
-            updateHandForBot(bot.id, createInitalHandState(initialPlayers, 0));
             return;
         }
         updateHandForBot(bot.id, prepareNextHand(pokerState));
@@ -121,7 +124,7 @@
             setTimeout(() => {
                 updateHandForBot(
                     bot.id,
-                    finishTurnForPlayer(opponentSeat, pokerState)
+                    finishTurnForPlayer(opponentSeat, pokerState, bot.id)
                 );
             }, 500);
         }, 500);
@@ -206,7 +209,7 @@
         </div>
         <div class="flex gap-2 justify-center">
             {#if pokerState.finished}
-                <NewGameMenu {gameFinished} {playAgain} />
+                <NewGameMenu {gameFinished} nextHand={playAgain} {bot} />
             {:else if raiseMenuOpen}
                 <RaiseMenu
                     back={() => {

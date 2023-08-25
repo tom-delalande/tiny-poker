@@ -1,9 +1,8 @@
 import { writable } from "svelte/store";
-import type { BotSate, GameState, HandState } from "../poker-logic/model";
+import type { GameState, HandState } from "../poker-logic/model";
 import { Preferences } from "@capacitor/preferences";
 
 export const gameState = writable<GameState>();
-
 export const localHands = writable<LocalHands>();
 
 type LocalHands = {
@@ -34,7 +33,7 @@ export async function updateHandForBot(botId: string, hand: HandState) {
 Preferences.get({ key: "game-state" }).then((result) => {
   if (result.value) {
     const state: GameState = JSON.parse(result.value);
-    if (state.version === 5) {
+    if (state && state.version === 5) {
       return gameState.set(state);
     }
   }
@@ -48,7 +47,7 @@ Preferences.get({ key: "game-state" }).then((result) => {
 Preferences.get({ key: "local-hands" }).then((result) => {
   if (result.value !== undefined) {
     const state: LocalHands = JSON.parse(result.value);
-    if (state.version === 1) {
+    if (state && state.version === 1) {
       localHands.set(JSON.parse(result.value));
     } else {
       return {

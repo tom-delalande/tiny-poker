@@ -1,7 +1,7 @@
 import { createInitalDeck } from "./deck";
 import { rateHand } from "./best-hand-calculator";
-import type { InitialPlayer, Player, HandState, BotState } from "./model";
-import { gameState, currentBotGameState } from "../ui-logic/state";
+import type { InitialPlayer, Player, HandState } from "./model";
+import { gameState, localHands } from "../ui-logic/state";
 import { logEvent } from "../analytics/analytics";
 
 export function createInitalHandState(
@@ -47,7 +47,7 @@ export function createInitalHandState(
     deck.pop(),
   ];
   return {
-    version: 1,
+    version: 4,
     seats: seats,
     round: "Blinds",
     currentAction: {
@@ -90,25 +90,31 @@ function handlePayouts(pokerState: HandState): HandState {
   return pokerState;
 }
 
-function updateGameData(pokerState: HandState) {
+function updateGameData(pokerState: HandState, botId: string) {
   const gameFinished =
     pokerState.seats.filter((it) => it.stack !== 0).length === 1;
   if (!gameFinished) return;
   const player = pokerState.seats.filter((it) => it.isCurrentPlayer)[0];
   if (player) {
     const chips = player.stack;
-    currentBotGameState.chips += chips;
-    gameState.set(currentBotGameState);
+    gameState.update((prev) => {
+      prev.chips += chips;
+      return prev;
+    });
+    localHands.update((prev) => {
+      prev.hands[botId] = undefined;
+      return prev;
+    });
   }
 }
 
-function finishHand(pokerState: HandState): HandState {
+function finishHand(pokerState: HandState, botId: string): HandState {
   pokerState = handlePayouts(pokerState);
   pokerState.finished = true;
   const gameFinished =
     pokerState.seats.filter((it) => it.stack !== 0).length === 1;
   if (gameFinished) {
-    updateGameData(pokerState);
+    updateGameData(pokerState, botId);
   }
   logEvent("hand-finished", {
     gameFinished,
@@ -116,7 +122,7 @@ function finishHand(pokerState: HandState): HandState {
   return pokerState;
 }
 
-function finishTurn(pokerState: HandState): HandState {
+function finishTurn(pokerState: HandState, botId: string): HandState {
   console.debug({
     message: "Finishing turn.",
   });
@@ -124,7 +130,7 @@ function finishTurn(pokerState: HandState): HandState {
   const playersIn = pokerState.seats.filter((it) => !it.out);
   if (playersIn.length === 1) {
     pokerState.winners = [pokerState.seats.findIndex((it) => !it.out)];
-    return finishHand(pokerState);
+    return finishHand(pokerState, botId);
   }
 
   let seatInTurn = pokerState.currentAction.seatInTurn;
@@ -133,7 +139,7 @@ function finishTurn(pokerState: HandState): HandState {
     seatInTurn = (seatInTurn + 1) % pokerState.seats.length;
   }
   if (seatInTurn === pokerState.currentAction.lastSeatToRaise) {
-    pokerState = finishRound(pokerState);
+    pokerState = finishRound(pokerState, botId);
   } else if (pokerState.currentAction.lastSeatToRaise === -1) {
     console.debug({
       message: "Updating last seat to raise",
@@ -150,7 +156,8 @@ function finishTurn(pokerState: HandState): HandState {
 
 export function finishTurnForPlayer(
   seat: number,
-  pokerState: HandState
+  pokerState: HandState,
+  botId: string
 ): HandState {
   if (pokerState.currentAction.seatInTurn !== seat) {
     console.debug({
@@ -160,10 +167,10 @@ export function finishTurnForPlayer(
     });
     return pokerState;
   }
-  return finishTurn(pokerState);
+  return finishTurn(pokerState, botId);
 }
 
-function finishRound(pokerState: HandState): HandState {
+function finishRound(pokerState: HandState, botId: string): HandState {
   console.debug({ message: "Round finished", pokerState });
   logEvent("round-finished");
   pokerState.currentAction = {
@@ -205,7 +212,7 @@ function finishRound(pokerState: HandState): HandState {
       return seat;
     });
     pokerState.winners = calculateWinners(pokerState);
-    return finishHand(pokerState);
+    return finishHand(pokerState, botId);
   }
   return pokerState;
 }
