@@ -1,16 +1,32 @@
 import { writable } from "svelte/store";
+import { BotInformation } from "../poker-logic/model";
 
-export type Route =
-  | "Home"
-  | "BotsGame"
-  | "CharacterCard"
-  | "BotSelectionScreen";
+export type Page =
+  | HomePage
+  | BotsGamePage
+  | CharacterCardPage
+  | BotSelectionScreenPage;
 
-export interface RouteWithProps {
-  route: Route;
-  props?: any;
+export interface HomePage {
+  route: "Home";
 }
 
-export const route = writable<RouteWithProps>({
+export interface BotsGamePage {
+  route: "BotsGame";
+  bot: BotInformation;
+  startingStack: number;
+}
+
+export interface CharacterCardPage {
+  route: "CharacterCard";
+  bot: BotInformation;
+  backEnabled?: boolean;
+}
+
+export interface BotSelectionScreenPage {
+  route: "BotSelectionScreen";
+}
+
+export const router = writable<Page>({
   route: "Home",
 });

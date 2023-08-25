@@ -2,35 +2,19 @@
     import CharacterCard from "./CharacterCard.svelte";
     import MainMenu from "./MainMenu.svelte";
     import PokerGame from "./PokerGame.svelte";
-    import type { HandState } from "./poker-logic/model";
     import BotSelectionScreen from "./routes/BotSelectionScreen.svelte";
-    import { route, type Route } from "./ui-logic/navigation";
-    import { handState } from "./ui-logic/state";
-
-    let currentRoute: Route;
-    let currentProps: any;
-    route.subscribe((route) => {
-        console.log(route);
-        currentRoute = route.route;
-        currentProps = route.props;
-    });
-
-    let myHandState: HandState;
-    handState.subscribe((state) => {
-        if (!state) return;
-        myHandState = state;
-    });
+    import { router, type Page } from "./ui-logic/navigation";
 </script>
 
-{#if currentRoute === "Home"}
-    <MainMenu {...currentProps} />
+{#if $router.route === "Home"}
+    <MainMenu />
 {/if}
-{#if currentRoute === "BotsGame"}
-    <PokerGame pokerState={myHandState} {...currentProps} />
+{#if $router.route === "BotsGame"}
+    <PokerGame bot={$router.bot} startingStack={$router.startingStack} />
 {/if}
-{#if currentRoute === "CharacterCard"}
-    <CharacterCard {...currentProps} />
+{#if $router.route === "CharacterCard"}
+    <CharacterCard botInfo={$router.bot} backEnabled={$router.backEnabled} />
 {/if}
-{#if currentRoute === "BotSelectionScreen"}
-    <BotSelectionScreen {...currentProps} />
+{#if $router.route === "BotSelectionScreen"}
+    <BotSelectionScreen />
 {/if}

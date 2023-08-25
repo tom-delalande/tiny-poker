@@ -1,7 +1,7 @@
 <script lang="ts">
     import { Preferences } from "@capacitor/preferences";
     import Button from "./Button.svelte";
-    import { route } from "./ui-logic/navigation";
+    import { router } from "./ui-logic/navigation";
     import { logEvent } from "./analytics/analytics";
     import { onMount } from "svelte";
 
@@ -63,7 +63,7 @@
         <h1 class="text-5xl font-thin">Tiny Poker</h1>
         <Button
             action={() => {
-                route.set({ route: "BotSelectionScreen" });
+                router.set({ route: "BotSelectionScreen" });
             }}
             ><i class="fa-solid fa-robot" /> Play Bots
         </Button>

@@ -1,9 +1,8 @@
 import { createInitalDeck } from "./deck";
 import { rateHand } from "./best-hand-calculator";
 import type { InitialPlayer, Player, HandState, BotState } from "./model";
-import { botGameState, currentBotGameState } from "../ui-logic/state";
+import { gameState, currentBotGameState } from "../ui-logic/state";
 import { logEvent } from "../analytics/analytics";
-import { botCompleted } from "./ai/bots";
 
 export function createInitalHandState(
   initialPlayers: InitialPlayer[],
@@ -91,36 +90,16 @@ function handlePayouts(pokerState: HandState): HandState {
   return pokerState;
 }
 
-function saveBotData(pokerState: HandState) {
+function updateGameData(pokerState: HandState) {
   const gameFinished =
     pokerState.seats.filter((it) => it.stack !== 0).length === 1;
   if (!gameFinished) return;
-  const playerWon =
-    pokerState.winners.filter(
-      (winnerseat) => pokerState.seats[winnerseat].isCurrentPlayer
-    ).length > 0;
-
-  const botIds = pokerState.seats.filter((it) => it.botId != undefined);
-  console.log({ message: "getting bot ids", botIds });
-  if (botIds.length != 1) return;
-  const botId = botIds[0].botId;
-  const bot: BotState = currentBotGameState.bots[botIds[0].botId];
-
-  let newGems = Math.max(0, bot.currentGems - 20);
-  if (playerWon) {
-    newGems = bot.currentGems + 20;
+  const player = pokerState.seats.filter((it) => it.isCurrentPlayer)[0];
+  if (player) {
+    const chips = player.stack;
+    currentBotGameState.chips += chips;
+    gameState.set(currentBotGameState);
   }
-
-  if (bot.currentGems < bot.maxGems && newGems >= bot.maxGems) {
-    botCompleted(bot.botId);
-  }
-
-  // dont let a player drop below if they've already beaten the bot
-  if (bot.currentGems < bot.maxGems) {
-    bot.currentGems = newGems;
-  }
-  currentBotGameState.bots[botId] = bot;
-  botGameState.set(currentBotGameState);
 }
 
 function finishHand(pokerState: HandState): HandState {
@@ -129,7 +108,7 @@ function finishHand(pokerState: HandState): HandState {
   const gameFinished =
     pokerState.seats.filter((it) => it.stack !== 0).length === 1;
   if (gameFinished) {
-    saveBotData(pokerState);
+    updateGameData(pokerState);
   }
   logEvent("hand-finished", {
     gameFinished,

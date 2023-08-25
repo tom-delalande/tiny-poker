@@ -13,23 +13,20 @@
         finishTurnForPlayer,
         prepareNextHand,
     } from "./poker-logic/hand";
-    import type {
-        BotInformation,
-        BotState,
-        HandState,
-    } from "./poker-logic/model";
+    import type { BotInformation, HandState } from "./poker-logic/model";
     import { calculateShownCommunityCards } from "./poker-logic/utility";
-    import { route } from "./ui-logic/navigation";
-    import { botGameState, handState } from "./ui-logic/state";
+    import { router } from "./ui-logic/navigation";
+    import { gameState, localHands, updateHandForBot } from "./ui-logic/state";
     import { onMount } from "svelte";
     import { logEvent } from "./analytics/analytics";
 
     export let bot: BotInformation;
+    export let startingStack: number;
 
     const initialPlayers = [
         {
             isCurrentPlayer: true,
-            stack: 20,
+            stack: startingStack,
         },
         {
             isCurrentPlayer: false,
@@ -37,13 +34,17 @@
             botId: bot.id,
         },
     ];
-    export let pokerState: HandState;
-    handState.subscribe((state) => {
-        pokerState = state;
+    let pokerState: HandState;
+    localHands.subscribe((state) => {
+        if (state) {
+            pokerState = state.hands[bot.id];
+        }
     });
+
     if (pokerState === undefined || pokerState === null) {
-        handState.set(createInitalHandState(initialPlayers, 0));
+        updateHandForBot(bot.id, createInitalHandState(initialPlayers, 0));
     }
+    console.log(pokerState);
     if (pokerState.seats.length > 2)
         throw Error("Tables bigger than 2 are not supported");
 
@@ -63,15 +64,19 @@
             chipAmount,
             pokerState,
         });
-        handState.set(action(playerSeat, pokerState));
+        updateHandForBot(bot.id, action(playerSeat, pokerState));
         setTimeout(() => {
-            handState.set(finishTurnForPlayer(playerSeat, pokerState));
+            updateHandForBot(
+                bot.id,
+                finishTurnForPlayer(playerSeat, pokerState)
+            );
             setTimeout(() => {
                 if (
                     !pokerState.seats[pokerState.currentAction.seatInTurn]
                         .isCurrentPlayer
                 ) {
-                    handState.set(
+                    updateHandForBot(
+                        bot.id,
                         performEnemyActions_v2(
                             opponentSeat,
                             pokerState,
@@ -80,7 +85,8 @@
                         )
                     );
                     setTimeout(() => {
-                        handState.set(
+                        updateHandForBot(
+                            bot.id,
                             finishTurnForPlayer(opponentSeat, pokerState)
                         );
                     }, 500);
@@ -98,12 +104,13 @@
             gameFinished,
         });
         if (gameFinished) {
-            handState.set(createInitalHandState(initialPlayers, 0));
+            updateHandForBot(bot.id, createInitalHandState(initialPlayers, 0));
             return;
         }
-        handState.set(prepareNextHand(pokerState));
+        updateHandForBot(bot.id, prepareNextHand(pokerState));
         setTimeout(() => {
-            handState.set(
+            updateHandForBot(
+                bot.id,
                 performEnemyActions_v2(
                     opponentSeat,
                     pokerState,
@@ -112,42 +119,38 @@
                 )
             );
             setTimeout(() => {
-                handState.set(finishTurnForPlayer(opponentSeat, pokerState));
+                updateHandForBot(
+                    bot.id,
+                    finishTurnForPlayer(opponentSeat, pokerState)
+                );
             }, 500);
         }, 500);
     }
-    let currentBotGameState: BotState;
-    botGameState.subscribe((value) => {
-        if (pokerState.seats.length == 2) {
-            currentBotGameState = value.bots[bot.id];
-        }
-    });
     onMount(() => {
         logEvent("poker-game-page-opened", {
             bot,
             handState: pokerState,
-            gameState: currentBotGameState,
         });
     });
 </script>
 
 <div class="flex flex-col justify-around h-full bg-neutral-300">
-    <BackButton action={() => route.set({ route: "Home" })} />
+    <BackButton action={() => router.set({ route: "Home" })} />
     <div class="flex flex-col gap-2 items-center">
         <div class="font-thin absolute top-14 left-5">
-            {currentBotGameState.currentGems}/{currentBotGameState.maxGems}
+            {$gameState.chips}
+            <i class="fa-solid fa-coins" />
+            {$gameState.gems}
             <i class="fa-solid fa-gem" />
         </div>
         <div class="flex gap-2 justify-center">
             <div>
                 <Avatar
                     openCharacterCard={() =>
-                        route.set({
+                        router.set({
                             route: "CharacterCard",
-                            props: {
-                                botInfo: bot,
-                                backEnabled: false,
-                            },
+                            bot,
+                            backEnabled: false,
                         })}
                     image={bot.avatar}
                     name={bot.name}

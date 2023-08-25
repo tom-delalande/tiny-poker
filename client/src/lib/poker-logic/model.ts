@@ -61,21 +61,10 @@ export interface HandRating {
   handStrength: HandStrength;
 }
 
-export interface Bots {
-  tim: BotState;
-  emma: BotState;
-}
-
 export interface GameState {
-  version: 4; // Protocol version to check for breaking changes
-  bots: Bots;
-}
-
-export interface BotState {
-  botId: string;
-  unlocked: boolean;
-  currentGems: number;
-  maxGems: number;
+  version: 5; // Protocol version to check for breaking changes
+  chips: number;
+  gems: number;
 }
 
 export interface BotInformation {
@@ -85,6 +74,12 @@ export interface BotInformation {
   tips: string[];
   looseness: number;
   aggression: number;
-  maxGems: number;
   avatar: string;
+  buyIn: BuyInOption[];
+}
+
+export interface BuyInOption {
+  chips: number;
+  chipsCost: number;
+  gemsCost: number;
 }

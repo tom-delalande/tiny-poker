@@ -1,60 +1,75 @@
 import { writable } from "svelte/store";
 import type { BotSate, GameState, HandState } from "../poker-logic/model";
 import { Preferences } from "@capacitor/preferences";
-import { bots } from "../poker-logic/ai/bots";
 
-export const handState = writable<HandState>();
-export const botGameState = writable<GameState>();
-export let gameStateRead: GameState;
-botGameState.subscribe((it) => {
-  gameStateRead = it;
-});
+export const gameState = writable<GameState>();
 
-Preferences.get({ key: "gameState" }).then((result) => {
+export const localHands = writable<LocalHands>();
+
+type LocalHands = {
+  version: 1;
+  hands: { [botId: string]: HandState };
+};
+
+export async function updateHandForBot(botId: string, hand: HandState) {
+  console.log({
+    message: "Update hand for bot.",
+    botId,
+    hand,
+  });
+  localHands.update((prev) => {
+    if (prev) {
+      prev.hands[botId] = hand;
+      return prev;
+    }
+    const state: LocalHands = {
+      version: 1,
+      hands: {},
+    };
+    state.hands[botId] = hand;
+    return state;
+  });
+}
+
+Preferences.get({ key: "game-state" }).then((result) => {
   if (result.value) {
     const state: GameState = JSON.parse(result.value);
-    if (state.version === 4) {
-      return botGameState.set(state);
+    if (state.version === 5) {
+      return gameState.set(state);
     }
   }
-  const initialtTim: BotSate = {
-    botId: bots[0].id,
-    unlocked: true,
-    currentGems: 0,
-    maxGems: bots[0].maxGems,
-  };
-  const initialtEmma: BotSate = {
-    botId: bots[0].id,
-    unlocked: false,
-    currentGems: 0,
-    maxGems: bots[0].maxGems,
-  };
-  botGameState.set({
-    version: 4,
-    bots: {
-      tim: initialtTim,
-      emma: initialtEmma,
-    },
+  gameState.set({
+    version: 5,
+    chips: 0,
+    gems: 0,
   });
 });
 
-Preferences.get({ key: "handState" }).then((result) => {
+Preferences.get({ key: "local-hands" }).then((result) => {
   if (result.value !== undefined) {
-    const state: HandState = JSON.parse(result.value);
-    if (state.version === 4) {
-      handState.set(JSON.parse(result.value));
+    const state: LocalHands = JSON.parse(result.value);
+    if (state.version === 1) {
+      localHands.set(JSON.parse(result.value));
+    } else {
+      return {
+        version: 1,
+        hands: {},
+      };
     }
   }
 });
 
 export let currentBotGameState: GameState;
-botGameState.subscribe((value) => {
+gameState.subscribe((value) => {
   if (value === undefined || value === null) return;
-  Preferences.set({ key: "gameState", value: JSON.stringify(value) });
+  Preferences.set({ key: "game-state", value: JSON.stringify(value) });
   currentBotGameState = value;
 });
 
-handState.subscribe((value) => {
+localHands.subscribe((value) => {
   if (value === undefined || value === null) return;
-  Preferences.set({ key: "handState", value: JSON.stringify(value) });
+  Preferences.set({
+    key: "local-games",
+    value: JSON.stringify(value),
+  });
 });

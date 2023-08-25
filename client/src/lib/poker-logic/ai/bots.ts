@@ -1,6 +1,5 @@
 import { BotInformation } from "../model";
 import bot1Avatar from "../../../assets/bot-1-avatar.png";
-import { botGameState, gameStateRead } from "../../ui-logic/state";
 
 export const bot1: BotInformation = {
   id: "tim",
@@ -13,8 +12,24 @@ export const bot1: BotInformation = {
   ],
   looseness: 1,
   aggression: 0,
-  maxGems: 200,
   avatar: bot1Avatar,
+  buyIn: [
+    {
+      chips: 10,
+      chipsCost: 0,
+      gemsCost: 0,
+    },
+    {
+      chips: 15,
+      chipsCost: 15,
+      gemsCost: 1,
+    },
+    {
+      chips: 20,
+      chipsCost: 20,
+      gemsCost: 2,
+    },
+  ],
 };
 
 export const bot2: BotInformation = {
@@ -28,18 +43,14 @@ export const bot2: BotInformation = {
   ],
   looseness: 1,
   aggression: 0,
-  maxGems: 200,
   avatar: bot1Avatar,
+  buyIn: [
+    {
+      chips: 200,
+      chipsCost: 200,
+      gemsCost: 0,
+    },
+  ],
 };
 
 export const bots = [bot1, bot2];
-
-export function botCompleted(botId: string) {
-  const botIndex = bots.findIndex((bot) => bot.id === botId);
-  if (botIndex + 1 < bots.length) {
-    const nextBot = bots[botIndex + 1];
-    const newState = gameStateRead;
-    newState.bots[nextBot.id].unlocked = true;
-    botGameState.set(newState);
-  }
-}
