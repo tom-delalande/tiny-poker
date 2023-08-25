@@ -6,11 +6,14 @@
 
 <BackButton action={() => router.set({ route: "Home" })} />
 <div class="flex items-center justify-center h-full">
-    <div class="gap-2 grid grid-cols-2 grid-rows-2 justify-center items-center">
+    <div
+        class="gap-2 grid grid-cols-2 grid-rows-2 justify-center items-center
+        mx-2"
+    >
         {#each bots as bot}
             <button
                 class="flex flex-col items-center justify-center bg-neutral-200
-                p-4 rounded-md"
+                p-2 rounded-md h-full w-full"
                 on:click={() => {
                     router.set({
                         route: "CharacterCard",
