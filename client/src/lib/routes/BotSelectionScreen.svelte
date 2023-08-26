@@ -4,6 +4,7 @@
     import { router } from "../ui-logic/navigation";
     import type { BotInformation } from "../poker-logic/model";
     import { localHands } from "../ui-logic/state";
+    import ChipsGemInfo from "../ChipsGemInfo.svelte";
 
     function selectBot(bot: BotInformation) {
         const hand = $localHands?.hands[bot.id];
@@ -23,6 +24,7 @@
 </script>
 
 <BackButton action={() => router.set({ route: "Home" })} />
+<ChipsGemInfo />
 <div class="flex items-center justify-center h-full">
     <div
         class="gap-2 grid grid-cols-2 grid-rows-2 justify-center items-center
