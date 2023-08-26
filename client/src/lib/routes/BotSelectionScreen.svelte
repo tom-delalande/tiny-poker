@@ -5,6 +5,7 @@
     import type { BotInformation } from "../poker-logic/model";
     import { localHands } from "../ui-logic/state";
     import ChipsGemInfo from "../ChipsGemInfo.svelte";
+    import { formatCompactNumber } from "../util/number";
 
     function selectBot(bot: BotInformation) {
         const hand = $localHands?.hands[bot.id];
@@ -40,10 +41,12 @@
                 <p>{bot.name}</p>
                 {#if bot.buyIn.length > 0}
                     <p>
-                        {bot.buyIn[0].chips}
+                        {formatCompactNumber(bot.buyIn[0].chips)}
                         <i class="fa-solid fa-coins" />
                         <i class="fa-solid fa-arrow-right" />
-                        {bot.buyIn[bot.buyIn.length - 1].chips}
+                        {formatCompactNumber(
+                            bot.buyIn[bot.buyIn.length - 1].chips
+                        )}
                         <i class="fa-solid fa-coins" />
                     </p>
                 {/if}

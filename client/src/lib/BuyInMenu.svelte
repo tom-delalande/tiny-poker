@@ -2,7 +2,8 @@
     import { createInitalHandState } from "./poker-logic/hand";
     import type { BotInformation, BuyInOption } from "./poker-logic/model";
     import { router } from "./ui-logic/navigation";
-    import { gameState, localHands, updateHandForBot } from "./ui-logic/state";
+    import { gameState, updateHandForBot } from "./ui-logic/state";
+    import { formatCompactNumber } from "./util/number";
 
     export let bot: BotInformation;
     let notEnoughFundsError = false;
@@ -77,11 +78,11 @@
                                 <div class="text-purple-800">Fee</div>
                                 <div class="flex gap-1">
                                     <div class="">
-                                        {buyIn.chipsCost}
+                                        {formatCompactNumber(buyIn.chipsCost)}
                                         <i class="fa-solid fa-coins" />
                                     </div>
                                     <div>
-                                        {buyIn.gemsCost}
+                                        {formatCompactNumber(buyIn.gemsCost)}
                                         <i class="fa-solid fa-gem" />
                                     </div>
                                 </div>
@@ -89,7 +90,9 @@
                         {/if}
                     </div>
                     <div class="flex gap-1 items-center">
-                        {buyIn.chips}<i class="fa-solid fa-coins" />
+                        {formatCompactNumber(buyIn.chips)}<i
+                            class="fa-solid fa-coins"
+                        />
                     </div>
                 </button>
             </div>
