@@ -41,8 +41,8 @@ export const bots: BotInformation[] = [
     name: "Emma",
     description: "",
     tips: ["", ""],
-    looseness: 1,
-    aggression: 0,
+    looseness: 0,
+    aggression: 1,
     avatar: bot2Avatar,
     buyIn: [
       {
@@ -57,8 +57,8 @@ export const bots: BotInformation[] = [
     name: "Josh",
     description: "",
     tips: ["", ""],
-    looseness: 1,
-    aggression: 0,
+    looseness: 0.8,
+    aggression: 0.4,
     avatar: bot3Avatar,
     buyIn: [
       {
@@ -78,8 +78,8 @@ export const bots: BotInformation[] = [
     name: "Kate",
     description: "",
     tips: ["", ""],
-    looseness: 1,
-    aggression: 0,
+    looseness: 0.5,
+    aggression: 0.5,
     avatar: bot4Avatar,
     buyIn: [
       {
