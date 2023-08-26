@@ -1,10 +1,10 @@
 <script lang="ts">
     import { Preferences } from "@capacitor/preferences";
-    import Button from "./Button.svelte";
     import { router } from "./ui-logic/navigation";
     import { logEvent } from "./analytics/analytics";
     import { onMount } from "svelte";
     import CommonButton from "./CommonButton.svelte";
+    import { playAudio } from "./ui-logic/audio";
 
     onMount(() => {
         logEvent("main-menu-page-opened");
@@ -12,6 +12,7 @@
 
     let puzzlesNotified = false;
     function notifyPuzzles() {
+        playAudio("playerAction");
         logEvent("feature-vote-changed", {
             preference: "puzzles",
         });
@@ -23,6 +24,7 @@
 
     let tournaments = false;
     function notifyTournaments() {
+        playAudio("playerAction");
         logEvent("feature-vote-changed", {
             preference: "tournaments",
         });
@@ -34,6 +36,7 @@
 
     let bots = false;
     function notifyBots() {
+        playAudio("playerAction");
         logEvent("feature-vote-changed", {
             preference: "story",
         });
@@ -82,12 +85,12 @@
             <div class="grid grid-cols-4 gap-2">
                 <button
                     class="px-4 py-2 bg-gray-50 border-2 rounded-md active:scale-90
-transition disabled:bg-neutral-300 min-w-max col-span-3"
+transition disabled:bg-neutral-300 disabled:active:scale-100 min-w-max col-span-3"
                     disabled={true}>Puzzles</button
                 >
                 <button
                     on:click={notifyPuzzles}
-                    class="bg-gray-50 p-2 rounded-md transition-all"
+                    class="bg-gray-50 p-2 rounded-md active:scale-90 transition"
                     class:bg-green-500={puzzlesNotified}
                     >{#if puzzlesNotified}
                         <i class="fa-solid fa-check" />
@@ -97,12 +100,12 @@ transition disabled:bg-neutral-300 min-w-max col-span-3"
                 </button>
                 <button
                     class="px-4 py-2 bg-gray-50 border-2 rounded-md active:scale-90
-transition disabled:bg-neutral-300 min-w-max col-span-3"
+transition disabled:bg-neutral-300 disabled:active:scale-100 min-w-max col-span-3"
                     disabled={true}>Tournaments</button
                 >
                 <button
                     on:click={notifyTournaments}
-                    class="bg-gray-50 p-2 rounded-md transition-all"
+                    class="bg-gray-50 p-2 rounded-md active:scale-90 transition"
                     class:bg-green-500={tournaments}
                     >{#if tournaments}
                         <i class="fa-solid fa-check" />
@@ -112,12 +115,12 @@ transition disabled:bg-neutral-300 min-w-max col-span-3"
                 </button>
                 <button
                     class="px-4 py-2 bg-gray-50 border-2 rounded-md active:scale-90
-transition disabled:bg-neutral-300 min-w-max col-span-3"
+transition disabled:bg-neutral-300 disabled:active:scale-100 min-w-max col-span-3"
                     disabled={true}>Story Mode</button
                 >
                 <button
                     on:click={notifyBots}
-                    class="bg-gray-50 p-2 rounded-md transition-all"
+                    class="bg-gray-50 p-2 rounded-md active:scale-90 transition"
                     class:bg-green-500={bots}
                     >{#if bots}
                         <i class="fa-solid fa-check" />

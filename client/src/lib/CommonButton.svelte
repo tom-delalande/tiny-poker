@@ -1,6 +1,5 @@
 <script lang="ts">
     import Button from "./Button.svelte";
-    import { playAudio } from "./ui-logic/audio";
 
     export let action: () => void | undefined;
     export let disabled: boolean = false;
