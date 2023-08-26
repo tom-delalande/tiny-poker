@@ -40,12 +40,13 @@
                 <button
                     on:click={() => play(buyIn, index)}
                     class="bg-neutral-200 rounded-md p-1 pb-2 gap-2 flex
-                        flex-col border-solid border-2 w-28 min-w-fit"
+                        flex-col border-solid border-2 w-28 min-w-fit
+                    items-center"
                     class:border-red-500={index === notEnoughFundsIndex}
                 >
                     <div
                         class="flex gap-2 bg-purple-200 rounded-md p-1
-                        justify-center"
+                        justify-center w-full"
                     >
                         {#if buyIn.chipsCost === 0 && buyIn.gemsCost === 0}
                             Free
@@ -65,7 +66,7 @@
                             </div>
                         {/if}
                     </div>
-                    <div>
+                    <div class="flex gap-1 items-center">
                         {buyIn.chips}<i class="fa-solid fa-coins" />
                     </div>
                 </button>
