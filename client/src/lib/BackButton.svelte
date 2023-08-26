@@ -5,7 +5,7 @@
 </script>
 
 <div
-    class="absolute top-5 left-5 text-black bg-neutral-100 rounded-full
+    class="absolute top-5 left-5 text-black bg-neutral-100 rounded-md
     h-7 px-2 text-center flex align-center justify-center"
 >
     <Button
