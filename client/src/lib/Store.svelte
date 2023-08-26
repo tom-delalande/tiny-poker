@@ -2,6 +2,7 @@
     import BackButton from "./BackButton.svelte";
     import Button from "./Button.svelte";
     import ChipsGemInfo from "./ChipsGemInfo.svelte";
+    import CommonButton from "./CommonButton.svelte";
     import { router } from "./ui-logic/navigation";
     import { gameState } from "./ui-logic/state";
 
@@ -62,5 +63,5 @@
             <div>$100</div>
         </Button>
     </div>
-    <Button action={() => {}}>Restore Purchase</Button>
+    <CommonButton action={() => {}}>Restore Purchase</CommonButton>
 </div>
