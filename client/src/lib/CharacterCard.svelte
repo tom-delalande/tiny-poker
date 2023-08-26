@@ -8,6 +8,7 @@
     import BuyInMenu from "./BuyInMenu.svelte";
     import ChipsGemInfo from "./ChipsGemInfo.svelte";
     import Button from "./Button.svelte";
+    import CommonButton from "./CommonButton.svelte";
 
     export let botInfo: BotInformation;
     export let backEnabled: boolean = true;
@@ -53,12 +54,12 @@
     {#if backEnabled}
         <BuyInMenu bot={botInfo} />
     {/if}
-    <Button
+    <CommonButton
         action={() =>
             router.set({
                 route: "BotsGame",
                 bot: botInfo,
                 startingStack: undefined,
-            })}>Close</Button
+            })}>Close</CommonButton
     >
 </div>

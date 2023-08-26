@@ -1,6 +1,7 @@
 <script lang="ts">
     import { createInitalHandState } from "./poker-logic/hand";
     import type { BotInformation, BuyInOption } from "./poker-logic/model";
+    import { playAudio } from "./ui-logic/audio";
     import { router } from "./ui-logic/navigation";
     import { gameState, updateHandForBot } from "./ui-logic/state";
     import { formatCompactNumber } from "./util/number";
@@ -61,11 +62,15 @@
         {#each bot.buyIn as buyIn, index}
             <div class="flex flex-col items-center">
                 <button
-                    on:click={() => play(buyIn, index)}
-                    class="bg-neutral-200 rounded-md p-1 pb-2 gap-2 flex
-                        flex-col border-solid border-2 w-28 min-w-fit
-                    items-center"
+                    on:click={() => {
+                        playAudio("playerAction");
+                        play(buyIn, index);
+                    }}
+                    class="bg-gray-50 rounded-md p-1 pb-2 gap-2 flex
+                        flex-col w-28 min-w-fit
+                    items-center active:scale-90 transition"
                     class:border-red-500={index === notEnoughFundsIndex}
+                    class:border-2={index === notEnoughFundsIndex}
                 >
                     <div
                         class="flex gap-2 bg-purple-200 rounded-md p-1

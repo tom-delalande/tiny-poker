@@ -4,6 +4,7 @@
     import { router } from "./ui-logic/navigation";
     import { logEvent } from "./analytics/analytics";
     import { onMount } from "svelte";
+    import CommonButton from "./CommonButton.svelte";
 
     onMount(() => {
         logEvent("main-menu-page-opened");
@@ -61,18 +62,18 @@
 >
     <div class="justify-self-center flex flex-col items-center m-auto gap-6">
         <h1 class="text-5xl font-thin">Tiny Poker</h1>
-        <Button
+        <CommonButton
             action={() => {
                 router.set({ route: "BotSelectionScreen" });
             }}
             ><i class="fa-solid fa-robot" /> Play Bots
-        </Button>
-        <Button
+        </CommonButton>
+        <CommonButton
             action={() => {
                 router.set({ route: "Store" });
             }}
             ><i class="fa-solid fa-store" /> Store
-        </Button>
+        </CommonButton>
         <div
             class="flex flex-col justify-center items-center gap-4
             bg-neutral-200 rounded-md py-5 max-w-md text-center mx-5"
@@ -136,23 +137,23 @@ transition disabled:bg-neutral-300 min-w-max col-span-3"
     >
         <p>We'd love to hear what you think</p>
         <div class="flex gap-2 text-sm font-normal items-center justify-center">
-            <Button
+            <CommonButton
                 action={() => {
                     logEvent("open-discord-button-pressed");
                     window.open("https://discord.gg/yR9uquvCkS", "_blank");
                 }}
                 ><span class="flex gap-2 items-center justify-center"
                     ><i class="fa-brands fa-discord" />Discord</span
-                ></Button
+                ></CommonButton
             >
-            <Button
+            <CommonButton
                 action={() => {
                     logEvent("open-email-button-pressed");
                     window.open("mailto:poker@getnada.com", "_blank");
                 }}
                 ><span class="flex gap-2 items-center justify-center"
                     ><i class="fa-solid fa-envelope" />Email</span
-                ></Button
+                ></CommonButton
             >
         </div>
     </div>

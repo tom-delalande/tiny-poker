@@ -25,8 +25,8 @@
             })}
     />
     <div class="grid gap-4 grid-cols-1 sm:grid-cols-3">
-        <button
-            on:click={() => purchase(5)}
+        <Button
+            action={() => purchase(5)}
             class="p-4 rounded-md bg-gray-50 flex flex-col items-center
             gap-4 w-48 justify-around"
         >
@@ -38,9 +38,9 @@
                 <div class="line-through text-neutral-500">$5</div>
                 <div class="">$0.99</div>
             </div>
-        </button>
-        <button
-            on:click={() => purchase(20)}
+        </Button>
+        <Button
+            action={() => purchase(20)}
             class="p-4 rounded-md bg-gray-50 flex flex-col items-center
             gap-4 w-48 justify-around"
         >
@@ -49,9 +49,9 @@
                 20 <i class="fa-solid fa-gem" />
             </div>
             <div>$20</div>
-        </button>
-        <button
-            on:click={() => purchase(100)}
+        </Button>
+        <Button
+            action={() => purchase(100)}
             class="p-4 rounded-md bg-gray-50 flex flex-col items-center
             gap-4 w-48 justify-around"
         >
@@ -60,7 +60,7 @@
                 100 <i class="fa-solid fa-gem" />
             </div>
             <div>$100</div>
-        </button>
+        </Button>
     </div>
     <Button action={() => {}}>Restore Purchase</Button>
 </div>

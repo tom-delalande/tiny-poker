@@ -1,5 +1,6 @@
 <script lang="ts">
     import Button from "../Button.svelte";
+    import CommonButton from "../CommonButton.svelte";
     import type { HandState } from "../poker-logic/model";
     import {
         playerCall,
@@ -20,18 +21,18 @@
 </script>
 
 {#if pokerState.currentAction.minRaise > pokerState.seats[playerSeat].currentRaise}
-    <Button
+    <CommonButton
         disabled={pokerState.currentAction.seatInTurn !== playerSeat ||
             pokerState.currentAction.minRaise <= player.currentRaise}
-        action={() => playerAction(playerFold, "fold")}>Fold</Button
+        action={() => playerAction(playerFold, "fold")}>Fold</CommonButton
     >
 {:else}
-    <Button
+    <CommonButton
         disabled={pokerState.currentAction.seatInTurn !== playerSeat}
-        action={() => playerAction(playerCheck, "check")}>Check</Button
+        action={() => playerAction(playerCheck, "check")}>Check</CommonButton
     >
 {/if}
-<Button
+<CommonButton
     disabled={pokerState.currentAction.seatInTurn !== playerSeat ||
         pokerState.currentAction.minRaise <= player.currentRaise}
     action={() =>
@@ -45,10 +46,10 @@
         ({pokerState.currentAction.minRaise - player.currentRaise}
         <i class="fa-solid fa-gem" />)
     {/if}
-</Button>
-<Button
+</CommonButton>
+<CommonButton
     disabled={pokerState.currentAction.seatInTurn !== playerSeat ||
         pokerState.currentAction.minRaise > player.stack ||
         player.stack === 0}
-    action={openRaiseMenu}>Raise</Button
+    action={openRaiseMenu}>Raise</CommonButton
 >

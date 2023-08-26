@@ -6,6 +6,7 @@
     import { localHands } from "../ui-logic/state";
     import ChipsGemInfo from "../ChipsGemInfo.svelte";
     import { formatCompactNumber } from "../util/number";
+    import Button from "../Button.svelte";
 
     function selectBot(bot: BotInformation) {
         const hand = $localHands?.hands[bot.id];
@@ -32,10 +33,10 @@
         mx-2"
     >
         {#each bots as bot}
-            <button
+            <Button
                 class="flex flex-col items-center justify-center bg-gray-50
                 p-2 rounded-md h-full w-full"
-                on:click={() => selectBot(bot)}
+                action={() => selectBot(bot)}
             >
                 <img class="w-24 h-24" src={bot.avatar} alt={bot.name} />
                 <p>{bot.name}</p>
@@ -50,7 +51,7 @@
                         <i class="fa-solid fa-coins" />
                     </p>
                 {/if}
-            </button>
+            </Button>
         {/each}
     </div>
 </div>

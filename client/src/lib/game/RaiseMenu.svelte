@@ -1,5 +1,6 @@
 <script lang="ts">
     import Button from "../Button.svelte";
+    import CommonButton from "../CommonButton.svelte";
     import type { HandState } from "../poker-logic/model";
     import { playerRaise } from "../poker-logic/player-actions";
 
@@ -38,9 +39,9 @@
     class="flex flex-wrap gap-2 items-center justify-center
                     max-w-xs"
 >
-    <Button action={back}>Cancel</Button>
+    <CommonButton action={back}>Cancel</CommonButton>
     {#each raiseAmounts as amount}
-        <Button
+        <CommonButton
             action={() => {
                 back();
                 playerAction(
@@ -51,6 +52,6 @@
             }}
             >{amount}
             <i class="fa-solid fa-gem" />
-        </Button>
+        </CommonButton>
     {/each}
 </div>

@@ -1,6 +1,7 @@
 <script lang="ts">
     import Button from "../Button.svelte";
     import BuyInMenu from "../BuyInMenu.svelte";
+    import CommonButton from "../CommonButton.svelte";
     import type { BotInformation } from "../poker-logic/model";
     import { router } from "../ui-logic/navigation";
     import { updateHandForBot } from "../ui-logic/state";
@@ -27,16 +28,18 @@
             </div>
         {/if}
         <div class="flex gap-2">
-            <Button action={exit}>Exit</Button>
+            <CommonButton action={exit}>Exit</CommonButton>
             {#if rebuyMenuShowing}
-                <Button action={() => (rebuyMenuShowing = false)}>Hide</Button>
+                <CommonButton action={() => (rebuyMenuShowing = false)}
+                    >Hide</CommonButton
+                >
             {:else}
-                <Button action={() => (rebuyMenuShowing = true)}>
-                    Play Again</Button
+                <CommonButton action={() => (rebuyMenuShowing = true)}>
+                    Play Again</CommonButton
                 >
             {/if}
         </div>
     </div>
 {:else}
-    <Button action={nextHand}>Continue</Button>
+    <CommonButton action={nextHand}>Continue</CommonButton>
 {/if}
