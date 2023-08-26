@@ -33,7 +33,7 @@
     >
         {#each bots as bot}
             <button
-                class="flex flex-col items-center justify-center bg-neutral-200
+                class="flex flex-col items-center justify-center bg-gray-50
                 p-2 rounded-md h-full w-full"
                 on:click={() => selectBot(bot)}
             >

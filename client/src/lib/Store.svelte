@@ -27,7 +27,7 @@
     <div class="grid gap-4 grid-cols-1 sm:grid-cols-3">
         <button
             on:click={() => purchase(5)}
-            class="p-4 rounded-md bg-neutral-200 flex flex-col items-center
+            class="p-4 rounded-md bg-gray-50 flex flex-col items-center
             gap-4 w-48 justify-around"
         >
             <div>Starter</div>
@@ -41,7 +41,7 @@
         </button>
         <button
             on:click={() => purchase(20)}
-            class="p-4 rounded-md bg-neutral-200 flex flex-col items-center
+            class="p-4 rounded-md bg-gray-50 flex flex-col items-center
             gap-4 w-48 justify-around"
         >
             <div>Two Pair</div>
@@ -52,7 +52,7 @@
         </button>
         <button
             on:click={() => purchase(100)}
-            class="p-4 rounded-md bg-neutral-200 flex flex-col items-center
+            class="p-4 rounded-md bg-gray-50 flex flex-col items-center
             gap-4 w-48 justify-around"
         >
             <div>Royal Flush</div>
