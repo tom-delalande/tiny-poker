@@ -4,7 +4,7 @@
 </script>
 
 <div
-    class="rounded-full border-2 w-16 h-16 text-2xl flex items-center
+    class="rounded-md w-16 h-16 text-2xl flex items-center
     justify-center gap-1 relative"
     class:bg-red-400={suit === "Hearts"}
     class:bg-green-400={suit === "Diamonds"}
