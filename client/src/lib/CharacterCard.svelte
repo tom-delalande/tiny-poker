@@ -53,13 +53,14 @@
     </div>
     {#if backEnabled}
         <BuyInMenu bot={botInfo} />
+    {:else}
+        <CommonButton
+            action={() =>
+                router.set({
+                    route: "BotsGame",
+                    bot: botInfo,
+                    startingStack: undefined,
+                })}>Close</CommonButton
+        >
     {/if}
-    <CommonButton
-        action={() =>
-            router.set({
-                route: "BotsGame",
-                bot: botInfo,
-                startingStack: undefined,
-            })}>Close</CommonButton
-    >
 </div>
