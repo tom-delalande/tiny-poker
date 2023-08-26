@@ -6,6 +6,7 @@
     import { router } from "./ui-logic/navigation";
     import { gameState } from "./ui-logic/state";
     import BuyInMenu from "./BuyInMenu.svelte";
+    import ChipsGemInfo from "./ChipsGemInfo.svelte";
 
     export let botInfo: BotInformation;
     export let backEnabled: boolean = true;
@@ -29,11 +30,7 @@
                 })}
         />
     {/if}
-    <div class="absolute top-14 left-5">
-        {$gameState.chips} <i class="fa-solid fa-coins" />
-        {$gameState.gems} <i class="fa-solid fa-gem" />
-    </div>
-
+    <ChipsGemInfo />
     <div class="flex items-center justify-center flex-col">
         <img class="w-24 h-24" src={botInfo.avatar} alt="Avatar" />
         <p>{botInfo.name}</p>

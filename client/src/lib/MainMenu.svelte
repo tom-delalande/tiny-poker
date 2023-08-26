@@ -67,6 +67,12 @@
             }}
             ><i class="fa-solid fa-robot" /> Play Bots
         </Button>
+        <Button
+            action={() => {
+                router.set({ route: "Store" });
+            }}
+            ><i class="fa-solid fa-store" /> Store
+        </Button>
         <div
             class="flex flex-col justify-center items-center gap-4
             bg-neutral-200 rounded-md py-5 max-w-md text-center mx-5"

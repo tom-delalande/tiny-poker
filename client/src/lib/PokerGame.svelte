@@ -16,9 +16,10 @@
     import type { BotInformation, HandState } from "./poker-logic/model";
     import { calculateShownCommunityCards } from "./poker-logic/utility";
     import { router } from "./ui-logic/navigation";
-    import { gameState, localHands, updateHandForBot } from "./ui-logic/state";
+    import { localHands, updateHandForBot } from "./ui-logic/state";
     import { onMount } from "svelte";
     import { logEvent } from "./analytics/analytics";
+    import ChipsGemInfo from "./ChipsGemInfo.svelte";
 
     export let bot: BotInformation;
     export let startingStack: number;
@@ -139,12 +140,7 @@
 <div class="flex flex-col justify-around h-full bg-neutral-300">
     <BackButton action={() => router.set({ route: "Home" })} />
     <div class="flex flex-col gap-2 items-center">
-        <div class="font-thin absolute top-14 left-5">
-            {$gameState.chips}
-            <i class="fa-solid fa-coins" />
-            {$gameState.gems}
-            <i class="fa-solid fa-gem" />
-        </div>
+        <ChipsGemInfo />
         <div class="flex gap-2 justify-center">
             <div>
                 <Avatar
