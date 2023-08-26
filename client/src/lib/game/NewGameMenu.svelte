@@ -3,12 +3,17 @@
     import BuyInMenu from "../BuyInMenu.svelte";
     import type { BotInformation } from "../poker-logic/model";
     import { router } from "../ui-logic/navigation";
+    import { updateHandForBot } from "../ui-logic/state";
 
     export let gameFinished: boolean;
     export let nextHand: () => void;
     export let bot: BotInformation;
 
     let rebuyMenuShowing = false;
+    function exit() {
+        router.set({ route: "BotSelectionScreen" });
+        updateHandForBot(bot.id, undefined);
+    }
 </script>
 
 {#if gameFinished}
@@ -22,9 +27,7 @@
             </div>
         {/if}
         <div class="flex gap-2">
-            <Button action={() => router.set({ route: "BotSelectionScreen" })}
-                >Exit</Button
-            >
+            <Button action={exit}>Exit</Button>
             {#if rebuyMenuShowing}
                 <Button action={() => (rebuyMenuShowing = false)}>Hide</Button>
             {:else}

@@ -40,6 +40,9 @@
                     <p>
                         {bot.buyIn[0].chips}
                         <i class="fa-solid fa-coins" />
+                        <i class="fa-solid fa-arrow-right" />
+                        {bot.buyIn[bot.buyIn.length - 1].chips}
+                        <i class="fa-solid fa-coins" />
                     </p>
                 {/if}
             </button>

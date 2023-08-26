@@ -23,17 +23,6 @@
     export let bot: BotInformation;
     export let startingStack: number;
 
-    const initialPlayers = [
-        {
-            isCurrentPlayer: true,
-            stack: startingStack,
-        },
-        {
-            isCurrentPlayer: false,
-            stack: 20,
-            botId: bot.id,
-        },
-    ];
     let pokerState: HandState;
     localHands.subscribe((state) => {
         if (state) {
@@ -42,9 +31,19 @@
     });
 
     if (pokerState === undefined || pokerState === null) {
+        const initialPlayers = [
+            {
+                isCurrentPlayer: true,
+                stack: startingStack,
+            },
+            {
+                isCurrentPlayer: false,
+                stack: 20,
+                botId: bot.id,
+            },
+        ];
         updateHandForBot(bot.id, createInitalHandState(initialPlayers, 0));
     }
-    console.log(pokerState);
     if (pokerState.seats.length > 2)
         throw Error("Tables bigger than 2 are not supported");
 

@@ -1,7 +1,8 @@
 <script lang="ts">
+    import { createInitalHandState } from "./poker-logic/hand";
     import type { BotInformation, BuyInOption } from "./poker-logic/model";
     import { router } from "./ui-logic/navigation";
-    import { gameState } from "./ui-logic/state";
+    import { gameState, localHands, updateHandForBot } from "./ui-logic/state";
 
     export let bot: BotInformation;
     let notEnoughFundsError = false;
@@ -24,10 +25,22 @@
             prev.gems = Math.max(0, prev.chips - buyIn.gemsCost);
             return prev;
         });
+        const initialPlayers = [
+            {
+                isCurrentPlayer: true,
+                stack: buyIn.chips,
+            },
+            {
+                isCurrentPlayer: false,
+                stack: bot.buyIn[bot.buyIn.length - 1].chips,
+                botId: bot.id,
+            },
+        ];
+        updateHandForBot(bot.id, createInitalHandState(initialPlayers, 0));
         router.set({
             route: "BotsGame",
-            bot: bot,
             startingStack: buyIn.chips,
+            bot: bot,
         });
     }
 </script>
