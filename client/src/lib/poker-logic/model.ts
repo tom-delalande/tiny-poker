@@ -82,4 +82,5 @@ export interface BuyInOption {
   chips: number;
   chipsCost: number;
   gemsCost: number;
+  free?: boolean;
 }

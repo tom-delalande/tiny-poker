@@ -16,8 +16,9 @@ export const bot1: BotInformation = {
   buyIn: [
     {
       chips: 10,
-      chipsCost: 0,
+      chipsCost: 10,
       gemsCost: 0,
+      free: true,
     },
     {
       chips: 15,

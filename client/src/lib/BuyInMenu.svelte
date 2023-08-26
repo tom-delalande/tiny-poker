@@ -9,20 +9,29 @@
     let notEnoughFundsIndex = -1;
 
     function play(buyIn: BuyInOption, index: number) {
+        let chipsCost = buyIn.chipsCost;
+        let gemsCost = buyIn.gemsCost;
+
+        if (
+            ($gameState.chips < buyIn.chipsCost ||
+                $gameState.gems < buyIn.gemsCost) &&
+            buyIn.free === true
+        ) {
+            chipsCost = 0;
+            gemsCost = 0;
+        }
+
         notEnoughFundsError = false;
         notEnoughFundsIndex = -1;
-        if (
-            $gameState.chips < buyIn.chipsCost ||
-            $gameState.gems < buyIn.gemsCost
-        ) {
+        if ($gameState.chips < chipsCost || $gameState.gems < gemsCost) {
             notEnoughFundsError = true;
             notEnoughFundsIndex = index;
             return;
         }
 
         gameState.update((prev) => {
-            prev.chips = Math.max(0, prev.chips - buyIn.chipsCost);
-            prev.gems = Math.max(0, prev.chips - buyIn.gemsCost);
+            prev.chips = Math.max(0, prev.chips - chipsCost);
+            prev.gems = Math.max(0, prev.gems - gemsCost);
             return prev;
         });
         const initialPlayers = [
@@ -61,7 +70,7 @@
                         class="flex gap-2 bg-purple-200 rounded-md p-1
                         justify-center w-full"
                     >
-                        {#if buyIn.chipsCost === 0 && buyIn.gemsCost === 0}
+                        {#if buyIn.free && $gameState.chips === 0}
                             Free
                         {:else}
                             <div class="flex flex-col">
