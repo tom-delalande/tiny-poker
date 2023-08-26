@@ -7,6 +7,7 @@
     import { gameState } from "./ui-logic/state";
     import BuyInMenu from "./BuyInMenu.svelte";
     import ChipsGemInfo from "./ChipsGemInfo.svelte";
+    import Button from "./Button.svelte";
 
     export let botInfo: BotInformation;
     export let backEnabled: boolean = true;
@@ -49,5 +50,15 @@
             {/each}
         </ol>
     </div>
-    <BuyInMenu bot={botInfo} />
+    {#if backEnabled}
+        <BuyInMenu bot={botInfo} />
+    {/if}
+    <Button
+        action={() =>
+            router.set({
+                route: "BotsGame",
+                bot: botInfo,
+                startingStack: undefined,
+            })}>Close</Button
+    >
 </div>
