@@ -3,6 +3,12 @@
     import Button from "./Button.svelte";
     import ChipsGemInfo from "./ChipsGemInfo.svelte";
     import CommonButton from "./CommonButton.svelte";
+    import {
+        makePurchase,
+        productData,
+        products,
+        restorePurchases,
+    } from "./purchase/purchase";
     import { router } from "./ui-logic/navigation";
     import { gameState } from "./ui-logic/state";
 
@@ -12,6 +18,10 @@
             return prev;
         });
     }
+
+    const data = products
+        .map((alias) => productData[alias])
+        .filter((it) => it != undefined);
 </script>
 
 <ChipsGemInfo />
@@ -25,43 +35,33 @@
                 route: "BotSelectionScreen",
             })}
     />
+    {#if data.length === 0}
+        There are currently no gems for sale...
+    {/if}
     <div class="grid gap-4 grid-cols-1 sm:grid-cols-3">
-        <Button
-            action={() => purchase(5)}
-            class="p-4 rounded-md bg-gray-50 flex flex-col items-center
+        {#each data as product}
+            <Button
+                action={() => makePurchase(product.productId)}
+                class="p-4 rounded-md bg-gray-50 flex flex-col items-center
             gap-4 w-48 justify-around"
-        >
-            <div>Starter</div>
-            <div class="text-3xl">
-                5 <i class="fa-solid fa-gem" />
-            </div>
-            <div>
-                <div class="line-through text-neutral-500">$5</div>
-                <div class="">$0.99</div>
-            </div>
-        </Button>
-        <Button
-            action={() => purchase(20)}
-            class="p-4 rounded-md bg-gray-50 flex flex-col items-center
-            gap-4 w-48 justify-around"
-        >
-            <div>Two Pair</div>
-            <div class="text-3xl">
-                20 <i class="fa-solid fa-gem" />
-            </div>
-            <div>$20</div>
-        </Button>
-        <Button
-            action={() => purchase(100)}
-            class="p-4 rounded-md bg-gray-50 flex flex-col items-center
-            gap-4 w-48 justify-around"
-        >
-            <div>Royal Flush</div>
-            <div class="text-3xl">
-                100 <i class="fa-solid fa-gem" />
-            </div>
-            <div>$100</div>
-        </Button>
+            >
+                <div>{product.name}</div>
+                <div class="text-3xl">
+                    {product.gems} <i class="fa-solid fa-gem" />
+                </div>
+                <div>
+                    {#if product.previousPrice}
+                        <div
+                            class="line-through
+                            text-neutral-500"
+                        >
+                            {product.previousPrice}
+                        </div>
+                    {/if}
+                    <div class="">{product.price}</div>
+                </div>
+            </Button>
+        {/each}
     </div>
-    <CommonButton action={() => {}}>Restore Purchase</CommonButton>
+    <CommonButton action={restorePurchases}>Restore Purchase</CommonButton>
 </div>
