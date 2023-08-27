@@ -36,6 +36,10 @@ export interface CurrentAction {
 export interface HandState {
   version: 4; // Protocol version to check for breaking changes
   seats: Player[];
+  blinds: {
+    bigBlind: number,
+    smallBlind: number,
+  }
   currentAction: CurrentAction;
   round: "Blinds" | "Flop" | "Turn" | "River";
   communityCards: Card[];

@@ -55,6 +55,10 @@ export function createInitalHandState(
       minRaise: bigBlind,
       lastSeatToRaise: -1,
     },
+    blinds: {
+      smallBlind,
+      bigBlind,
+    },
     communityCards: communityCards,
     pot: pot + smallBlind + bigBlind,
     deck: deck,

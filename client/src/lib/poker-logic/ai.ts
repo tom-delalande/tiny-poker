@@ -45,7 +45,8 @@ function calculateActions(
     handRating,
     looseness,
     aggression,
-    pokerState.pot
+    player.stack,
+    pokerState.blinds.bigBlind
   );
   const currentAction = pokerState.currentAction;
   const effectiveCurrentMinRaise = currentAction.minRaise - player.currentRaise;
@@ -72,21 +73,44 @@ function calculateActions(
   return playerCheck(seat, pokerState);
 }
 
-function calculateAcceptedActions(
+export function calculateAcceptedActions(
   handRating: number,
   looseness: number,
   aggression: number,
-  pot: number
+  currentStack: number,
+  bigBlind: number
 ): BotAction {
-  const maxCall = Math.floor(((handRating + looseness) / 2) * pot * 2);
-  const minRaise = Math.floor(maxCall * aggression);
+  // the looseness/aggression v curve follows a
+  // y = x^(tan((v * pi) / 2))
+  // tan((v * pi) / 2) maps a number between 0 and 1 to be between 0 and
+  // infinity, where 0.5 is 1
+  //
+  // This left me use it as the power of the hand-rating to get a curve
+  // between, 0 and current stack.
+  //
+  // Current stack is multiplied so that we go all in on hands
+  // worse than best, hand, we also add big blinds as a backup.
+  //
+  // TODO: this seems to curve too early even with relativly small values (look
+  // at tests)
+  const effectiveStack = Math.max(currentStack * 1.2, 3 * bigBlind);
+  const effectiveLooseness = Math.pow(
+    handRating,
+    Math.tan(((1 - looseness) * Math.PI) / 2)
+  );
+  const effectiveAggression = Math.pow(
+    handRating,
+    Math.tan(((1 - aggression) * Math.PI) / 2)
+  );
+  const maxCall = Math.floor(effectiveLooseness * effectiveStack);
+  const minRaise = Math.floor(maxCall * effectiveAggression);
   return {
     minRaise,
     maxCall,
   };
 }
 
-interface BotAction {
+export interface BotAction {
   minRaise: number;
   maxCall: number;
 }
