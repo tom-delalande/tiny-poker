@@ -32,36 +32,37 @@
     <BackButton
         action={() =>
             router.set({
-                route: "BotSelectionScreen",
+                route: "Home",
             })}
     />
     {#if data.length === 0}
         There are currently no gems for sale...
-    {/if}
-    <div class="grid gap-4 grid-cols-1 sm:grid-cols-3">
-        {#each data as product}
-            <Button
-                action={() => makePurchase(product.productId)}
-                class="p-4 rounded-md bg-gray-50 flex flex-col items-center
+    {:else}
+        <div class="grid gap-4 grid-cols-1 sm:grid-cols-3">
+            {#each data as product}
+                <Button
+                    action={() => makePurchase(product.productId)}
+                    class="p-4 rounded-md bg-gray-50 flex flex-col items-center
             gap-4 w-48 justify-around"
-            >
-                <div>{product.name}</div>
-                <div class="text-3xl">
-                    {product.gems} <i class="fa-solid fa-gem" />
-                </div>
-                <div>
-                    {#if product.previousPrice}
-                        <div
-                            class="line-through
+                >
+                    <div>{product.name}</div>
+                    <div class="text-3xl">
+                        {product.gems} <i class="fa-solid fa-gem" />
+                    </div>
+                    <div>
+                        {#if product.previousPrice}
+                            <div
+                                class="line-through
                             text-neutral-500"
-                        >
-                            {product.previousPrice}
-                        </div>
-                    {/if}
-                    <div class="">{product.price}</div>
-                </div>
-            </Button>
-        {/each}
-    </div>
-    <CommonButton action={restorePurchases}>Restore Purchase</CommonButton>
+                            >
+                                {product.previousPrice}
+                            </div>
+                        {/if}
+                        <div class="">{product.price}</div>
+                    </div>
+                </Button>
+            {/each}
+        </div>
+        <CommonButton action={restorePurchases}>Restore Purchase</CommonButton>
+    {/if}
 </div>
