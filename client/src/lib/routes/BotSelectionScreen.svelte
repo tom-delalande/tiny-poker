@@ -29,8 +29,8 @@
 <ChipsGemInfo />
 <div class="flex items-center justify-center h-full">
     <div
-        class="gap-2 grid grid-cols-2 grid-rows-2 justify-center items-center
-        mx-2"
+        class="gap-2 grid grid-cols-1 grid-rows-2 justify-center items-center
+        mx-2 w-full max-w-md"
     >
         {#each bots as bot}
             <Button
