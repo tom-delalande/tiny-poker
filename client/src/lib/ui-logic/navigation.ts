@@ -1,5 +1,6 @@
 import { writable } from "svelte/store";
 import { BotInformation } from "../poker-logic/model";
+import { logEvent } from "../analytics/analytics";
 
 export type Page =
   | HomePage
@@ -34,4 +35,10 @@ export interface StorePage {
 
 export const router = writable<Page>({
   route: "Home",
+});
+
+router.subscribe((page) => {
+  logEvent("page-opened", {
+    page,
+  });
 });

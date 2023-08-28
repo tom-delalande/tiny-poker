@@ -17,7 +17,6 @@
     import { calculateShownCommunityCards } from "./poker-logic/utility";
     import { router } from "./ui-logic/navigation";
     import { localHands, updateHandForBot } from "./ui-logic/state";
-    import { onMount } from "svelte";
     import { logEvent } from "./analytics/analytics";
     import ChipsGemInfo from "./ChipsGemInfo.svelte";
 
@@ -129,12 +128,6 @@
             }, 500);
         }, 500);
     }
-    onMount(() => {
-        logEvent("poker-game-page-opened", {
-            bot,
-            handState: pokerState,
-        });
-    });
 </script>
 
 <div class="flex flex-col justify-around h-full bg-neutral-300">

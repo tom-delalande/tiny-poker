@@ -5,10 +5,7 @@
     import { onMount } from "svelte";
     import CommonButton from "./CommonButton.svelte";
     import { playAudio } from "./ui-logic/audio";
-
-    onMount(() => {
-        logEvent("main-menu-page-opened");
-    });
+    import { storeEnabled } from "./config";
 
     let puzzlesNotified = false;
     function notifyPuzzles() {
@@ -71,12 +68,14 @@
             }}
             ><i class="fa-solid fa-robot" /> Play Bots
         </CommonButton>
-        <CommonButton
-            action={() => {
-                router.set({ route: "Store" });
-            }}
-            ><i class="fa-solid fa-store" /> Store
-        </CommonButton>
+        {#if storeEnabled}
+            <CommonButton
+                action={() => {
+                    router.set({ route: "Store" });
+                }}
+                ><i class="fa-solid fa-store" /> Store
+            </CommonButton>
+        {/if}
         <div
             class="flex flex-col justify-center items-center gap-4
             bg-neutral-200 bg-opacity-50 rounded-md py-5 max-w-md text-center mx-5"

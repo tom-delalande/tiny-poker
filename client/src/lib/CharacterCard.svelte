@@ -1,23 +1,13 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import { logEvent } from "./analytics/analytics";
     import type { BotInformation, BuyInOption } from "./poker-logic/model";
     import BackButton from "./BackButton.svelte";
     import { router } from "./ui-logic/navigation";
-    import { gameState } from "./ui-logic/state";
     import BuyInMenu from "./BuyInMenu.svelte";
     import ChipsGemInfo from "./ChipsGemInfo.svelte";
-    import Button from "./Button.svelte";
     import CommonButton from "./CommonButton.svelte";
 
     export let botInfo: BotInformation;
     export let backEnabled: boolean = true;
-
-    onMount(() => {
-        logEvent("character-card-page-opened", {
-            botInfo,
-        });
-    });
 </script>
 
 <div
