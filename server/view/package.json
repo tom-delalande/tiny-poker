@@ -1,0 +1,16 @@
+{
+  "name": "view",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tailwind": "npx tailwindcss -i ./styles/input.css -o ./styles/output.css",
+    "tailwind-watch": "npx tailwindcss -i ./styles/input.css -o ./styles/output.css --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "tailwindcss": "^3.3.3"
+  }
+}

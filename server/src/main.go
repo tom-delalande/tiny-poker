@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/signal"
 	"tiny-poker/server/src/analytics"
+	"tiny-poker/server/src/landing"
 
 	"github.com/amacneil/dbmate/v2/pkg/dbmate"
 	_ "github.com/amacneil/dbmate/v2/pkg/driver/sqlite"
@@ -36,12 +37,14 @@ func main() {
 			buildVersion := os.Getenv("BUILD_VERSION")
 			w.Write([]byte(buildVersion))
 		})
-
 		router.Route("/analytics", func(r chi.Router) {
 			analytics.AnalyticsEndpoints(r, db)
 		})
 	})
 
+	router.Route("/landing", func(r chi.Router) {
+		landing.LandingEndpoints(r)
+	})
 	port := os.Getenv("PORT")
 	server := &http.Server{Addr: fmt.Sprintf(":%s", port), Handler: router}
 	log.Default().Println(fmt.Sprintf("Listening on port %s...", port))
