@@ -13,7 +13,7 @@ body {
 }
 
 html {
-  background-color: rgb(212 212 212);
+  background-color: rgb(229 229 229);
 
   /* WebKit adds a gray box whenvener you click on a button */
   -webkit-tap-highlight-color: transparent;

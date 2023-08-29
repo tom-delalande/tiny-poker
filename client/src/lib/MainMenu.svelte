@@ -58,10 +58,13 @@
 </script>
 
 <div
-    class="flex flex-col justify-center items-center gap-4 h-full bg-neutral-300"
+    class="flex flex-col justify-center items-center gap-4 h-full bg-neutral-200"
 >
     <div class="justify-self-center flex flex-col items-center m-auto gap-6">
-        <h1 class="text-5xl font-thin">Tiny Poker</h1>
+        <div class="flex gap-4 items-center">
+            <div class="bg-red-500 w-8 h-8 rounded-md rotate-45" />
+            <h1 class="text-5xl">Tiny Poker</h1>
+        </div>
         <CommonButton
             action={() => {
                 router.set({ route: "BotSelectionScreen" });
