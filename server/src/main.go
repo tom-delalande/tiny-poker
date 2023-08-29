@@ -42,7 +42,7 @@ func main() {
 		})
 	})
 
-	router.Route("/landing", func(r chi.Router) {
+	router.Route("/", func(r chi.Router) {
 		landing.LandingEndpoints(r)
 	})
 	port := os.Getenv("PORT")
