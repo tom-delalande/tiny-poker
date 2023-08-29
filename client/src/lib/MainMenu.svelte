@@ -2,7 +2,6 @@
     import { Preferences } from "@capacitor/preferences";
     import { router } from "./ui-logic/navigation";
     import { logEvent } from "./analytics/analytics";
-    import { onMount } from "svelte";
     import CommonButton from "./CommonButton.svelte";
     import { playAudio } from "./ui-logic/audio";
     import { storeEnabled } from "./config";

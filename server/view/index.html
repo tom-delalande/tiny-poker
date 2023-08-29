@@ -6,6 +6,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
         rel="stylesheet" />
+
+    <script src="https://kit.fontawesome.com/b16bbe82f6.js" crossorigin="anonymous"></script>
     <link href="/landing/output.css" rel="stylesheet" />
     <script src="https://unpkg.com/htmx.org@1.9.2"
         integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h"
@@ -34,10 +36,10 @@
                     load times and without risking your money. Master your hands and learn
                     new playstyles.
                 </p>
-                <button
+                <a href="/app"
                     class="rounded-md px-4 py-2 bg-gray-50 border-black border-2 hover:drop-shadow-lg hover:bg-red-200 transition active:scale-90">
                     Play in browser
-                </button>
+                </a>
             </div>
         </div>
     </div>
@@ -97,11 +99,26 @@
             alt="Screenshot of Tiny Poker finished hand." />
         <div class="flex flex-col items-center gap-4 m-10">
             <h3 class="font-bold text-2xl">Ready to start your journey?</h3>
-            <button
+            <a href="/app"
                 class="rounded-md px-4 py-2 bg-gray-50 border-black border-2 hover:drop-shadow-lg hover:bg-red-200 transition active:scale-90">
                 Play in browser
-            </button>
+            </a>
         </div>
     </div>
-    <footer class="p-10 md:p-20 bg-neutral-800 flex flex-col items-center"></footer>
+    <footer class="p-10 md:p-20 bg-neutral-800 flex flex-col gap-4 justify-around items-center text-neutral-50">
+        <div class="flex flex-col items-center justify-center">
+            <div class="flex gap-2 justify-center items-center text-2xl">
+                <a href="mailto:" target="_blank"><i class="fa-solid fa-envelope"></i></a>
+                <a href=https://discord.gg/yR9uquvCkS" target="_blank"><i class="fa-brands fa-discord"></i></a>
+                <a href="https://reddit.com/r/tinypoker" target="_blank"><i class="fa-brands fa-reddit"></i></a>
+            </div>
+        </div>
+        <div class="text-center">
+            <h4 class="text-red-500 font-bold">Policies</h4>
+            <div class="flex flex-col">
+                <a href="">Terms of Service</a>
+                <a href="">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
 </body>
