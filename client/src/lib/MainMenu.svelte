@@ -92,7 +92,7 @@ transition disabled:bg-neutral-300 disabled:active:scale-100 min-w-max col-span-
                 >
                 <button
                     on:click={notifyPuzzles}
-                    class="bg-gray-50 p-2 rounded-md active:scale-90 transition"
+                    class="hover:bg-red-200 hover:drop-shadow-lg bg-gray-50 p-2 rounded-md active:scale-90 transition"
                     class:bg-green-500={puzzlesNotified}
                     >{#if puzzlesNotified}
                         <i class="fa-solid fa-check" />
@@ -101,13 +101,14 @@ transition disabled:bg-neutral-300 disabled:active:scale-100 min-w-max col-span-
                     {/if}
                 </button>
                 <button
-                    class="px-4 py-2 bg-gray-50 border-2 rounded-md active:scale-90
+                    class="
+                    px-4 py-2 bg-gray-50 border-2 rounded-md active:scale-90
 transition disabled:bg-neutral-300 disabled:active:scale-100 min-w-max col-span-3"
                     disabled={true}>Tournaments</button
                 >
                 <button
                     on:click={notifyTournaments}
-                    class="bg-gray-50 p-2 rounded-md active:scale-90 transition"
+                    class="hover:bg-red-200 hover:drop-shadow-lg bg-gray-50 p-2 rounded-md active:scale-90 transition"
                     class:bg-green-500={tournaments}
                     >{#if tournaments}
                         <i class="fa-solid fa-check" />
@@ -122,7 +123,7 @@ transition disabled:bg-neutral-300 disabled:active:scale-100 min-w-max col-span-
                 >
                 <button
                     on:click={notifyBots}
-                    class="bg-gray-50 p-2 rounded-md active:scale-90 transition"
+                    class="hover:bg-red-200 hover:drop-shadow-lg bg-gray-50 p-2 rounded-md active:scale-90 transition"
                     class:bg-green-500={bots}
                     >{#if bots}
                         <i class="fa-solid fa-check" />

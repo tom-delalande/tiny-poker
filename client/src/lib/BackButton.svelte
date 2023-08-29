@@ -4,15 +4,11 @@
     export let action: () => void;
 </script>
 
-<div
+<Button
     class="absolute top-5 left-5 text-black bg-neutral-100 rounded-md
-    h-7 px-2 text-center flex align-center justify-center"
+    h-7 px-2 text-center flex align-center justify-center font-thin text-xs
+    gap-2 items-center "
+    {action}
 >
-    <Button
-        {action}
-        class="flex font-thin text-xs justify-center
-        items-center gap-2"
-    >
-        <i class="fa-solid fa-arrow-left" /> Back
-    </Button>
-</div>
+    <i class="fa-solid fa-arrow-left" /> Back
+</Button>
