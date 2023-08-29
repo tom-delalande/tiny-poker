@@ -2,22 +2,35 @@ package landing
 
 import (
 	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
 	"text/template"
 
 	"github.com/go-chi/chi"
 )
 
 var tmpl = template.Must(template.ParseGlob("view/*.html"))
+var css = template.Must(template.ParseGlob("view/styles/output.css"))
+var workDir, _ = os.Getwd()
+var filesDir = http.Dir(filepath.Join(workDir, "view/assets"))
 
 func LandingEndpoints(router chi.Router) chi.Router {
 	router.Get("/", view)
 	router.Get("/output.css", styles)
+	router.Get("/assets/*", asset)
 	return router
 }
 
 func styles(w http.ResponseWriter, r *http.Request) {
-	styles := template.Must(template.ParseFiles("view/styles/output.css"))
-	styles.Execute(w, nil)
+	css.Execute(w, nil)
+}
+
+func asset(w http.ResponseWriter, r *http.Request) {
+	rctx := chi.RouteContext(r.Context())
+	pathPrefix := strings.TrimSuffix(rctx.RoutePattern(), "/*")
+	fs := http.StripPrefix(pathPrefix, http.FileServer(filesDir))
+	fs.ServeHTTP(w, r)
 }
 
 func view(w http.ResponseWriter, r *http.Request) {
