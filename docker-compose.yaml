@@ -8,7 +8,8 @@ services:
       - ./nginx/nginx.conf:/app/nginx.conf
       - ./client/dist:/app/www/app/
     ports:
-      - 9022:80
+      - 80:80
+      - 443:443
     restart: always
     depends_on:
       - server
