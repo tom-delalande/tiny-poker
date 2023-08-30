@@ -5,15 +5,22 @@ services:
       context: .
     container_name: nginx
     volumes:
-      - ./nginx/nginx.conf:/app/nginx.conf
-      - ./client/dist:/app/www/app/
-      - ./nginx/letsencrypt/:/etc/letsencrypt/live/
+      - ./nginx/nginx.conf:/app/nginx.conf/:ro
+      - ./client/dist:/app/www/app/:ro
+      - ./nginx/certbot/www:/var/www/certbot/:ro
+      - ./nginx/certbot/conf/:/etc/nginx/ssl/:ro
     ports:
-      - 9022:80
+      - 80:80
+      - 443:443
     restart: always
     depends_on:
       - server
       - client
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./nginx/certbot/www/:/var/www/certbot/:rw
+      - ./nginx/certbot/conf/:/etc/letsencrypt/:rw
   server:
     build:
       context: server
