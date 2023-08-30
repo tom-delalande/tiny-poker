@@ -154,7 +154,7 @@ transition disabled:bg-neutral-300 disabled:active:scale-100 min-w-max col-span-
             <CommonButton
                 action={() => {
                     logEvent("open-email-button-pressed");
-                    window.open("mailto:poker@getnada.com", "_blank");
+                    window.open("mailto:hello@tiny.poker", "_blank");
                 }}
                 ><span class="flex gap-2 items-center justify-center"
                     ><i class="fa-solid fa-envelope" />Email</span
