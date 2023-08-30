@@ -7,6 +7,7 @@ services:
     volumes:
       - ./nginx/nginx.conf:/app/nginx.conf
       - ./client/dist:/app/www/app/
+      - ./nginx/letsencrypt/:/etc/letsencrypt/live/
     ports:
       - 9022:80
     restart: always

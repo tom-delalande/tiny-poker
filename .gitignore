@@ -3,3 +3,5 @@ server/app
 node_modules
 dist
 tmp
+
+nginx/letsencrypt
