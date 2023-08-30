@@ -6,7 +6,7 @@ services:
     container_name: nginx
     volumes:
       - ./nginx/nginx.conf:/app/nginx.conf
-      - ./client/dist:/app/www/
+      - ./client/dist:/app/www/app/
     ports:
       - 9022:80
     restart: always
@@ -21,7 +21,7 @@ services:
       - PORT=9001
       - BUILD_VERSION=${BUILD_VERSION}
     volumes:
-      - ./server/db:/db
+      - ./server/db:/app/db
     restart: always
   client:
     build:

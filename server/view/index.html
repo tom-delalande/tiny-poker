@@ -13,11 +13,66 @@
         integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h"
         crossorigin="anonymous"></script>
 
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+    <link rel="icon" type="image/png" href="/assets/favicon-32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/assets/favicon-128.png" sizes="128x128" />
     <style>
         body {
             font-family: "Roboto", sans-serif;
         }
     </style>
+    <title>Tiny Poker</title>
+
+    <script>
+        const sessionId = Math.floor(new Date().getTime());
+        async function logEvent(eventType, data) {
+            const deviceId = sessionId;
+            const timestamp = new Date().toISOString();
+
+            const event = {
+                deviceId,
+                sessionId,
+                timestamp,
+                clientBuildVersion: "N/A",
+                eventType,
+                ...data,
+            };
+
+            console.debug(event);
+            try {
+                fetch("/api/analytics/event", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(event),
+                });
+            } catch (e) {
+                return;
+            }
+        }
+
+        logEvent("landing-page-opened", {
+            userAgent: window.navigator.userAgent,
+        });
+
+        addEventListener("scroll", (event) => {
+            logEvent("landing-page-scrolled", {
+                userAgent: window.navigator.userAgent,
+                windowPositionY: window.scrollY,
+            });
+        });
+
+        function openLink(buttonName, url) {
+            logEvent("landing-page-button-pressed", {
+                buttonName: buttonName,
+                url: url,
+                userAgent: window.navigator.userAgent,
+            }).finally(() => {
+                window.location.href = url;
+            });
+        }
+    </script>
 </head>
 
 <body class="bg-neutral-300">
@@ -36,7 +91,7 @@
                     load times and without risking your money. Master your hands and learn
                     new playstyles.
                 </p>
-                <a href="/app"
+                <a href="javascript:openLink('open-app-header', '/app/')"
                     class="rounded-md px-4 py-2 bg-gray-50 border-black border-2 hover:drop-shadow-lg hover:bg-red-200 transition active:scale-90">
                     Play in browser
                 </a>
@@ -97,7 +152,7 @@
             alt="Screenshot of Tiny Poker finished hand." />
         <div class="flex flex-col items-center gap-4 m-10">
             <h3 class="font-bold text-2xl">Ready to start your journey?</h3>
-            <a href="/app"
+            <a href="javascript:openLink('open-app-bottom')"
                 class="rounded-md px-4 py-2 bg-gray-50 border-black border-2 hover:drop-shadow-lg hover:bg-red-200 transition active:scale-90">
                 Play in browser
             </a>
@@ -106,9 +161,12 @@
     <footer class="p-10 md:p-20 bg-neutral-800 flex flex-col gap-4 justify-around items-center text-neutral-50">
         <div class="flex flex-col items-center justify-center">
             <div class="flex gap-2 justify-center items-center text-2xl">
-                <a href="mailto:" target="_blank"><i class="fa-solid fa-envelope"></i></a>
-                <a href=https://discord.gg/yR9uquvCkS" target="_blank"><i class="fa-brands fa-discord"></i></a>
-                <a href="https://reddit.com/r/tinypoker" target="_blank"><i class="fa-brands fa-reddit"></i></a>
+                <a href="javascript:openLink('email', 'mailto:')" target="_blank"><i
+                        class="fa-solid fa-envelope"></i></a>
+                <a href="javascript:openLink('discord',
+                    'https://discord.gg/yR9uquvCkS')"><i class="fa-brands fa-discord"></i></a>
+                <a href="javascript:openLink('reddit',
+                    'https://reddit.com/r/tinypoker')"><i class="fa-brands fa-reddit"></i></a>
             </div>
         </div>
         <!-- <div class="text-center"> -->

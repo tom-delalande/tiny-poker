@@ -7,3 +7,5 @@
 !server/go.mod
 !server/go.sum
 !server/db/migrations
+
+!server/view

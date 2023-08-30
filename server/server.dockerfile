@@ -6,7 +6,9 @@ RUN go mod download
 RUN go build -o /bin/app ./src/main.go
 
 FROM ubuntu:latest
-COPY --from=build /bin/app /bin/app
+WORKDIR /app
+COPY --from=build /bin/app ./app
+COPY --from=build /app/view/ ./view/
 
 EXPOSE 9001
-CMD ["/bin/app"]
+CMD ["/app/app"]
