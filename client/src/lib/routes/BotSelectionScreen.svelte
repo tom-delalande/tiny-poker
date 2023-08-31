@@ -29,16 +29,20 @@
 <ChipsGemInfo />
 <div class="flex items-center justify-center h-full">
     <div
-        class="gap-2 flex flex-col justify-center items-center
+        class="gap-1 md:gap-2 flex flex-col justify-center items-center
         m-2 w-8/12 max-w-md h-full"
     >
         {#each bots as bot}
             <Button
                 class="flex flex-col items-center justify-center bg-gray-50
-                p-2 rounded-md w-full"
+                p-1 rounded-md w-full md:p-2 gap-1"
                 action={() => selectBot(bot)}
             >
-                <img class="w-14 h-14" src={bot.avatar} alt={bot.name} />
+                <img
+                    class="w-10 h-10 md:w-14 md:h-14"
+                    src={bot.avatar}
+                    alt={bot.name}
+                />
                 <p>{bot.name}</p>
                 {#if bot.buyIn.length > 0}
                     <p>
