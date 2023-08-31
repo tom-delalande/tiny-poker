@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/v5"
 )
 
 func AnalyticsEndpoints(router chi.Router, db *sql.DB) chi.Router {

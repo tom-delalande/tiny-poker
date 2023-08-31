@@ -14,8 +14,8 @@ import (
 
 	"github.com/amacneil/dbmate/v2/pkg/dbmate"
 	_ "github.com/amacneil/dbmate/v2/pkg/driver/sqlite"
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -30,6 +30,7 @@ func main() {
 	}
 	router := chi.NewRouter()
 	router.Use(middleware.Logger)
+	router.Use(middleware.Compress(5))
 
 	router.Route("/api", func(router chi.Router) {
 		router.Get("/health-check", func(w http.ResponseWriter, r *http.Request) {

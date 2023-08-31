@@ -7,8 +7,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/chi/v5"
 )
 
 var tmpl = template.Must(template.ParseGlob("view/*.html"))
@@ -17,7 +16,6 @@ var workDir, _ = os.Getwd()
 var filesDir = http.Dir(filepath.Join(workDir, "view/assets"))
 
 func LandingEndpoints(router chi.Router) chi.Router {
-	router.Use(middleware.Compress(5))
 	router.Get("/", view)
 	router.Get("/output.css", styles)
 	router.Get("/assets/*", asset)
@@ -38,5 +36,6 @@ func asset(w http.ResponseWriter, r *http.Request) {
 }
 
 func view(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Content-Type", "text/html")
 	tmpl.ExecuteTemplate(w, "index.html", nil)
 }
