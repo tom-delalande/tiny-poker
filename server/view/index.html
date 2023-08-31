@@ -29,9 +29,9 @@
     <title>Tiny Poker - A simpler way to play poker</title>
 
     <script>
-        const sessionId = Math.floor(new Date().getTime());
         async function logEvent(eventType, data) {
-            const deviceId = sessionId;
+            const deviceId = "N/A";
+            const sessionId = "N/A";
             const timestamp = new Date().toISOString();
 
             const event = {
