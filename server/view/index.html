@@ -1,17 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Tiny Poker is a simple poker app. Play
+    without spending money and practice agaisnt bots." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
         href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
         rel="stylesheet" />
 
-    <script src="https://kit.fontawesome.com/b16bbe82f6.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/b16bbe82f6.js" crossorigin="anonymous" defer></script>
     <link href="/output.css" rel="stylesheet" />
-    <script src="https://unpkg.com/htmx.org@1.9.2"
-        integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h"
-        crossorigin="anonymous"></script>
+    <!-- <script src="https://unpkg.com/htmx.org@1.9.2" -->
+    <!--     integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h" -->
+    <!--     crossorigin="anonymous" defer></script> -->
 
     <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
     <link rel="icon" type="image/png" href="/assets/favicon-32.png" sizes="32x32" />
@@ -88,8 +93,8 @@
                 </h1>
                 <p class="w-full max-w-md text-center">
                     A poker app that is easy to understand. Play a tiny game with tiny
-                    load times and without risking your money. Master your hands and learn
-                    new playstyles.
+                    load times and without risking your money. Master your hands and
+                    learn new playstyles.
                 </p>
                 <a href="javascript:openLink('open-app-header', '/app/')"
                     class="rounded-md px-4 py-2 bg-gray-50 border-black border-2 hover:drop-shadow-lg hover:bg-red-200 transition active:scale-90">
@@ -100,9 +105,12 @@
     </div>
     <div class="p-10 md:p-20 bg-neutral-50 flex justify-center">
         <div class="w-full max-w-screen-lg flex justify-around items-center flex-wrap-reverse">
-            <img class="h-96 drop-shadow-lg" src="/assets/screenshot-1.png" alt="Screenshot of Tiny Poker main menu" />
+            <img width="190" height="384" class="h-96 drop-shadow-lg" src="/assets/screenshot-1.webp"
+                alt="Screenshot of Tiny Poker main menu" />
             <div class="flex flex-col gap-4">
-                <h2 class="text-4xl font-semibold">A simple poker app for beginners</h2>
+                <h2 class="text-4xl font-semibold">
+                    A simple poker app for beginners
+                </h2>
                 <p class="w-full max-w-md text-lg">
                     Discover Tiny Poker, the perfect gateway to poker for beginners. Our
                     app's user-friendly interface and intuitive tutorials make learning
@@ -119,24 +127,25 @@
                     Play poker without spending money
                 </h2>
                 <p class="w-full max-w-md text-lg">
-                    Enjoy the excitement of poker without the financial stress. Tiny Poker
-                    offers thrilling matches without real money, allowing you to focus on
-                    the game and savor the thrill of winning.
+                    Enjoy the excitement of poker without the financial stress. Tiny
+                    Poker offers thrilling matches without real money, allowing you to
+                    focus on the game and savor the thrill of winning.
                 </p>
             </div>
-            <img class="h-96 drop-shadow-lg" src="/assets/screenshot-5.png" alt="Screenshot of Tiny Poker
+            <img width="190" height="384" class="h-96 drop-shadow-lg" src="/assets/screenshot-5.webp" alt="Screenshot of Tiny Poker
             game." />
         </div>
     </div>
     <div class="p-10 md:p-20 bg-neutral-50 flex justify-center">
         <div class="w-full max-w-screen-lg flex justify-around items-center flex-wrap-reverse">
-            <img class="h-96 drop-shadow-lg" src="/assets/screenshot-4.png" alt="Screenshot of Tiny Poker bots." />
+            <img width="190" height="384" class="h-96 drop-shadow-lg" src="/assets/screenshot-4.webp"
+                alt="Screenshot of Tiny Poker bots." />
             <div class="flex flex-col gap-4">
                 <h2 class="text-4xl font-semibold">Practice poker against bots</h2>
                 <p class="w-full max-w-md text-lg">
-                    Hone your poker skills with Tiny Poker's AI-powered practice feature.
-                    Face skillful AI opponents for risk-free practice, perfecting your
-                    strategies and gaining confidence for real matches.
+                    Hone your poker skills with Tiny Poker's AI-powered practice
+                    feature. Face skillful AI opponents for risk-free practice,
+                    perfecting your strategies and gaining confidence for real matches.
                 </p>
             </div>
         </div>
@@ -148,7 +157,7 @@
                 Enjoy poker, whether you're on a break or on the go.
             </p>
         </div>
-        <img class="h-96 w-auto drop-shadow-lg" src="/assets/screenshot-3.png"
+        <img width="190" height="384" class="h-96 w-auto drop-shadow-lg" src="/assets/screenshot-3.webp"
             alt="Screenshot of Tiny Poker finished hand." />
         <div class="flex flex-col items-center gap-4 m-10">
             <h3 class="font-bold text-2xl">Ready to start your journey?</h3>
@@ -161,11 +170,11 @@
     <footer class="p-10 md:p-20 bg-neutral-800 flex flex-col gap-4 justify-around items-center text-neutral-50">
         <div class="flex flex-col items-center justify-center">
             <div class="flex gap-2 justify-center items-center text-2xl">
-                <a href="javascript:openLink('email', 'mailto:hello@tiny.poker')" target="_blank"><i
+                <a aria-label="Email" href="javascript:openLink('email', 'mailto:hello@tiny.poker')" target="_blank"><i
                         class="fa-solid fa-envelope"></i></a>
-                <a href="javascript:openLink('discord',
+                <a aria-label="Discord" href="javascript:openLink('discord',
                     'https://discord.gg/yR9uquvCkS')"><i class="fa-brands fa-discord"></i></a>
-                <a href="javascript:openLink('reddit',
+                <a aria-label="Reddit" href="javascript:openLink('reddit',
                     'https://reddit.com/r/tinypoker')"><i class="fa-brands fa-reddit"></i></a>
             </div>
         </div>
@@ -173,3 +182,5 @@
         <!--     <h4 class="text-red-500 font-bold">Policies</h4> -->
     </footer>
 </body>
+
+</html>
