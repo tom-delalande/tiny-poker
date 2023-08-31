@@ -23,6 +23,7 @@ func LandingEndpoints(router chi.Router) chi.Router {
 }
 
 func styles(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Content-Type", "text/css")
 	css.Execute(w, nil)
 }
 
