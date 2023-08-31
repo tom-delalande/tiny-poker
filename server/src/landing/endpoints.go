@@ -27,6 +27,7 @@ func styles(w http.ResponseWriter, r *http.Request) {
 }
 
 func asset(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Cache-Control", "max-age=31536000")
 	rctx := chi.RouteContext(r.Context())
 	pathPrefix := strings.TrimSuffix(rctx.RoutePattern(), "/*")
 	fs := http.StripPrefix(pathPrefix, http.FileServer(filesDir))
