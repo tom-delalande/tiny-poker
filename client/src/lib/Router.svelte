@@ -4,6 +4,8 @@
     import PokerGame from "./PokerGame.svelte";
     import Store from "./Store.svelte";
     import BotSelectionScreen from "./routes/BotSelectionScreen.svelte";
+    import EmailSubmissionPage from "./routes/EmailSubmissionPage.svelte";
+    import UpcommingFeatures from "./routes/UpcommingFeatures.svelte";
     import { router } from "./ui-logic/navigation";
 </script>
 
@@ -21,4 +23,10 @@
 {/if}
 {#if $router.route === "Store"}
     <Store />
+{/if}
+{#if $router.route === "UpcommingFeatures"}
+    <UpcommingFeatures />
+{/if}
+{#if $router.route === "EmailSubmittion"}
+    <EmailSubmissionPage preferences={$router.preferences} />
 {/if}

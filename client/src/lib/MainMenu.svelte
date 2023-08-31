@@ -3,55 +3,14 @@
     import { router } from "./ui-logic/navigation";
     import { logEvent } from "./analytics/analytics";
     import CommonButton from "./CommonButton.svelte";
-    import { playAudio } from "./ui-logic/audio";
     import { storeEnabled } from "./config";
 
-    let puzzlesNotified = false;
-    function notifyPuzzles() {
-        playAudio("playerAction");
-        logEvent("feature-vote-changed", {
-            preference: "puzzles",
-        });
-        puzzlesNotified = true;
-        tournaments = false;
-        bots = false;
-        Preferences.set({ key: "NotificationChoice", value: "Puzzles" });
-    }
-
-    let tournaments = false;
-    function notifyTournaments() {
-        playAudio("playerAction");
-        logEvent("feature-vote-changed", {
-            preference: "tournaments",
-        });
-        tournaments = true;
-        bots = false;
-        puzzlesNotified = false;
-        Preferences.set({ key: "NotificationChoice", value: "Tournaments" });
-    }
-
-    let bots = false;
-    function notifyBots() {
-        playAudio("playerAction");
-        logEvent("feature-vote-changed", {
-            preference: "story",
-        });
-        bots = true;
-        tournaments = false;
-        puzzlesNotified = false;
-        Preferences.set({ key: "NotificationChoice", value: "Story" });
-    }
-
-    Preferences.get({ key: "NotificationChoice" }).then((result) => {
-        if (puzzlesNotified || tournaments || bots) return;
-        if (result.value === "Puzzles") {
-            puzzlesNotified = true;
-        }
-        if (result.value === "Tournaments") {
-            tournaments = true;
-        }
-        if (result.value === "Story") {
-            bots = true;
+    let showUpcommingFeatures = false;
+    Preferences.get({
+        key: "upcomming-features-preference-sent",
+    }).then((result) => {
+        if (result.value === undefined || result.value !== "true") {
+            showUpcommingFeatures = true;
         }
     });
 </script>
@@ -78,63 +37,14 @@
                 ><i class="fa-solid fa-store" /> Store
             </CommonButton>
         {/if}
-        <div
-            class="flex flex-col justify-center items-center gap-4
-            bg-neutral-200 bg-opacity-50 rounded-md py-5 max-w-md text-center mx-5"
-        >
-            <p>Coming Soon...</p>
-            <div class="grid grid-cols-4 gap-2">
-                <button
-                    class="px-4 py-2 bg-gray-50 border-2 rounded-md active:scale-90
-transition disabled:bg-neutral-300 disabled:active:scale-100 min-w-max col-span-3"
-                    disabled={true}>Puzzles</button
-                >
-                <button
-                    on:click={notifyPuzzles}
-                    class="hover:bg-red-200 hover:drop-shadow-lg bg-gray-50 p-2 rounded-md active:scale-90 transition"
-                    class:bg-green-500={puzzlesNotified}
-                    >{#if puzzlesNotified}
-                        <i class="fa-solid fa-check" />
-                    {:else}
-                        <i class="fa-solid fa-check-to-slot" />
-                    {/if}
-                </button>
-                <button
-                    class="
-                    px-4 py-2 bg-gray-50 border-2 rounded-md active:scale-90
-transition disabled:bg-neutral-300 disabled:active:scale-100 min-w-max col-span-3"
-                    disabled={true}>Tournaments</button
-                >
-                <button
-                    on:click={notifyTournaments}
-                    class="hover:bg-red-200 hover:drop-shadow-lg bg-gray-50 p-2 rounded-md active:scale-90 transition"
-                    class:bg-green-500={tournaments}
-                    >{#if tournaments}
-                        <i class="fa-solid fa-check" />
-                    {:else}
-                        <i class="fa-solid fa-check-to-slot" />
-                    {/if}
-                </button>
-                <button
-                    class="px-4 py-2 bg-gray-50 border-2 rounded-md active:scale-90
-transition disabled:bg-neutral-300 disabled:active:scale-100 min-w-max col-span-3"
-                    disabled={true}>Story Mode</button
-                >
-                <button
-                    on:click={notifyBots}
-                    class="hover:bg-red-200 hover:drop-shadow-lg bg-gray-50 p-2 rounded-md active:scale-90 transition"
-                    class:bg-green-500={bots}
-                    >{#if bots}
-                        <i class="fa-solid fa-check" />
-                    {:else}
-                        <i class="fa-solid fa-check-to-slot" />
-                    {/if}
-                </button>
-            </div>
-            <p class="px-5">
-                Press <i class="fa-solid fa-check-to-slot" /> to vote for a feature
-            </p>
-        </div>
+        {#if showUpcommingFeatures}
+            <CommonButton
+                action={() => {
+                    router.set({ route: "UpcommingFeatures" });
+                }}
+                ><i class="fa-solid fa-rocket" /> Upcomming Features
+            </CommonButton>
+        {/if}
     </div>
     <div
         class="flex flex-col gap-2 items-center justify-center font-thin

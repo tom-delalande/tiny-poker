@@ -7,7 +7,9 @@ export type Page =
   | BotsGamePage
   | CharacterCardPage
   | StorePage
-  | BotSelectionScreenPage;
+  | BotSelectionScreenPage
+  | UpcommingFeaturesPage
+  | EmailSubmittionPage;
 
 export interface HomePage {
   route: "Home";
@@ -31,6 +33,15 @@ export interface BotSelectionScreenPage {
 
 export interface StorePage {
   route: "Store";
+}
+
+export interface UpcommingFeaturesPage {
+  route: "UpcommingFeatures";
+}
+
+export interface EmailSubmittionPage {
+  route: "EmailSubmittion";
+  preferences: string[];
 }
 
 export const router = writable<Page>({
