@@ -9,7 +9,8 @@ export type Page =
   | StorePage
   | BotSelectionScreenPage
   | UpcommingFeaturesPage
-  | EmailSubmittionPage;
+  | EmailSubmittionPage
+  | AddedGemsPage;
 
 export interface HomePage {
   route: "Home";
@@ -42,6 +43,11 @@ export interface UpcommingFeaturesPage {
 export interface EmailSubmittionPage {
   route: "EmailSubmittion";
   preferences: string[];
+}
+
+export interface AddedGemsPage {
+  route: "AddedGems";
+  gems: number;
 }
 
 export const router = writable<Page>({

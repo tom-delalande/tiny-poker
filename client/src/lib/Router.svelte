@@ -3,6 +3,7 @@
     import MainMenu from "./MainMenu.svelte";
     import PokerGame from "./PokerGame.svelte";
     import Store from "./Store.svelte";
+    import AddedGemsPage from "./routes/AddedGemsPage.svelte";
     import BotSelectionScreen from "./routes/BotSelectionScreen.svelte";
     import EmailSubmissionPage from "./routes/EmailSubmissionPage.svelte";
     import UpcommingFeatures from "./routes/UpcommingFeatures.svelte";
@@ -28,5 +29,8 @@
     <UpcommingFeatures />
 {/if}
 {#if $router.route === "EmailSubmittion"}
-    <EmailSubmissionPage preferences={$router.preferences} />
+    <EmailSubmissionPage preference={$router.preferences} />
+{/if}
+{#if $router.route === "AddedGems"}
+    <AddedGemsPage gems={$router.gems} />
 {/if}

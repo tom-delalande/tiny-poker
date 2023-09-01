@@ -4,6 +4,7 @@
     import CommonButton from "../CommonButton.svelte";
     import { logEvent } from "../analytics/analytics";
     import { router } from "../ui-logic/navigation";
+    import { gameState } from "../ui-logic/state";
 
     export let preference: string[];
     let emailInput = "";
@@ -18,7 +19,12 @@
                 key: "upcomming-features-preference-sent",
                 value: "true",
             });
-            router.set({ route: "Home" });
+
+            gameState.update((prev) => {
+                prev.gems += 50;
+                return prev;
+            });
+            router.set({ route: "AddedGems", gems: 50});
         });
     }
 </script>
