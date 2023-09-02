@@ -51,7 +51,7 @@
     <div class="flex flex-col gap-2 justify-center items-center p-5">
         <p>Most Important</p>
         <div
-            class="flex flex-col gap-2 justify-center items-center"
+            class="flex flex-col gap-2 justify-center items-center overscroll-none"
             use:dndzone={{
                 items: features,
                 flipDurationMs: 200,
