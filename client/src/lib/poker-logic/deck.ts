@@ -1,4 +1,4 @@
-import type { Card } from "./poker-logic";
+import { Card } from "./model";
 
 export function createInitalDeck(): Card[] {
   const deck: Card[] = [];

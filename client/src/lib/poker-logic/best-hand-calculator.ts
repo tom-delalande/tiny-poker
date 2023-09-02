@@ -274,7 +274,6 @@ export function rateHand(cards: Card[]): HandRating {
       handStrength: "Four of a Kind",
     };
   }
-  console.log(fullHouses);
   if (fullHouses.length > 0) {
     const score = calculateHandScore(
       "Full House",
@@ -335,58 +334,60 @@ export function calculateHandScore(
 
   if (handStrength == "High Card") {
     return (
-      0.007 * highCard[0] +
-      0.00007 * sortedCards[0] +
-      0.0000007 * sortedCards[1] +
-      0.000000007 * sortedCards[2] +
-      0.00000000007 * sortedCards[3]
+      0.007 * highCard[0] ||
+      0 + 0.00007 * sortedCards[0] ||
+      0 + 0.0000007 * sortedCards[1] ||
+      0 + 0.000000007 * sortedCards[2] ||
+      0 + 0.00000000007 * sortedCards[3] ||
+      0
     );
   }
 
   if (handStrength == "Pair") {
     return (
-      0.2 +
-      0.007 * highCard[0] +
-      0.00007 * sortedCards[0] +
-      0.0000007 * sortedCards[1] +
-      0.000000007 * sortedCards[2]
+      0.2 + 0.007 * highCard[0] ||
+      0 + 0.00007 * sortedCards[0] ||
+      0 + 0.0000007 * sortedCards[1] ||
+      0 + 0.000000007 * sortedCards[2] ||
+      0
     );
   }
 
   if (handStrength == "Two Pair") {
     return (
-      0.3 +
-      0.007 * highCard[0] +
-      0.00007 * highCard[1] +
-      0.0000007 * sortedCards[0]
+      0.3 + 0.007 * highCard[0] ||
+      0 + 0.00007 * highCard[1] ||
+      0 + 0.0000007 * sortedCards[0] ||
+      0
     );
   }
 
   if (handStrength == "Three of a Kind") {
     return (
-      0.4 +
-      0.007 * highCard[0] +
-      0.00007 * sortedCards[0] +
-      0.0000007 * sortedCards[1]
+      0.4 + 0.007 * highCard[0] ||
+      0 + 0.00007 * sortedCards[0] ||
+      0 + 0.0000007 * sortedCards[1] ||
+      0
     );
   }
 
   if (handStrength == "Straight") {
-    return 0.5 + 0.007 * highCard[0];
+    return 0.5 + 0.007 * highCard[0] || 0;
   }
   if (handStrength == "Flush") {
-    return 0.6 + 0.007 * highCard[0];
+    return 0.6 + 0.007 * highCard[0] || 0;
   }
 
   if (handStrength == "Full House") {
-    return 0.7 + 0.007 * highCard[0] + 0.00007 * highCard[1];
+    return 0.7 + 0.007 * highCard[0] || 0 + 0.00007 * highCard[1] || 0;
   }
 
   if (handStrength == "Four of a Kind") {
-    return 0.8 + 0.007 * highCard[0] + 0.00007 * sortedCards[0];
+    // I think the cards might need to be removed from the sorted cards
+    return 0.8 + 0.007 * highCard[0] || 0 + 0.00007 * sortedCards[0] || 0;
   }
 
   if (handStrength == "Straight Flush") {
-    return 0.9 + 0.007 * highCard[0];
+    return 0.9 + 0.007 * highCard[0] || 0;
   }
 }
