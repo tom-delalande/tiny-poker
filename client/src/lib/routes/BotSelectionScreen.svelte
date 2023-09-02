@@ -32,6 +32,7 @@
         class="gap-1 md:gap-2 flex flex-col justify-center items-center
         m-2 w-8/12 max-w-md h-full"
     >
+        <h1>Choose your opponent:</h1>
         {#each bots as bot}
             <Button
                 class="flex flex-col items-center justify-center bg-gray-50
@@ -45,15 +46,18 @@
                 />
                 <p>{bot.name}</p>
                 {#if bot.buyIn.length > 0}
-                    <p>
-                        {formatCompactNumber(bot.buyIn[0].chips)}
-                        <i class="fa-solid fa-coins" />
-                        <i class="fa-solid fa-arrow-right" />
-                        {formatCompactNumber(
-                            bot.buyIn[bot.buyIn.length - 1].chips
-                        )}
-                        <i class="fa-solid fa-coins" />
-                    </p>
+                    <div>
+                        Table stack:
+                        <p>
+                            {formatCompactNumber(bot.buyIn[0].chips)}
+                            <i class="fa-solid fa-coins" />
+                            <i class="fa-solid fa-arrow-right" />
+                            {formatCompactNumber(
+                                bot.buyIn[bot.buyIn.length - 1].chips
+                            )}
+                            <i class="fa-solid fa-coins" />
+                        </p>
+                    </div>
                 {/if}
             </Button>
         {/each}
