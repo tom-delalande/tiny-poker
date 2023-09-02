@@ -29,7 +29,7 @@
     <UpcommingFeatures />
 {/if}
 {#if $router.route === "EmailSubmittion"}
-    <EmailSubmissionPage preference={$router.preferences} />
+    <EmailSubmissionPage preference={$router.preference} />
 {/if}
 {#if $router.route === "AddedGems"}
     <AddedGemsPage gems={$router.gems} />

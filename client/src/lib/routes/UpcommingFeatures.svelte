@@ -43,12 +43,16 @@
         router.set({ route: "Home" });
     }}
 />
-<div class="flex flex-col items-center justify-center gap-2 h-full">
+<div
+    class="flex flex-col items-center justify-center gap-2 h-full overscroll-none"
+>
     <p class="max-w-sm text-center">
         Re-order these features to show us how important each is to you.
     </p>
 
-    <div class="flex flex-col gap-2 justify-center items-center p-5">
+    <div
+        class="flex flex-col gap-2 justify-center items-center p-5 overscroll-none"
+    >
         <p>Most Important</p>
         <div
             class="flex flex-col gap-2 justify-center items-center overscroll-none"
@@ -63,7 +67,7 @@
             {#each features as feature (feature.id)}
                 <div
                     class="px-4 py-2 min-w-max w-52 bg-gray-50 rounded-md
-                text-center"
+                text-center overscroll-none"
                     animate:flip={{ duration: 200 }}
                 >
                     <i class="fa-solid fa-{feature.icon}" />

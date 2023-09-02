@@ -42,7 +42,7 @@ export interface UpcommingFeaturesPage {
 
 export interface EmailSubmittionPage {
   route: "EmailSubmittion";
-  preferences: string[];
+  preference: string[];
 }
 
 export interface AddedGemsPage {
