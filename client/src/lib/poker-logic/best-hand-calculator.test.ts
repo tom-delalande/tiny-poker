@@ -141,4 +141,73 @@ describe("straight", () => {
     const rating = rateHand(cards);
     expect(rating.handStrength).toBe("Straight Flush");
   });
+
+  test("full house beats two pair", () => {
+    const cards: Card[] = [
+      {
+        value: 12,
+        suit: "Hearts",
+      },
+      {
+        value: 12,
+        suit: "Clubs",
+      },
+      {
+        value: 9,
+        suit: "Diamonds",
+      },
+      {
+        value: 9,
+        suit: "Spades",
+      },
+      {
+        value: 8,
+        suit: "Hearts",
+      },
+      {
+        value: 8,
+        suit: "Spades",
+      },
+      {
+        value: 10,
+        suit: "Hearts",
+      },
+    ];
+    const rating = rateHand(cards);
+
+    const cards2: Card[] = [
+      {
+        value: 12,
+        suit: "Hearts",
+      },
+      {
+        value: 12,
+        suit: "Clubs",
+      },
+      {
+        value: 9,
+        suit: "Diamonds",
+      },
+      {
+        value: 12,
+        suit: "Diamonds",
+      },
+      {
+        value: 8,
+        suit: "Hearts",
+      },
+      {
+        value: 8,
+        suit: "Spades",
+      },
+      {
+        value: 7,
+        suit: "Clubs",
+      },
+    ];
+    const rating2 = rateHand(cards2);
+    expect(rating.handStrength).toBe("Two Pair");
+    expect(rating2.handStrength).toBe("Full House");
+    expect(rating2.score).toBeGreaterThan(rating.score);
+  });
 });

@@ -93,10 +93,13 @@ function calculatePairCombinations(valueFrequency: {
   const fullHouse = [];
   Object.keys(valueFrequency).forEach((key) => {
     if (pair.length > 0 && valueFrequency[key] >= 3) {
-      fullHouse.push({ trips: key, pair: pair[0] });
+      fullHouse.push({ threeOfAKind: parseInt(key), pair: parseInt(pair[0]) });
     }
     if (threeOfAKind.length > 0 && valueFrequency[key] >= 2) {
-      fullHouse.push({ threeOfAKind: threeOfAKind[0], pair: parseInt(key) });
+      fullHouse.push({
+        threeOfAKind: parseInt(threeOfAKind[0]),
+        pair: parseInt(key),
+      });
     }
 
     if (valueFrequency[key] >= 2) {
@@ -271,6 +274,7 @@ export function rateHand(cards: Card[]): HandRating {
       handStrength: "Four of a Kind",
     };
   }
+  console.log(fullHouses);
   if (fullHouses.length > 0) {
     const score = calculateHandScore(
       "Full House",
@@ -367,22 +371,22 @@ export function calculateHandScore(
     );
   }
 
+  if (handStrength == "Straight") {
+    return 0.5 + 0.007 * highCard[0];
+  }
+  if (handStrength == "Flush") {
+    return 0.6 + 0.007 * highCard[0];
+  }
+
   if (handStrength == "Full House") {
-    return 0.5 + 0.007 * highCard[0] + 0.00007 * highCard[1];
+    return 0.7 + 0.007 * highCard[0] + 0.00007 * highCard[1];
   }
 
   if (handStrength == "Four of a Kind") {
-    return 0.6 + 0.007 * highCard[0] + 0.00007 * sortedCards[0];
+    return 0.8 + 0.007 * highCard[0] + 0.00007 * sortedCards[0];
   }
 
-  if (handStrength == "Flush") {
-    return 0.7 + 0.007 * highCard[0];
-  }
-
-  if (handStrength == "Straight") {
-    return 0.8 + 0.007 * highCard[0];
-  }
   if (handStrength == "Straight Flush") {
-    return 0.8 + 0.007 * highCard[0];
+    return 0.9 + 0.007 * highCard[0];
   }
 }
