@@ -27,10 +27,10 @@
 
 <BackButton action={() => router.set({ route: "Home" })} />
 <ChipsGemInfo />
-<div class="flex items-center justify-center h-full">
+<div class="flex items-center justify-center min-h-full py-24 overflow-scroll">
     <div
         class="gap-1 md:gap-2 flex flex-col justify-center items-center
-        m-2 w-8/12 max-w-md h-full"
+        m-2 w-8/12 max-w-md"
     >
         <h1>Choose your opponent:</h1>
         {#each bots as bot}
