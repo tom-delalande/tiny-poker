@@ -3,7 +3,7 @@
     import { formatCompactNumber } from "./util/number";
 </script>
 
-<div class="font-thin absolute top-14 left-5">
+<div class="font-thin absolute top-14 left-5 text-text">
     {formatCompactNumber($gameState?.chips)}
     <i class="fa-solid fa-coins" />
     {formatCompactNumber($gameState?.gems)}

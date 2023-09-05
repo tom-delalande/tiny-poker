@@ -4,6 +4,7 @@ import { Preferences } from "@capacitor/preferences";
 
 export const gameState = writable<GameState>();
 export const localHands = writable<LocalHands>();
+export const lightMode = writable<"Dark" | "Light">();
 
 type LocalHands = {
   version: 1;
@@ -70,5 +71,24 @@ localHands.subscribe((value) => {
   Preferences.set({
     key: "local-games",
     value: JSON.stringify(value),
+  });
+});
+
+Preferences.get({ key: "light-mode" }).then((result) => {
+  if (
+    (result.value !== undefined && result.value === "Light") ||
+    result.value === "Dark"
+  ) {
+    lightMode.set(result.value);
+  } else {
+    lightMode.set("Light");
+  }
+});
+
+lightMode.subscribe((value) => {
+  if (value === undefined || value === null) return;
+  Preferences.set({
+    key: "light-mode",
+    value: value,
   });
 });

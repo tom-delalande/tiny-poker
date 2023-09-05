@@ -16,9 +16,10 @@
 </script>
 
 <div
-    class="flex flex-col justify-center items-center gap-4 h-full bg-neutral-200"
+    class="flex flex-col justify-center items-center gap-4 h-full bg-base"
 >
-    <div class="justify-self-center flex flex-col items-center m-auto gap-6">
+    <div class="justify-self-center flex flex-col items-center m-auto gap-6
+        text-text">
         <div class="flex gap-4 items-center">
             <div class="bg-red-500 w-8 h-8 rounded-md rotate-45" />
             <h1 class="text-5xl">Tiny Poker</h1>
@@ -48,7 +49,7 @@
     </div>
     <div
         class="flex flex-col gap-2 items-center justify-center font-thin
-        justify-self-end py-10 italic"
+        justify-self-end py-10 italic text-text"
     >
         <p>We'd love to hear what you think</p>
         <div class="flex gap-2 text-sm font-normal items-center justify-center">

@@ -66,21 +66,21 @@
                         playAudio("playerAction");
                         play(buyIn, index);
                     }}
-                    class="bg-gray-50 rounded-md p-1 pb-2 gap-2 flex
+                    class="bg-crust rounded-md p-1 pb-2 gap-2 flex
                         flex-col w-28 min-w-fit
                     items-center active:scale-90 transition"
-                    class:border-red-500={index === notEnoughFundsIndex}
+                    class:border-red={index === notEnoughFundsIndex}
                     class:border-2={index === notEnoughFundsIndex}
                 >
                     <div
-                        class="flex gap-2 bg-purple-200 rounded-md p-1
+                        class="flex gap-2 bg-surface2 text-text rounded-md p-1
                         justify-center w-full"
                     >
                         {#if buyIn.free && $gameState.chips === 0}
                             Free
                         {:else}
                             <div class="flex flex-col">
-                                <div class="text-purple-800">Fee</div>
+                                <div class="">Fee</div>
                                 <div class="flex gap-1">
                                     <div class="">
                                         {formatCompactNumber(buyIn.chipsCost)}
@@ -104,7 +104,7 @@
         {/each}
     </div>
     {#if notEnoughFundsError}
-        <div class="text-red-500 text-center">
+        <div class="text-red text-center">
             You do not have enough funds to select this starting stack.
         </div>
     {/if}

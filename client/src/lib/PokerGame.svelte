@@ -130,7 +130,7 @@
     }
 </script>
 
-<div class="flex flex-col justify-around h-full bg-neutral-300">
+<div class="flex flex-col justify-around h-full bg-back">
     <BackButton action={() => router.set({ route: "Home" })} />
     <div class="flex flex-col gap-2 items-center">
         <ChipsGemInfo />

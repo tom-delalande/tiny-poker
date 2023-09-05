@@ -6,13 +6,13 @@
 <div
     class="rounded-md w-10 h-10 md:w-16 md:h-16 text-2xl flex items-center
     justify-center gap-1 relative drop-shadow-sm"
-    class:bg-red-400={suit === "Hearts"}
-    class:bg-green-400={suit === "Diamonds"}
+    class:bg-red={suit === "Hearts"}
+    class:bg-teal={suit === "Diamonds"}
     class:bg-black={suit === "Spades"}
     class:bg-white={suit === "Clubs"}
     class:text-neutral-600={suit === "Clubs"}
     class:border-neutral-600={suit === "Clubs"}
-    class:bg-neutral-400={suit === "Hidden"}
+    class:bg-surface0={suit === "Hidden"}
     class:text-white={suit !== "Clubs"}
 >
     {#if suit === "Hidden"}

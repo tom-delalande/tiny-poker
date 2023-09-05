@@ -12,15 +12,16 @@
 
 {#if lastAction === "Winner"}
     <div
-        class="border-2 border-yellow-900 rounded-md px-4 bg-yellow-300
-        text-yellow-900"
+        class="rounded-md px-4 bg-yellow
+        text-white"
     >
         {lastAction}
     </div>
 {/if}
 {#if lastAction === "None"}
     <div
-        class="border-2 border-neutral-300 rounded-md px-4 bg-neutral-300 text-neutral-300"
+        class="rounded-md px-4 bg-surface0
+        text-text"
     >
         {lastAction}
     </div>
@@ -28,38 +29,34 @@
 
 {#if lastAction === "Check"}
     <div
-        class="border-2 border-neutral-900 rounded-md px-4 bg-neutral-300 text-neutral-900"
+        class="rounded-md px-4 bg-surface0
+        text-text"
     >
         {lastAction}
     </div>
 {/if}
 
 {#if lastAction === "Fold"}
-    <div
-        class="border-2 border-red-900 rounded-md px-4 bg-red-300 text-red-900"
-    >
+    <div class="rounded-md px-4 bg-maroon text-white">
         {lastAction}
     </div>
 {/if}
 
 {#if lastAction === "Call"}
-    <div
-        class="border-2 border-green-900 rounded-md px-4 bg-green-300 text-green-900"
-    >
+    <div class="rounded-md px-4 bg-green text-white">
         {lastAction}
     </div>
 {/if}
 
 {#if lastAction === "Raise" || lastAction === "Big Blind"}
-    <div
-        class="border-2 border-yellow-900 rounded-md px-4 bg-yellow-400 text-yellow-900"
-    >
+    <div class="rounded-md px-4 bg-yellow text-white">
         {lastAction}
     </div>
 {/if}
 {#if lastAction === "Small Blind"}
     <div
-        class="border-2 border-yellow-900 rounded-md px-4 bg-yellow-200 text-yellow-900"
+        class="rounded-md px-4 bg-yellow
+        text-white"
     >
         {lastAction}
     </div>

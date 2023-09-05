@@ -11,7 +11,7 @@
 </script>
 
 <Button
-    class="absolute top-5 right-5 text-black bg-neutral-100 rounded-full w-7
+    class="absolute top-5 right-5  rounded-full w-7
     h-7 text-center flex items-center justify-center text-xs"
     action={async () => {
         muted = await toggleAudio();

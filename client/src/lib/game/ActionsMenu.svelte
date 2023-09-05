@@ -1,5 +1,4 @@
 <script lang="ts">
-    import Button from "../Button.svelte";
     import CommonButton from "../CommonButton.svelte";
     import type { HandState } from "../poker-logic/model";
     import {

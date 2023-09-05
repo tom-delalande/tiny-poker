@@ -12,7 +12,7 @@
 
 <div
     class="flex flex-col items-center justify-around gap-2
-    p-2 min-h-full max-w-md m-auto"
+    p-2 min-h-full max-w-md m-auto text-text"
 >
     {#if backEnabled}
         <BackButton

@@ -6,6 +6,8 @@
     import { logEvent } from "./lib/analytics/analytics";
     import { Capacitor } from "@capacitor/core";
     import buildVersionData from "./build-version.json";
+    import DarkModeButton from "./lib/DarkModeButton.svelte";
+    import { lightMode } from "./lib/ui-logic/state";
 
     logEvent("session-started", {
         width: window.innerWidth,
@@ -34,7 +36,12 @@
     }
 </script>
 
-<div class="app-container">
+<div
+    class="app-container bg-base h-full"
+    class:latte={$lightMode === "Light"}
+    class:mocha={$lightMode === "Dark"}
+>
     <MuteButton />
+    <DarkModeButton />
     <Router />
 </div>

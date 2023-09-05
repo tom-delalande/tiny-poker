@@ -5,7 +5,7 @@
 </script>
 
 <Button
-    class="absolute top-5 left-5 text-black bg-neutral-100 rounded-md
+    class="absolute top-5 left-5 rounded-md
     h-7 px-2 text-center flex align-center justify-center font-thin text-xs
     gap-2 items-center "
     {action}

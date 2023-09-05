@@ -97,8 +97,6 @@ body {
 }
 
 html {
-  background-color: rgb(229 229 229);
-
   /* WebKit adds a gray box whenvener you click on a button */
   -webkit-tap-highlight-color: transparent;
   /* WebKit zooms in when you double tap */

@@ -44,7 +44,8 @@
     }}
 />
 <div
-    class="flex flex-col items-center justify-center gap-2 h-full overscroll-none"
+    class="flex flex-col items-center justify-center gap-2 h-full
+    overscroll-none text-text"
 >
     <p class="max-w-sm text-center">
         Re-order these features to show us how important each is to you.
@@ -66,8 +67,8 @@
         >
             {#each features as feature (feature.id)}
                 <div
-                    class="px-4 py-2 min-w-max w-52 bg-gray-50 rounded-md
-                text-center overscroll-none"
+                    class="px-4 py-2 min-w-max w-52 rounded-md
+                text-center overscroll-none bg-crust"
                     animate:flip={{ duration: 200 }}
                 >
                     <i class="fa-solid fa-{feature.icon}" />

@@ -13,6 +13,7 @@
     "tailwind": "npx tailwindcss -i ./src/app.css -o ./dist/output.css --watch"
   },
   "devDependencies": {
+    "@catppuccin/tailwindcss": "^0.1.6",
     "@sveltejs/vite-plugin-svelte": "^2.4.2",
     "@tsconfig/svelte": "^5.0.0",
     "@types/jest": "^29.5.3",
