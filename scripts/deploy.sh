@@ -25,9 +25,6 @@ elif [ $LOCAL = $BASE ]; then
     echo "$(date --utc +%FT%TZ): Releasing new server version"
     BUILD_VERSION=$BUILD_VERSION docker rollout server
     BUILD_VERSION=$BUILD_VERSION docker-compose up -d --no-deps --scale server=1 --no-recreate server
-
-    echo "$(date --utc +%FT%TZ): Releasing new nginx version"
-    docker exec nginx nginx -s reload
 elif [ $REMOTE = $BASE ]; then
      echo "$(date --utc +%FT%TZ): Local changes detected, you may need to stashing"
      git stash
