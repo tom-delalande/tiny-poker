@@ -56,7 +56,6 @@ func main() {
 	signal.Notify(stop, os.Interrupt)
 	<-stop
 	server.Shutdown(context.Background())
-
 }
 
 func setupDatabase() error {
