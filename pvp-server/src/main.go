@@ -8,14 +8,25 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"text/template"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"golang.org/x/exp/slices"
 )
 
 var templateFiles, _ = readTemplates("src/templates", nil)
+
+type Game struct {
+	GameId  int
+	Players []int
+}
+
+var playersInQueue = []int{}
+var games = []Game{}
+var id = 0
 
 func main() {
 	router := chi.NewRouter()
@@ -24,6 +35,7 @@ func main() {
 
 	router.Get("/", home)
 	router.Post("/queue", queue)
+	router.Get("/queue/poll/{playerId}", poll)
 
 	value, exists := os.LookupEnv("PORT")
 	if !exists {
@@ -44,7 +56,39 @@ func home(w http.ResponseWriter, r *http.Request) {
 	templateFiles.ExecuteTemplate(w, "index.html", nil)
 }
 func queue(w http.ResponseWriter, r *http.Request) {
-	templateFiles.ExecuteTemplate(w, "queue", nil)
+	id += 1
+	playersInQueue = append(playersInQueue, id)
+	templateFiles.ExecuteTemplate(w, "queue", struct {
+		PlayerId int
+	}{PlayerId: id})
+	go createAvailableGames()
+}
+
+func createAvailableGames() {
+	for len(playersInQueue) > 1 {
+		id += 1
+		player1 := playersInQueue[0]
+		player2 := playersInQueue[1]
+		playersInQueue = playersInQueue[2:]
+		games = append(games, Game{GameId: id, Players: []int{player1, player2}})
+	}
+}
+
+func poll(w http.ResponseWriter, r *http.Request) {
+	playerId, err := strconv.Atoi(chi.URLParam(r, "playerId"))
+	if err != nil {
+		panic(err)
+	}
+	for _, game := range games {
+		if slices.Contains(game.Players, playerId) {
+			templateFiles.ExecuteTemplate(w, "game", game)
+			return
+		}
+	}
+
+	templateFiles.ExecuteTemplate(w, "queue", struct {
+		PlayerId int
+	}{PlayerId: playerId})
 }
 
 func readTemplates(rootDir string, funcMap template.FuncMap) (*template.Template, error) {
