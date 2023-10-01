@@ -1,4 +1,24 @@
 {{ define "game" }}
-<div>Hello, Game!</div>
-Game ID: {{ .GameId }} <br />
-Players: {{ .Players }} {{ end }}
+<div hx-ext="ws" ws-connect="/game/{{.GameId}}/ws">
+    <div>Hello, Game!</div>
+    Game ID: {{ .GameId }} <br />
+    Players: {{ .Players }} </>
+    {{ block "communityCards" .CommunityCards }}
+    <div id="community-cards">
+        {{ range . }}
+        {{ template "card" . }}
+        {{end}}</>
+    </div>
+    {{end}}
+    <div id="poket-cards">
+        {{ range .PocketCards }}
+        {{ template "card" . }}
+        {{ end}}
+    </div>
+    <div id="available-actions">
+        <button>Fold</button>
+        <button>Call</button>
+        <button>Raise</button>
+    </div>
+</div>
+{{ end }} </>

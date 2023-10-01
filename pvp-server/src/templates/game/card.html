@@ -1,0 +1,26 @@
+{{define "card"}}
+<div class="rounded-md w-10 h-10 md:w-16 md:h-16 text-2xl flex items-center
+    justify-center gap-1 relative drop-shadow-sm
+    {{ if eq .Suit " hearts" }} bg-red-400 text-white {{end}} {{ if eq .Suit "diamonds" }} bg-green-400 text-white
+    {{end}} {{ if eq .Suit "spades" }} bg-black text-white {{end}} {{ if eq .Suit "clubs" }} bg-white text-neutral-600
+    border-neutral-600 {{end}} {{ if eq .Suit "hidden" }} bg-neutral-400 text-white {{end}} text-2xl">
+    {{ if eq .Suit "hidden" }}
+    <i class="fa-solid fa-eye-slash"></i>
+    {{ else if eq .Rank 1}}
+    <i class="fa-solid fa-a"></i>
+    {{ else if lt .Rank 10}}
+    <i class="fa-solid fa-{{.Rank}}"></i>
+    {{ else if eq .Rank 10}}
+    <div class="flex">
+        <i class="fa-solid fa-1"></i>
+        <i class="fa-solid fa-0"></i>
+    </div>
+    {{else if eq .Rank 11}}
+    <i class="fa-solid fa-chess-bishop"></i>
+    {{else if eq .Rank 12}}
+    <i class="fa-solid fa-chess-queen"></i>
+    {{else if eq .Rank 13}}
+    <i class="fa-solid fa-chess-king"></i>
+    {{end}}
+</div>
+{{end}} </>

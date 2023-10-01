@@ -14,21 +14,46 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/gorilla/websocket"
 	"golang.org/x/exp/slices"
 )
 
-var templateFiles, _ = readTemplates("src/templates", nil)
+var templateFiles, err = readTemplates("src/templates", nil)
 
 type Game struct {
-	GameId  int
-	Players []int
+	GameId         int
+	Players        []int
+	CommunityCards []Card
+}
+
+type CardSuit string
+
+const (
+	CardSuitSpades   CardSuit = "spades"
+	CardSuitHeats    CardSuit = "heats"
+	CardSuitDiamonds CardSuit = "diamonds"
+	CardSuitClubs    CardSuit = "clubs"
+	CardSuitHidden   CardSuit = "hidden"
+)
+
+type Card struct {
+	Suit CardSuit
+	Rank int
 }
 
 var playersInQueue = []int{}
 var games = []Game{}
 var id = 0
+var websocketUpgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin:     func(r *http.Request) bool { return true },
+}
 
 func main() {
+	if err != nil {
+		panic(err)
+	}
 	router := chi.NewRouter()
 	router.Use(middleware.Logger)
 	router.Use(middleware.Compress(5))
@@ -36,6 +61,7 @@ func main() {
 	router.Get("/", home)
 	router.Post("/queue", queue)
 	router.Get("/queue/poll/{playerId}", poll)
+	router.HandleFunc("/game/{gameId}/ws", gameWebsocket)
 
 	value, exists := os.LookupEnv("PORT")
 	if !exists {
@@ -70,7 +96,7 @@ func createAvailableGames() {
 		player1 := playersInQueue[0]
 		player2 := playersInQueue[1]
 		playersInQueue = playersInQueue[2:]
-		games = append(games, Game{GameId: id, Players: []int{player1, player2}})
+		games = append(games, Game{GameId: id, Players: []int{player1, player2}, CommunityCards: []Card{{Rank: 1, Suit: CardSuitDiamonds}, {Rank: 0, Suit: CardSuitHidden}}})
 	}
 }
 
@@ -119,4 +145,31 @@ func readTemplates(rootDir string, funcMap template.FuncMap) (*template.Template
 	})
 
 	return root, err
+}
+
+func gameWebsocket(w http.ResponseWriter, r *http.Request) {
+	_, err := strconv.Atoi(chi.URLParam(r, "gameId"))
+	if err != nil {
+		panic(err)
+	}
+	ws, err := websocketUpgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println(err)
+	}
+	defer ws.Close()
+	ws.WriteMessage(websocket.TextMessage, []byte("Hello, websockets!"))
+	writer, err := ws.NextWriter(websocket.TextMessage)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	writer.Close()
+	for {
+		_, p, err := ws.ReadMessage()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		log.Println(string(p))
+	}
 }
