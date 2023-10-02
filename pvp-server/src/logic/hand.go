@@ -1,37 +1,70 @@
 package logic
 
-import "time"
+import (
+	"math/rand"
+)
 
-type InitialPlayer struct {
-	PlayerId      int
-	Name          string
-	StartingStack float32
+type InitalPlayer struct {
+	PlayerId int
+	Stack    int
 }
 
-func createInitialHandState(players []InitialPlayer) {
-	var hand Hand
-	hand.SpecVersion = "1.4.3"
-	hand.SiteName = "Tiny Poker"
-	hand.NetworkName = "Tiny Poker"
-	hand.InternalVersion = "0.1.0"
-	hand.Tournament = false
+func CreateInitialHandState(players []InitalPlayer, smallBlindAmount int, bigBlindAmount int, remainingPot int) {
+	var hand = HandState{}
+	deck := createInitialDeck()
 
-	hand.GameNumber = ""
-	hand.StartDateUtc = time.Now().UTC().Format("yyyy-mm-ddThh:mm:ssZ")
-	hand.TableName = "Heads Up PVP"
-	hand.GameType = "Holdem"
-	hand.BetLimit = BetLimit{BetType: "NL"}
-	hand.TableSize = 2
-	hand.Currency = "NAN"
-	hand.DealerSeat = 1
-	hand.SmallBlindAmount = 5
-	hand.BigBlindAmount = 10
-	hand.AnteAmount = 0
-	hand.Flags = []string{}
-	hand.Rounds = []Round{}
-	hand.Players = []Player{}
+	hand.Seats = []Seat{}
 	for index, player := range players {
-		hand.Players = append(hand.Players, Player{Id: player.PlayerId, Seat: index + 1, Name: player.Name, Display: player.Name, StartingStack: player.StartingStack})
-
+		card1, deck := pop(deck)
+		card2, deck := pop(deck)
+		lastAction := "None"
+		currentRaise := 0
+		stack := player.Stack
+		if index == 0 {
+			currentRaise = smallBlindAmount
+			stack -= smallBlindAmount
+			lastAction = "Small Blind"
+		}
+		if index == 1 {
+			currentRaise = bigBlindAmount
+			stack -= bigBlindAmount
+			lastAction = "Big Blind"
+		}
+		hand.Seats = append(hand.Seats, Seat{PlayerId: player.PlayerId, Cards: []Card{card1, card2}, Stack: stack, Out: false, LastAction: lastAction, CurrentRaise: currentRaise, HandStrength: "None"})
+		hand.CommunityCards = []Card{}
+		for i := 0; i < 5; i++ {
+			card, newDeck := pop(deck)
+			deck = newDeck
+			hand.CommunityCards = append(hand.CommunityCards, card)
+		}
+		hand.Round = "Blinds"
+		hand.CurrentAction = CurrentAction{
+			SeatInTurn: 2 % len(hand.Seats), // Left of BB
+			MinRaise:   bigBlindAmount, LastSeatToRaise: -1}
+		hand.SmallBlindAmount = smallBlindAmount
+		hand.BigBlindAmount = bigBlindAmount
+		hand.Pot = smallBlindAmount + bigBlindAmount + remainingPot
+		hand.Deck = deck
+		hand.Finished = false
+		hand.Winners = []int{}
 	}
+
+}
+
+func createInitialDeck() []Card {
+	deck := []Card{}
+	suits := []string{"hearts", "spades", "clubs", "diamonds"}
+	for _, suit := range suits {
+		for rank := 1; rank <= 13; rank++ {
+			deck = append(deck, Card{Rank: rank, Suit: suit})
+		}
+	}
+
+	rand.Shuffle(len(deck), func(i, j int) { deck[i], deck[j] = deck[j], deck[i] })
+	return deck
+}
+
+func pop(cards []Card) (Card, []Card) {
+	card := cards[0]
+	return card, cards[1:]
 }
