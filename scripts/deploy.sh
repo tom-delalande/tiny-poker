@@ -24,8 +24,9 @@ elif [ $LOCAL = $BASE ]; then
     BUILD_VERSION=$BUILD_VERSION docker-compose build tiny-poker-server
 
     echo "$(date --utc +%FT%TZ): Releasing new server version"
-    BUILD_VERSION=$BUILD_VERSION docker rollout server
+    BUILD_VERSION=$BUILD_VERSION docker rollout tiny-poker-server
     BUILD_VERSION=$BUILD_VERSION docker-compose up -d --no-deps --scale tiny-poker-server=1 --no-recreate tiny-poker-server
+    docker exec nginx-server nginx -s reload
 elif [ $REMOTE = $BASE ]; then
      echo "$(date --utc +%FT%TZ): Local changes detected, you may need to stashing"
      git stash
