@@ -24,7 +24,7 @@
                 prev.gems += 50;
                 return prev;
             });
-            router.set({ route: "AddedGems", gems: 50});
+            router.set({ route: "AddedGems", gems: 50 });
         });
     }
 </script>
@@ -35,19 +35,18 @@
     }}
 />
 <div class="flex flex-col items-center justify-center gap-2 h-full">
-    <p>Enter your email to be notified when this is released.</p>
+    <p>Enter your email to be notified about new features.</p>
     <input class="px-4 py-2 rounded-md" bind:value={emailInput} type="email" />
     <div class="flex flex-col gap-4 items-center">
         <CommonButton
             action={() => {
-                completeUpcommingFeatures(false);
-            }}
-            ><i class="fa-solid fa-xmark" /> No, I don't want to submit my email</CommonButton
+                completeUpcommingFeatures(true);
+            }}><i class="fa-solid fa-check" />Submit</CommonButton
         >
         <CommonButton
             action={() => {
-                completeUpcommingFeatures(true);
-            }}><i class="fa-solid fa-check" />Done</CommonButton
+                completeUpcommingFeatures(false);
+            }}><i class="fa-solid fa-xmark" />No thanks</CommonButton
         >
     </div>
 </div>

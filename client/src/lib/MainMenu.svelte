@@ -27,7 +27,7 @@
             action={() => {
                 router.set({ route: "BotSelectionScreen" });
             }}
-            ><i class="fa-solid fa-robot" /> Play Bots
+            ><i class="fa-solid fa-robot" /> Play bots
         </CommonButton>
         {#if storeEnabled}
             <CommonButton
@@ -42,7 +42,7 @@
                 action={() => {
                     router.set({ route: "UpcommingFeatures" });
                 }}
-                ><i class="fa-solid fa-rocket" /> Upcomming Features
+                ><i class="fa-solid fa-rocket" /> Upcoming features
             </CommonButton>
         {/if}
     </div>

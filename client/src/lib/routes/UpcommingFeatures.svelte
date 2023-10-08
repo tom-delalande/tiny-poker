@@ -15,12 +15,12 @@
     let features: Feature[] = [
         {
             id: 1,
-            name: "Tournaments (Multiplayer)",
+            name: "Multiplayer tournaments",
             icon: "trophy",
         },
         {
             id: 2,
-            name: "Story (Bots)",
+            name: "Story mode",
             icon: "book",
         },
         {
@@ -47,13 +47,14 @@
     class="flex flex-col items-center justify-center gap-2 h-full overscroll-none"
 >
     <p class="max-w-sm text-center">
-        Re-order these features to show us how important each is to you.
+        We're still working on these features. Reorder them to tell us what
+        you'd most like to see.
     </p>
 
     <div
         class="flex flex-col gap-2 justify-center items-center p-5 overscroll-none"
     >
-        <p>Most Important</p>
+        <p>Most important</p>
         <div
             class="flex flex-col gap-2 justify-center items-center overscroll-none"
             use:dndzone={{
@@ -75,7 +76,7 @@
                 </div>
             {/each}
         </div>
-        <p>Least Important</p>
+        <p>Least important</p>
     </div>
     <CommonButton
         action={() => {
