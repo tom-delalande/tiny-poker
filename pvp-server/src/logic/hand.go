@@ -1,6 +1,8 @@
 package logic
 
 import (
+	"log"
+	"math"
 	"math/rand"
 )
 
@@ -9,7 +11,7 @@ type InitalPlayer struct {
 	Stack    int
 }
 
-func CreateInitialHandState(players []InitalPlayer, smallBlindAmount int, bigBlindAmount int, remainingPot int) {
+func CreateInitialHandState(players []InitalPlayer, smallBlindAmount int, bigBlindAmount int, remainingPot int) HandState {
 	var hand = HandState{}
 	deck := createInitialDeck()
 
@@ -48,7 +50,7 @@ func CreateInitialHandState(players []InitalPlayer, smallBlindAmount int, bigBli
 		hand.Finished = false
 		hand.Winners = []int{}
 	}
-
+	return hand
 }
 
 func createInitialDeck() []Card {
@@ -67,4 +69,124 @@ func createInitialDeck() []Card {
 func pop(cards []Card) (Card, []Card) {
 	card := cards[0]
 	return card, cards[1:]
+}
+
+func FinishTurnForSeat(seat int, hand HandState) HandState {
+	if hand.CurrentAction.SeatInTurn != seat {
+		log.Printf("Attempted to finish turn from wrong seat. seat[%v] seatInTurn[%v]\n", seat, hand.CurrentAction.SeatInTurn)
+		return hand
+	}
+	log.Printf("Finishing turn\n")
+	playersIn := []Seat{}
+	playersInIndices := []int{}
+	for index, player := range hand.Seats {
+		if !player.Out {
+			playersIn = append(playersIn, player)
+			playersInIndices = append(playersInIndices, index)
+		}
+	}
+	if len(playersIn) == 1 {
+		hand.Winners = playersInIndices
+		return finishHand(hand)
+	}
+
+	seatInTurn := hand.CurrentAction.SeatInTurn
+	seatInTurn = (seatInTurn + 1) % len(hand.Seats)
+
+	for hand.Seats[seatInTurn].Out == true {
+		seatInTurn = (seatInTurn + 1) % len(hand.Seats)
+	}
+
+	if seatInTurn == hand.CurrentAction.LastSeatToRaise {
+		hand.CurrentAction.SeatInTurn = seatInTurn
+		return finishRound(hand)
+	}
+	if hand.CurrentAction.LastSeatToRaise == -1 {
+		hand.CurrentAction.LastSeatToRaise = hand.CurrentAction.SeatInTurn
+	}
+	hand.CurrentAction.SeatInTurn = seatInTurn
+	return hand
+}
+
+func finishRound(hand HandState) HandState {
+	hand.CurrentAction = CurrentAction{SeatInTurn: 0, MinRaise: 0, LastSeatToRaise: -1}
+	hand.Seats = []Seat{}
+	for _, seat := range hand.Seats {
+		hand.Seats = append(hand.Seats, Seat{
+			Cards:        seat.Cards,
+			Stack:        seat.Stack,
+			Out:          seat.Out,
+			LastAction:   "None",
+			CurrentRaise: 0,
+		})
+	}
+	round := hand.Round
+	if round == "Blinds" {
+		hand.Round = "Flop"
+	}
+	if round == "Flop" {
+		hand.Round = "Turn"
+	}
+	if round == "Turn" {
+		hand.Round = "River"
+	}
+
+	everyoneAllIn := true
+	// Could be a bug here
+	for _, seat := range hand.Seats {
+		if seat.Out == false && seat.Stack > 0 {
+			everyoneAllIn = false
+		}
+	}
+
+	if round == "River" || everyoneAllIn {
+		for _, seat := range hand.Seats {
+			cards := append(seat.Cards, hand.CommunityCards...)
+			seat.HandStrength = RateHand(cards).HandStrength
+		}
+		hand.Winners = calculateWinners(hand)
+		return finishHand(hand)
+	}
+	return hand
+}
+
+func finishHand(hand HandState) HandState {
+	hand = handlePayouts(hand)
+	hand.Finished = true
+	return hand
+}
+
+func calculateWinners(hand HandState) []int {
+	handRatings := []int{}
+	for _, seat := range hand.Seats {
+		cards := append(seat.Cards, hand.CommunityCards...)
+		score := RateHand(cards).Score
+		handRatings = append(handRatings, score)
+	}
+
+	winningRating := 0
+	for _, rating := range handRatings {
+		if rating > winningRating {
+			winningRating = rating
+		}
+	}
+	winners := []int{}
+	for index, rating := range handRatings {
+		if rating == winningRating {
+			winners = append(winners, index)
+		}
+	}
+
+	return winners
+}
+
+func handlePayouts(hand HandState) HandState {
+	winnings := int(math.Floor(float64(hand.Pot) / float64(len(hand.Winners))))
+	excess := hand.Pot - winnings*len(hand.Winners)
+
+	for _, winner := range hand.Winners {
+		hand.Seats[winner].Stack += winnings
+	}
+	hand.Pot = excess
+	return hand
 }
