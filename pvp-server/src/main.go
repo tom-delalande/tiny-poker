@@ -189,13 +189,15 @@ func gameWebsocket(w http.ResponseWriter, r *http.Request) {
 	for {
 		_, p, err := ws.ReadMessage()
 		if err != nil {
-			log.Fatalln(err)
+			log.Println(err)
+			ws.Close()
 			return
 		}
 		action := Action{}
 		err = json.Unmarshal(p, &action)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
+			ws.Close()
 		}
 		handleAction(&myGame, playerId, action)
 	}
@@ -248,6 +250,14 @@ type HandStateForPlayer struct {
 	HandStrength   string
 	Opponents      []Opponent
 	CommunityCards []logic.Card
+	Actions        []AvailableAction
+}
+
+type AvailableAction struct {
+	Type         string
+	RaiseAmounts []int
+	CallAmount   int
+	Disabled     bool
 }
 
 type Opponent struct {
@@ -260,10 +270,12 @@ type Opponent struct {
 
 func createHandStateForPlayer(gameId int, hand logic.HandState, playerId int) HandStateForPlayer {
 	seat := logic.Seat{}
+	seatIndex := 0
 	opponents := []Opponent{}
-	for _, s := range hand.Seats {
+	for index, s := range hand.Seats {
 		if s.PlayerId == playerId {
 			seat = s
+			seatIndex = index
 		} else {
 			cards := []logic.Card{}
 			if hand.Finished {
@@ -288,6 +300,38 @@ func createHandStateForPlayer(gameId int, hand logic.HandState, playerId int) Ha
 	playerState.HandStrength = seat.HandStrength
 	playerState.Opponents = opponents
 	playerState.CommunityCards = calculateShownCommunityCards(hand)
+
+	currentAction := hand.CurrentAction
+	actions := []AvailableAction{}
+	outOfTurn := currentAction.SeatInTurn != seatIndex
+	log.Printf("Player state. outOfTurn[%v] playerId[%v] seatIndex[%v] seatInTurn[%v]", outOfTurn, playerId, seatIndex, currentAction.SeatInTurn)
+	if currentAction.MinRaise > seat.CurrentRaise {
+		actions = append(actions, AvailableAction{
+			Type:     "Fold",
+			Disabled: outOfTurn || currentAction.MinRaise <= seat.CurrentRaise,
+		})
+	} else {
+		actions = append(actions, AvailableAction{
+			Type:     "Check",
+			Disabled: outOfTurn,
+		})
+	}
+	callAmount := 0
+	if outOfTurn || currentAction.MinRaise <= seat.CurrentRaise {
+		callAmount = currentAction.MinRaise - seat.CurrentRaise
+	}
+	actions = append(actions, AvailableAction{
+		Type:       "Call",
+		CallAmount: callAmount,
+		Disabled:   outOfTurn || currentAction.MinRaise <= seat.CurrentRaise,
+	})
+
+	actions = append(actions, AvailableAction{
+		Type:         "Raise",
+		RaiseAmounts: []int{1, 2, 3, 4, 5},
+		Disabled:     outOfTurn || currentAction.MinRaise > seat.Stack || seat.Stack == 0,
+	})
+	playerState.Actions = actions
 	return playerState
 }
 

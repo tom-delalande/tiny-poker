@@ -17,8 +17,10 @@ func CreateInitialHandState(players []InitalPlayer, smallBlindAmount int, bigBli
 
 	hand.Seats = []Seat{}
 	for index, player := range players {
-		card1, deck := pop(deck)
-		card2, deck := pop(deck)
+		card1, d := pop(deck)
+		card2, d := pop(d)
+		deck = d
+
 		lastAction := "None"
 		currentRaise := 0
 		stack := player.Stack

@@ -13,9 +13,17 @@
     <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <script src="https://kit.fontawesome.com/b16bbe82f6.js" crossorigin="anonymous"></script>
+    <style>
+        .app-container {
+            margin-top: env(safe-area-inset-top, 0);
+            margin-bottom: env(safe-area-inset-bottom, 0);
+            height: calc(100vh - env(safe-area-inset-top, 0) - env(safe-area-inset-bottom, 0));
+            height: calc(calc(var(--vh, 1vh) * 100) - env(safe-area-inset-top, 0) - env(safe-area-inset-bottom, 0));
+        }
+    </style>
 </head>
 
-<body class="text-text">
+<body class="text-text app-container">
     {{ template "home" }}
 </body>
 
