@@ -112,16 +112,24 @@ func FinishTurnForSeat(seat int, hand HandState) HandState {
 
 func finishRound(hand HandState) HandState {
 	hand.CurrentAction = CurrentAction{SeatInTurn: 0, MinRaise: 0, LastSeatToRaise: -1}
-	hand.Seats = []Seat{}
+
+	everyoneAllIn := true
+	seats := []Seat{}
 	for _, seat := range hand.Seats {
-		hand.Seats = append(hand.Seats, Seat{
+		seats = append(seats, Seat{
 			Cards:        seat.Cards,
 			Stack:        seat.Stack,
 			Out:          seat.Out,
 			LastAction:   "None",
 			CurrentRaise: 0,
 		})
+		log.Printf("seat[%v]", seat)
+		if seat.Out == false && seat.Stack > 0 {
+			everyoneAllIn = false
+		}
 	}
+
+	hand.Seats = seats
 	round := hand.Round
 	if round == "Blinds" {
 		hand.Round = "Flop"
@@ -131,14 +139,6 @@ func finishRound(hand HandState) HandState {
 	}
 	if round == "Turn" {
 		hand.Round = "River"
-	}
-
-	everyoneAllIn := true
-	// Could be a bug here
-	for _, seat := range hand.Seats {
-		if seat.Out == false && seat.Stack > 0 {
-			everyoneAllIn = false
-		}
 	}
 
 	if round == "River" || everyoneAllIn {

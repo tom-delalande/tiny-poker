@@ -1,4 +1,6 @@
-{{ define "queue" }} Your player ID is {{.PlayerId}}
-<div hx-get="/queue/poll/{{.PlayerId}}" hx-trigger="load delay:1s" hx-target="body"></div>
-<div>Hello, Queue!</div>
+{{ define "queue" }}
+<div hx-get="/queue/poll/{{.PlayerId}}" hx-trigger="load delay:1s" hx-target="body"
+    class="flex items-center justify-center h-full">
+    <div>Looking for a game...</div>
+</div>
 {{ end }}

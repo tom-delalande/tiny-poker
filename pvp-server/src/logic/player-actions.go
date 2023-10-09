@@ -1,6 +1,9 @@
 package logic
 
-import "math"
+import (
+	"log"
+	"math"
+)
 
 func PerformCheck(seat int, hand HandState) HandState {
 	if isActionOutOfTurn(seat, hand) {
@@ -24,18 +27,24 @@ func PlayerFold(seat int, hand HandState) HandState {
 }
 
 func PlayerCall(seat int, hand HandState) HandState {
+	log.Printf("Handling player call.")
+	x := isActionOutOfTurn(seat, hand)
+
 	if isActionOutOfTurn(seat, hand) {
+		log.Printf("Wut? %v %v %v", seat, hand.CurrentAction.SeatInTurn, x)
 		return hand
 	}
+	log.Printf("Handling player call also.")
 	hand.Seats[seat].LastAction = "Call"
 	callAmount := int(math.Min(float64(hand.Seats[seat].Stack), float64(hand.CurrentAction.MinRaise-hand.Seats[seat].CurrentRaise)))
 	hand.Seats[seat].Stack -= callAmount
+	log.Printf("Calling. callAmount[%v] pot[%v]\n", callAmount, hand.Pot)
 	hand.Pot += callAmount
 	return hand
 }
 
 func PlayerRaise(seat int, hand HandState, raiseAmount int) HandState {
-	if isActionOutOfTurn(seat, hand) {
+	if isActionOutOfTurn(seat, hand) == true {
 		return hand
 	}
 	player := hand.Seats[seat]
@@ -50,5 +59,8 @@ func PlayerRaise(seat int, hand HandState, raiseAmount int) HandState {
 }
 
 func isActionOutOfTurn(seat int, hand HandState) bool {
-	return hand.CurrentAction.SeatInTurn == seat
+	if hand.CurrentAction.SeatInTurn != seat {
+		log.Println("Action performed out of turn.")
+	}
+	return hand.CurrentAction.SeatInTurn != seat
 }
