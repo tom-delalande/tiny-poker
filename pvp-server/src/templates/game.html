@@ -1,24 +1,56 @@
 {{ define "game" }}
-<div hx-ext="ws" ws-connect="/game/{{.GameId}}/ws">
-    <div>Hello, Game!</div>
-    Game ID: {{ .GameId }} <br />
-    Players: {{ .Players }} </>
+<div hx-ext="ws" ws-connect="/game/{{.GameId}}/player/{{.PlayerId}}/ws"
+    class="flex flex-col justify-around h-full bg-neutral-300 h-full">
+    {{ block "opponents" .Opponents }}
+    <div id="opponents" class="flex justify-center items-center">
+        {{ range . }}
+        <div class="flex flex-col items-center">
+            Player#{{ .PlayerId }}
+            {{ template "stack" .Stack}}
+        </div>
+        {{end}}
+    </div>
+    {{end}}
     {{ block "communityCards" .CommunityCards }}
-    <div id="community-cards">
+    <div id="community-cards" class="flex gap-2 justify-center items-center">
         {{ range . }}
         {{ template "card" . }}
         {{end}}</>
     </div>
     {{end}}
-    <div id="poket-cards">
-        {{ range .PocketCards }}
-        {{ template "card" . }}
-        {{ end}}
+    {{ block "pot" .Pot }}
+    <div id="pot" class="flex justify-center items-center">
+        {{ template "stack" . }}
     </div>
-    <div id="available-actions">
-        <button>Fold</button>
-        <button>Call</button>
-        <button>Raise</button>
+    {{end}}
+    <div class="flex flex-col gap-2 items-center">
+        {{ block "lastAction" .LastAction }}
+        <div id="last-action">
+            {{ . }}
+        </div>
+        {{end}}
+        {{ block "handStrength" .HandStrength }}
+        <div id="hand-strength">
+            {{ . }}
+        </div>
+        {{end}}
+        {{ block "playerStack" .Stack }}
+        <div id="player-stack">
+            {{template "stack" .}}
+        </div>
+        {{end}}
+        {{ block "pocketCards" .PocketCards }}
+        <div id="poket-cards" class="flex gap-2 justify-center">
+            {{ range . }}
+            {{ template "card" . }}
+            {{ end}}
+        </div>
+        {{ end }}
+        <div id="available-actions">
+            <button>Fold</button>
+            <button>Call</button>
+            <button>Raise</button>
+        </div>
     </div>
 </div>
-{{ end }} </>
+{{ end }}

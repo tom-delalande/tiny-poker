@@ -157,14 +157,14 @@ func finishHand(hand HandState) HandState {
 }
 
 func calculateWinners(hand HandState) []int {
-	handRatings := []int{}
+	handRatings := []float64{}
 	for _, seat := range hand.Seats {
 		cards := append(seat.Cards, hand.CommunityCards...)
 		score := RateHand(cards).Score
 		handRatings = append(handRatings, score)
 	}
 
-	winningRating := 0
+	winningRating := 0.0
 	for _, rating := range handRatings {
 		if rating > winningRating {
 			winningRating = rating

@@ -23,26 +23,19 @@ import (
 var templateFiles, err = readTemplates("src/templates", nil)
 
 type PlayerWebSocket struct {
-	PlayerId int
-	Socket   *websocket.Conn
+	PlayerId    int
+	Socket      *websocket.Conn
+	PlayerState HandStateForPlayer
 }
 
 type WebsocketGame struct {
 	GameId           int
 	Players          []int
 	Hand             logic.HandState
-	PlayerWebSockets []PlayerWebSocket
+	PlayerWebSockets []*PlayerWebSocket
 }
 
 type CardSuit string
-
-const (
-	CardSuitSpades   CardSuit = "spades"
-	CardSuitHeats    CardSuit = "heats"
-	CardSuitDiamonds CardSuit = "diamonds"
-	CardSuitClubs    CardSuit = "clubs"
-	CardSuitHidden   CardSuit = "hidden"
-)
 
 type Card struct {
 	Suit CardSuit
@@ -69,6 +62,7 @@ func main() {
 	router.Get("/", home)
 	router.Post("/queue", queue)
 	router.Get("/queue/poll/{playerId}", poll)
+	router.Get("/test", test)
 	router.HandleFunc("/game/{gameId}/player/{playerId}/ws", gameWebsocket)
 
 	value, exists := os.LookupEnv("PORT")
@@ -108,10 +102,10 @@ func createAvailableGames() {
 			GameId:  id,
 			Players: []int{player1, player2},
 			Hand: logic.CreateInitialHandState([]logic.InitalPlayer{
-				logic.InitalPlayer{PlayerId: player1, Stack: 20},
-				logic.InitalPlayer{PlayerId: player2, Stack: 20},
+				{PlayerId: player1, Stack: 20},
+				{PlayerId: player2, Stack: 20},
 			}, 1, 2, 0),
-			PlayerWebSockets: []PlayerWebSocket{},
+			PlayerWebSockets: []*PlayerWebSocket{},
 		})
 	}
 }
@@ -123,7 +117,9 @@ func poll(w http.ResponseWriter, r *http.Request) {
 	}
 	for _, game := range games {
 		if slices.Contains(game.Players, playerId) {
-			templateFiles.ExecuteTemplate(w, "game", game)
+			playerState := createHandStateForPlayer(game.GameId, game.Hand, playerId)
+			log.Printf("Sending first inital game data to player. playerId[%v] gameId[%v] playerState[%v]\n", playerId, game.GameId, playerState)
+			templateFiles.ExecuteTemplate(w, "game", playerState)
 			return
 		}
 	}
@@ -177,13 +173,17 @@ func gameWebsocket(w http.ResponseWriter, r *http.Request) {
 	}
 	defer ws.Close()
 	myGame := WebsocketGame{}
+	log.Printf("Opening websocket. playerId[%v] gameId[%v]\n", playerId, gameId)
 	for _, game := range games {
 		if game.GameId == gameId {
 			myGame = game
+			initalPlayerState := createHandStateForPlayer(game.GameId, game.Hand, playerId)
+			log.Printf("Sending second inital game data to player. playerId[%v] gameId[%v] playerState[%v]\n", playerId, gameId, initalPlayerState)
 			game.PlayerWebSockets = append(
 				game.PlayerWebSockets,
-				PlayerWebSocket{PlayerId: playerId, Socket: ws},
+				&PlayerWebSocket{PlayerId: playerId, Socket: ws, PlayerState: initalPlayerState},
 			)
+			sendNewUIForChangesInPlayerState(initalPlayerState, initalPlayerState, ws)
 		}
 	}
 	for {
@@ -230,15 +230,18 @@ func handleAction(game *WebsocketGame, playerId int, action Action) {
 	}
 
 	for _, socket := range game.PlayerWebSockets {
-		playerState := createHandStateForPlayer(game.Hand, socket.PlayerId)
-
+		oldPlayerState := socket.PlayerState
+		newPlayerState := createHandStateForPlayer(game.GameId, game.Hand, socket.PlayerId)
+		socket.PlayerState = newPlayerState
+		sendNewUIForChangesInPlayerState(oldPlayerState, newPlayerState, socket.Socket)
 	}
 	fmt.Println(newHandState)
 }
 
 type HandStateForPlayer struct {
 	PlayerId       int
-	PrivateCards   []logic.Card
+	GameId         int
+	PocketCards    []logic.Card
 	Stack          int
 	Pot            int
 	LastAction     string
@@ -255,7 +258,7 @@ type Opponent struct {
 	HandStrength string
 }
 
-func createHandStateForPlayer(hand logic.HandState, playerId int) HandStateForPlayer {
+func createHandStateForPlayer(gameId int, hand logic.HandState, playerId int) HandStateForPlayer {
 	seat := logic.Seat{}
 	opponents := []Opponent{}
 	for _, s := range hand.Seats {
@@ -276,8 +279,9 @@ func createHandStateForPlayer(hand logic.HandState, playerId int) HandStateForPl
 		}
 	}
 	playerState := HandStateForPlayer{}
+	playerState.GameId = gameId
 	playerState.PlayerId = playerId
-	playerState.PrivateCards = seat.Cards
+	playerState.PocketCards = seat.Cards
 	playerState.Stack = seat.Stack
 	playerState.Pot = hand.Pot
 	playerState.LastAction = seat.LastAction
@@ -289,11 +293,11 @@ func createHandStateForPlayer(hand logic.HandState, playerId int) HandStateForPl
 
 func calculateShownCommunityCards(hand logic.HandState) []logic.Card {
 	cards := []logic.Card{
-		logic.Card{Suit: "Hidden", Rank: -1},
-		logic.Card{Suit: "Hidden", Rank: -1},
-		logic.Card{Suit: "Hidden", Rank: -1},
-		logic.Card{Suit: "Hidden", Rank: -1},
-		logic.Card{Suit: "Hidden", Rank: -1},
+		{Suit: "Hidden", Rank: -1},
+		{Suit: "Hidden", Rank: -1},
+		{Suit: "Hidden", Rank: -1},
+		{Suit: "Hidden", Rank: -1},
+		{Suit: "Hidden", Rank: -1},
 	}
 
 	if hand.Round == "Blinds" && !hand.Finished {
@@ -313,4 +317,69 @@ func calculateShownCommunityCards(hand logic.HandState) []logic.Card {
 	}
 	cards[4] = hand.CommunityCards[4]
 	return cards
+}
+
+func sendNewUIForChangesInPlayerState(prev HandStateForPlayer, next HandStateForPlayer, ws *websocket.Conn) {
+	// TODO: Make this only send updates
+	writer, err := ws.NextWriter(websocket.TextMessage)
+	if err != nil {
+		fmt.Println(err)
+		ws.Close()
+	}
+	templateFiles.ExecuteTemplate(writer, "opponents", next.Opponents)
+
+	writer, err = ws.NextWriter(websocket.TextMessage)
+	if err != nil {
+		fmt.Println(err)
+		ws.Close()
+	}
+	templateFiles.ExecuteTemplate(writer, "communityCards", next.CommunityCards)
+
+	writer, err = ws.NextWriter(websocket.TextMessage)
+	if err != nil {
+		fmt.Println(err)
+		ws.Close()
+	}
+	templateFiles.ExecuteTemplate(writer, "pocketCards", next.PocketCards)
+
+	writer, err = ws.NextWriter(websocket.TextMessage)
+	if err != nil {
+		fmt.Println(err)
+		ws.Close()
+	}
+	templateFiles.ExecuteTemplate(writer, "handStrength", next.HandStrength)
+
+	writer, err = ws.NextWriter(websocket.TextMessage)
+	if err != nil {
+		fmt.Println(err)
+		ws.Close()
+	}
+	templateFiles.ExecuteTemplate(writer, "playerStack", next.Stack)
+
+	writer, err = ws.NextWriter(websocket.TextMessage)
+	if err != nil {
+		fmt.Println(err)
+		ws.Close()
+	}
+	templateFiles.ExecuteTemplate(writer, "lastAction", next.LastAction)
+
+	writer, err = ws.NextWriter(websocket.TextMessage)
+	if err != nil {
+		fmt.Println(err)
+		ws.Close()
+	}
+	templateFiles.ExecuteTemplate(writer, "pot", next.Pot)
+	writer.Close()
+}
+
+func test(w http.ResponseWriter, r *http.Request) {
+	players := []logic.InitalPlayer{
+		{PlayerId: 1, Stack: 10},
+		{PlayerId: 2, Stack: 10},
+	}
+	hand := logic.CreateInitialHandState(players, 1, 2, 0)
+	playerState := createHandStateForPlayer(1, hand, 1)
+	game := WebsocketGame{GameId: 1, Players: []int{1, 2}, Hand: hand, PlayerWebSockets: []*PlayerWebSocket{}}
+	games = append(games, game)
+	templateFiles.ExecuteTemplate(w, "game", playerState)
 }

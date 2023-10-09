@@ -3,8 +3,8 @@
     justify-center gap-1 relative drop-shadow-sm
     {{ if eq .Suit " hearts" }} bg-red-400 text-white {{end}} {{ if eq .Suit "diamonds" }} bg-green-400 text-white
     {{end}} {{ if eq .Suit "spades" }} bg-black text-white {{end}} {{ if eq .Suit "clubs" }} bg-white text-neutral-600
-    border-neutral-600 {{end}} {{ if eq .Suit "hidden" }} bg-neutral-400 text-white {{end}} text-2xl">
-    {{ if eq .Suit "hidden" }}
+    border-neutral-600 {{end}} {{ if eq .Suit "Hidden" }} bg-neutral-400 text-white {{end}} text-2xl">
+    {{ if eq .Suit "Hidden" }}
     <i class="fa-solid fa-eye-slash"></i>
     {{ else if eq .Rank 1}}
     <i class="fa-solid fa-a"></i>
