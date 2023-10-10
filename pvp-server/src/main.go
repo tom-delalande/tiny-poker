@@ -64,6 +64,8 @@ func main() {
 	router.Post("/queue", queue)
 	router.Get("/queue/poll/{playerId}", poll)
 	router.HandleFunc("/game/{gameId}/player/{playerId}/ws", gameWebsocket)
+	router.Get("/raise-menu/{playerId}", raiseMenu)
+	router.Get("/raise-menu/{playerId}/back", raiseMenuBack)
 
 	value, exists := os.LookupEnv("PORT")
 	if !exists {
@@ -256,9 +258,18 @@ type HandStateForPlayer struct {
 	HandStrength   string
 	Opponents      []Opponent
 	CommunityCards []logic.Card
-	Actions        []AvailableAction
+	Actions        ActionBlock
 }
 
+type ActionBlock struct {
+	CheckFoldLabel    string
+	CheckFoldDisabled bool
+	CallDisabled      bool
+	CallAmount        int
+	RaiseDisabled     bool
+	RaiseAmounts      []int
+	PlayerId          int
+}
 type AvailableAction struct {
 	Type         string
 	RaiseAmounts []int
@@ -310,35 +321,29 @@ func createHandStateForPlayer(gameId int, hand logic.HandState, playerId int) Ha
 	playerState.CommunityCards = calculateShownCommunityCards(hand)
 
 	currentAction := hand.CurrentAction
-	actions := []AvailableAction{}
 	outOfTurn := currentAction.SeatInTurn != seatIndex
+	checkFoldLabel := "Check"
+	checkDisabled := outOfTurn
 	if currentAction.MinRaise > seat.CurrentRaise {
-		actions = append(actions, AvailableAction{
-			Type:     "Fold",
-			Disabled: outOfTurn || currentAction.MinRaise <= seat.CurrentRaise,
-		})
-	} else {
-		actions = append(actions, AvailableAction{
-			Type:     "Check",
-			Disabled: outOfTurn,
-		})
+		checkDisabled = outOfTurn || currentAction.MinRaise <= seat.CurrentRaise
+		checkFoldLabel = "Fold"
 	}
 	callAmount := 0
 	if !outOfTurn && currentAction.MinRaise > seat.CurrentRaise {
 		callAmount = currentAction.MinRaise - seat.CurrentRaise
 	}
-	actions = append(actions, AvailableAction{
-		Type:       "Call",
-		CallAmount: callAmount,
-		Disabled:   outOfTurn || currentAction.MinRaise <= seat.CurrentRaise,
-	})
-
-	actions = append(actions, AvailableAction{
-		Type:         "Raise",
-		RaiseAmounts: []int{1, 2, 3, 4, 5},
-		Disabled:     outOfTurn || currentAction.MinRaise > seat.Stack || seat.Stack == 0,
-	})
-	playerState.Actions = actions
+	callDisabled := outOfTurn || currentAction.MinRaise <= seat.CurrentRaise
+	raiseDisabled := outOfTurn || currentAction.MinRaise > seat.Stack || seat.Stack == 0
+	raiseAmounts := []int{1, 2, 3, 4, 5}
+	playerState.Actions = ActionBlock{
+		PlayerId:          playerId,
+		RaiseDisabled:     raiseDisabled,
+		CheckFoldDisabled: checkDisabled,
+		CallDisabled:      callDisabled,
+		CallAmount:        callAmount,
+		RaiseAmounts:      raiseAmounts,
+		CheckFoldLabel:    checkFoldLabel,
+	}
 	return playerState
 }
 
@@ -427,4 +432,32 @@ func sendNewUIForChangesInPlayerState(prev HandStateForPlayer, next HandStateFor
 	}
 	templateFiles.ExecuteTemplate(writer, "pot", next.Pot)
 	writer.Close()
+}
+
+func raiseMenu(w http.ResponseWriter, r *http.Request) {
+	playerId, err := strconv.Atoi(chi.URLParam(r, "playerId"))
+	if err != nil {
+		panic(err)
+	}
+	for _, game := range games {
+		if slices.Contains(game.Players, playerId) {
+			playerState := createHandStateForPlayer(game.GameId, game.Hand, playerId)
+			templateFiles.ExecuteTemplate(w, "raiseMenu", playerState.Actions)
+			return
+		}
+	}
+}
+
+func raiseMenuBack(w http.ResponseWriter, r *http.Request) {
+	playerId, err := strconv.Atoi(chi.URLParam(r, "playerId"))
+	if err != nil {
+		panic(err)
+	}
+	for _, game := range games {
+		if slices.Contains(game.Players, playerId) {
+			playerState := createHandStateForPlayer(game.GameId, game.Hand, playerId)
+			templateFiles.ExecuteTemplate(w, "actions", playerState.Actions)
+			return
+		}
+	}
 }

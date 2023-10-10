@@ -48,21 +48,32 @@
         {{ end }}
         {{ block "actions" .Actions }}
         <form id="actions" ws-send class="flex gap-2 justify-center">
-            {{range .}}
-            <button name="action" type="submit" value="{{.Type}}" {{if .Disabled }} disabled {{end}} class="
+            <button name="action" type="submit" value="CheckFold" {{if .CheckFoldDisabled }} disabled {{end}} class="
             px-4 py-2 min-w-max w-24
                 bg-gray-50 rounded-md active:scale-90 transition flex gap-2
             items-center justify-center disabled:bg-neutral-300
             disabled:border-2 disabled:border-gray-50 disabled:active:scale-100">
-                {{.Type}}
+                {{.CheckFoldLabel}}
                 {{ if gt .CallAmount 0 }}
                 ({{.CallAmount}}<i class="fa-solid fa-coins"></i>)
                 {{end}}
-                {{ if .RaiseAmounts}}
-                (n <i class="fa-solid fa-coins"></i>)
-                {{end}}
             </button>
-            {{end}}
+            <button name="action" type="submit" value="CheckFold" {{if .CallDisabled }} disabled {{end}} class="
+            px-4 py-2 min-w-max w-24
+                bg-gray-50 rounded-md active:scale-90 transition flex gap-2
+            items-center justify-center disabled:bg-neutral-300
+            disabled:border-2 disabled:border-gray-50 disabled:active:scale-100">
+                Call
+            </button>
+            <button hx-get="/raise-menu/{{ .PlayerId }}" hx-swap="outerHTML" hx-target="#actions" {{if .RaiseDisabled }}
+                disabled {{end}} class="
+            px-4 py-2 min-w-max w-24
+                bg-gray-50 rounded-md active:scale-90 transition flex gap-2
+            items-center justify-center disabled:bg-neutral-300
+            disabled:border-2 disabled:border-gray-50
+                                                    disabled:active:scale-100">
+                Raise
+            </button>
         </form>
         {{end}}
     </div>
