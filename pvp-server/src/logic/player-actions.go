@@ -5,24 +5,17 @@ import (
 	"math"
 )
 
-func PerformCheck(seat int, hand HandState) HandState {
+func PerformCheckFold(seat int, hand HandState) HandState {
 	if isActionOutOfTurn(seat, hand) {
 		return hand
 	}
 	if hand.CurrentAction.MinRaise > hand.Seats[seat].CurrentRaise {
-		return hand
+		hand.Seats[seat].LastAction = "Fold"
+		hand.Seats[seat].Out = true
+	} else {
+		hand.Seats[seat].LastAction = "Check"
 	}
 
-	hand.Seats[seat].LastAction = "Check"
-	return hand
-}
-
-func PlayerFold(seat int, hand HandState) HandState {
-	if isActionOutOfTurn(seat, hand) {
-		return hand
-	}
-	hand.Seats[seat].LastAction = "Fold"
-	hand.Seats[seat].Out = true
 	return hand
 }
 

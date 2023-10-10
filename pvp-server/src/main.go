@@ -200,14 +200,13 @@ func gameWebsocket(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 			ws.Close()
 		}
-		log.Printf("Action. action[%v] p[%v]", action, string(p))
 		handleAction(myGame, playerId, action)
 	}
 }
 
 type Action struct {
 	Action string
-	Value  int
+	Amount int
 }
 
 func handleAction(game *WebsocketGame, playerId int, action Action) {
@@ -220,18 +219,15 @@ func handleAction(game *WebsocketGame, playerId int, action Action) {
 	}
 
 	newHandState := game.Hand
-	log.Printf("Handling action. action[%v]", action.Action)
-	if action.Action == "Check" {
-		newHandState = logic.PerformCheck(seat, game.Hand)
-	}
-	if action.Action == "Fold" {
-		newHandState = logic.PlayerFold(seat, game.Hand)
+	log.Printf("Handling action. action[%v] amount[%v]", action.Action, action.Amount)
+	if action.Action == "CheckFold" {
+		newHandState = logic.PerformCheckFold(seat, game.Hand)
 	}
 	if action.Action == "Call" {
 		newHandState = logic.PlayerCall(seat, game.Hand)
 	}
 	if action.Action == "Raise" {
-		newHandState = logic.PlayerRaise(seat, game.Hand, action.Value)
+		newHandState = logic.PlayerRaise(seat, game.Hand, action.Amount)
 	}
 
 	newHandState = logic.FinishTurnForSeat(seat, newHandState)
@@ -334,7 +330,22 @@ func createHandStateForPlayer(gameId int, hand logic.HandState, playerId int) Ha
 	}
 	callDisabled := outOfTurn || currentAction.MinRaise <= seat.CurrentRaise
 	raiseDisabled := outOfTurn || currentAction.MinRaise > seat.Stack || seat.Stack == 0
-	raiseAmounts := []int{1, 2, 3, 4, 5}
+	minRaise := min(currentAction.MinRaise+1, seat.Stack)
+	raiseAmounts := []int{minRaise}
+
+	quarter := currentAction.MinRaise + (seat.Stack-currentAction.MinRaise)/4
+	if minRaise != quarter {
+		raiseAmounts = append(raiseAmounts, quarter)
+	}
+	half := currentAction.MinRaise + (seat.Stack-currentAction.MinRaise)/2
+	if half != quarter && half != minRaise {
+		raiseAmounts = append(raiseAmounts, half)
+	}
+	full := currentAction.MinRaise + (seat.Stack - currentAction.MinRaise)
+	if full != quarter && full != minRaise && full != half {
+		raiseAmounts = append(raiseAmounts, full)
+	}
+
 	playerState.Actions = ActionBlock{
 		PlayerId:          playerId,
 		RaiseDisabled:     raiseDisabled,
@@ -376,58 +387,59 @@ func calculateShownCommunityCards(hand logic.HandState) []logic.Card {
 }
 
 func sendNewUIForChangesInPlayerState(prev HandStateForPlayer, next HandStateForPlayer, ws *websocket.Conn) {
+	log.Printf("Sending new UI for changes in player state. opponents[%v] communityCards[%v]", next.Opponents, next.CommunityCards)
 	writer, err := ws.NextWriter(websocket.TextMessage)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ws.Close()
 	}
 	templateFiles.ExecuteTemplate(writer, "opponents", next.Opponents)
 
 	writer, err = ws.NextWriter(websocket.TextMessage)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ws.Close()
 	}
 	templateFiles.ExecuteTemplate(writer, "communityCards", next.CommunityCards)
 
 	writer, err = ws.NextWriter(websocket.TextMessage)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ws.Close()
 	}
 	templateFiles.ExecuteTemplate(writer, "pocketCards", next.PocketCards)
 
 	writer, err = ws.NextWriter(websocket.TextMessage)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ws.Close()
 	}
 	templateFiles.ExecuteTemplate(writer, "handStrength", next.HandStrength)
 
 	writer, err = ws.NextWriter(websocket.TextMessage)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ws.Close()
 	}
 	templateFiles.ExecuteTemplate(writer, "playerStack", next.Stack)
 
 	writer, err = ws.NextWriter(websocket.TextMessage)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ws.Close()
 	}
 	templateFiles.ExecuteTemplate(writer, "lastAction", next.LastAction)
 
 	writer, err = ws.NextWriter(websocket.TextMessage)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ws.Close()
 	}
 	templateFiles.ExecuteTemplate(writer, "actions", next.Actions)
 
 	writer, err = ws.NextWriter(websocket.TextMessage)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		ws.Close()
 	}
 	templateFiles.ExecuteTemplate(writer, "pot", next.Pot)
