@@ -117,6 +117,7 @@ func finishRound(hand HandState) HandState {
 	seats := []Seat{}
 	for _, seat := range hand.Seats {
 		seats = append(seats, Seat{
+			PlayerId:     seat.PlayerId,
 			Cards:        seat.Cards,
 			Stack:        seat.Stack,
 			Out:          seat.Out,

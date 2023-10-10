@@ -278,6 +278,7 @@ func createHandStateForPlayer(gameId int, hand logic.HandState, playerId int) Ha
 	seat := logic.Seat{}
 	seatIndex := 0
 	opponents := []Opponent{}
+	log.Printf("Updating seats. %v", hand.Seats)
 	for index, s := range hand.Seats {
 		if s.PlayerId == playerId {
 			seat = s
@@ -296,6 +297,7 @@ func createHandStateForPlayer(gameId int, hand logic.HandState, playerId int) Ha
 			})
 		}
 	}
+	log.Printf("Updating opponents. %v", opponents)
 	playerState := HandStateForPlayer{}
 	playerState.GameId = gameId
 	playerState.PlayerId = playerId
