@@ -437,7 +437,7 @@ func sendNewUIForChangesInPlayerState(prev HandStateForPlayer, next HandStateFor
 		log.Println(err)
 		ws.Close()
 	}
-	templateFiles.ExecuteTemplate(writer, "lastAction", next.LastAction)
+	templateFiles.ExecuteTemplate(writer, "myLastAction", next.LastAction)
 
 	writer, err = ws.NextWriter(websocket.TextMessage)
 	if err != nil {

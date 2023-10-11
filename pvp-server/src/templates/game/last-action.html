@@ -1,0 +1,59 @@
+{{define "lastAction"}}
+
+</>
+{{if eq . "Winner"}}
+<div class="border-2 border-yellow-900 rounded-md px-4 bg-yellow-300 text-yellow-900">
+    Winner
+</div>
+{{end}}
+
+</>
+{{if eq . "None"}}
+<div class="border-2 border-neutral-300 rounded-md px-4 bg-neutral-300 text-neutral-300">
+    None
+</div>
+{{end}}
+
+</>
+{{if eq . "Check"}}
+<div class="border-2 border-neutral-900 rounded-md px-4 bg-neutral-300 text-neutral-900">
+    Check
+</div>
+{{end}}
+</>
+{{if eq . "Fold"}}
+<div class="border-2 border-neutral-900 rounded-md px-4 bg-neutral-300 text-neutral-900">
+<div class="border-2 border-red-900 rounded-md px-4 bg-red-300 text-red-900">
+    Fold
+</div>
+{{end}}
+
+</>
+{{if eq . "Call"}}
+<div class="border-2 border-green-900 rounded-md px-4 bg-green-300 text-green-900">
+    Call
+</div>
+{{end}}
+
+</>
+{{if eq . "Big Blind"}}
+<div class="border-2 border-yellow-900 rounded-md px-4 bg-yellow-400 text-yellow-900">
+    Big Blind
+</div>
+{{end}}
+
+</>
+{{if eq . "Raise"}}
+<div class="border-2 border-yellow-900 rounded-md px-4 bg-yellow-400 text-yellow-900">
+    Raise
+</div>
+{{end}}
+
+</>
+{{if eq . "Small Blind"}}
+<div class="border-2 border-yellow-900 rounded-md px-4 bg-yellow-200 text-yellow-900">
+    Small Blind
+</div>
+{{end}}
+</>
+{{end}}

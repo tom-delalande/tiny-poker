@@ -5,8 +5,16 @@
     <div id="opponents" class="flex justify-center items-center">
         {{ range . }}
         <div class="flex flex-col items-center">
-            Player#{{ .PlayerId }}
+            <div>
+                Player#{{ .PlayerId }}
+            </div>
             {{ template "stack" .Stack}}
+            {{if ne .HandStrength "None"}}
+            <div>
+                {{.HandStrength}}
+            </div>
+            {{end}}
+            {{ template "lastAction" .LastAction}}
         </div>
         {{end}}
     </div>
@@ -24,14 +32,18 @@
     </div>
     {{end}}
     <div class="flex flex-col gap-2 items-center">
-        {{ block "lastAction" .LastAction }}
+        {{ block "myLastAction" .LastAction }}
         <div id="last-action">
-            {{ . }}
+            {{ template "lastAction" .}}
         </div>
         {{end}}
         {{ block "handStrength" .HandStrength }}
         <div id="hand-strength">
-            {{ . }}
+            {{if ne . "None"}}
+            <div>
+                {{.}}
+            </div>
+            {{end}}
         </div>
         {{end}}
         {{ block "playerStack" .Stack }}
