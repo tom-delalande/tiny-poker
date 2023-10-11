@@ -59,6 +59,11 @@
         </div>
         {{ end }}
         {{ block "actions" .Actions }}
+        {{ if .HandFinished }}
+        <div id="actions">
+            Preparing next hand...
+        </div>
+        {{else}}
         <form id="actions" ws-send class="flex gap-2 justify-center">
             <button name="action" type="submit" value="CheckFold" {{if .CheckFoldDisabled }} disabled {{end}} class="
             px-4 py-2 min-w-max w-24
@@ -88,7 +93,7 @@
             </button>
         </form>
         {{end}}
+        {{end}}
     </div>
-</div>
 </div>
 {{ end }}

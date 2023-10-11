@@ -31,5 +31,6 @@ type HandState struct {
 	Pot              int
 	Deck             []Card
 	Finished         bool
+	GameFinished     bool
 	Winners          []int
 }

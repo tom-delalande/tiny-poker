@@ -159,6 +159,24 @@ func finishHand(hand HandState) HandState {
 	return hand
 }
 
+func PrepareNextHand(hand HandState) HandState {
+	seats := []InitalPlayer{}
+	for _, seat := range hand.Seats {
+		seats = append(seats, InitalPlayer{
+			PlayerId: seat.PlayerId,
+			Stack:    seat.Stack,
+		})
+	}
+	lastPlayer := seats[len(seats)-1]
+	seats = append([]InitalPlayer{lastPlayer}, seats...)
+	return CreateInitialHandState(
+		seats,
+		hand.SmallBlindAmount,
+		hand.BigBlindAmount,
+		hand.Pot,
+	)
+}
+
 func calculateWinners(hand HandState) []int {
 	handRatings := []float64{}
 	for _, seat := range hand.Seats {

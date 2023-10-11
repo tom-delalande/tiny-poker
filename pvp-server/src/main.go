@@ -12,10 +12,13 @@ import (
 	"strconv"
 	"strings"
 	"text/template"
+	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/gorilla/websocket"
+	"github.com/kr/pretty"
+	_ "github.com/kr/pretty"
 	"golang.org/x/exp/slices"
 	"tiny.poker/pvp-server/src/logic"
 )
@@ -175,7 +178,6 @@ func gameWebsocket(w http.ResponseWriter, r *http.Request) {
 	}
 	defer ws.Close()
 	myGame := &WebsocketGame{}
-	log.Printf("Opening websocket. playerId[%v] gameId[%v]\n", playerId, gameId)
 	for _, game := range games {
 		if game.GameId == gameId {
 			myGame = game
@@ -228,7 +230,6 @@ func handleAction(game *WebsocketGame, playerId int, action Action) {
 	}
 
 	newHandState := game.Hand
-	log.Printf("Handling action. action[%v] amount[%v]", action.Action, action.Amount)
 	if action.Action == "CheckFold" {
 		newHandState = logic.PerformCheckFold(seat, game.Hand)
 	}
@@ -240,17 +241,25 @@ func handleAction(game *WebsocketGame, playerId int, action Action) {
 	}
 
 	newHandState = logic.FinishTurnForSeat(seat, newHandState)
-	log.Printf("New hand. currentAction[%v] pot[%v]\n", newHandState.CurrentAction, newHandState.Pot)
 
 	game.Hand = newHandState
-	log.Printf("Updating hand. currentAction[%v] pot[%v]\n", game.Hand.CurrentAction, game.Hand.Pot)
+	printableHandState := game.Hand
+	printableHandState.Deck = []logic.Card{}
+	fmt.Printf("Hand state updated\n. %# v", pretty.Formatter(printableHandState))
+	updateHandForPlayers(game)
+	if game.Hand.Finished {
+		go scheduleNextHand(game)
+	}
+}
+
+func updateHandForPlayers(game *WebsocketGame) {
 	for _, socket := range game.PlayerWebSockets {
-		log.Printf("Updating player socket. playerId[%v]\n", socket.PlayerId)
 		oldPlayerState := socket.PlayerState
-		newPlayerState := createHandStateForPlayer(game.GameId, newHandState, socket.PlayerId)
+		newPlayerState := createHandStateForPlayer(game.GameId, game.Hand, socket.PlayerId)
 		socket.PlayerState = newPlayerState
 		sendNewUIForChangesInPlayerState(oldPlayerState, newPlayerState, socket.Socket)
 	}
+
 }
 
 type HandStateForPlayer struct {
@@ -274,6 +283,7 @@ type ActionBlock struct {
 	RaiseDisabled     bool
 	RaiseAmounts      []int
 	PlayerId          int
+	HandFinished      bool
 }
 type AvailableAction struct {
 	Type         string
@@ -294,7 +304,6 @@ func createHandStateForPlayer(gameId int, hand logic.HandState, playerId int) Ha
 	seat := logic.Seat{}
 	seatIndex := 0
 	opponents := []Opponent{}
-	log.Printf("Updating seats. %v", hand.Seats)
 	for index, s := range hand.Seats {
 		if s.PlayerId == playerId {
 			seat = s
@@ -313,7 +322,6 @@ func createHandStateForPlayer(gameId int, hand logic.HandState, playerId int) Ha
 			})
 		}
 	}
-	log.Printf("Updating opponents. %v", opponents)
 	playerState := HandStateForPlayer{}
 	playerState.GameId = gameId
 	playerState.PlayerId = playerId
@@ -363,7 +371,9 @@ func createHandStateForPlayer(gameId int, hand logic.HandState, playerId int) Ha
 		CallAmount:        callAmount,
 		RaiseAmounts:      raiseAmounts,
 		CheckFoldLabel:    checkFoldLabel,
+		HandFinished:      hand.Finished,
 	}
+	fmt.Printf("Hand state updated for player\n. %v %# v", playerId, pretty.Formatter(playerState))
 	return playerState
 }
 
@@ -396,7 +406,6 @@ func calculateShownCommunityCards(hand logic.HandState) []logic.Card {
 }
 
 func sendNewUIForChangesInPlayerState(prev HandStateForPlayer, next HandStateForPlayer, ws *websocket.Conn) {
-	log.Printf("Sending new UI for changes in player state. opponents[%v] communityCards[%v]", next.Opponents, next.CommunityCards)
 	writer, err := ws.NextWriter(websocket.TextMessage)
 	if err != nil {
 		log.Println(err)
@@ -481,4 +490,14 @@ func raiseMenuBack(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+}
+
+func scheduleNextHand(game *WebsocketGame) {
+	time.Sleep(3 * time.Second)
+	nextHand := logic.PrepareNextHand(game.Hand)
+	game.Hand = nextHand
+	printableHandState := game.Hand
+	printableHandState.Deck = []logic.Card{}
+	fmt.Printf("Hand state updated\n. %# v", pretty.Formatter(printableHandState))
+	updateHandForPlayers(game)
 }
