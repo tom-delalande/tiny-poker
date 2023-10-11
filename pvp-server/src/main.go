@@ -241,6 +241,16 @@ func handleAction(game *WebsocketGame, playerId int, action Action) {
 	}
 
 	newHandState = logic.FinishTurnForSeat(seat, newHandState)
+	inPlayers := 0
+	for _, seats := range newHandState.Seats {
+		if seats.Stack > 0 {
+			inPlayers = inPlayers + 1
+		}
+	}
+
+	if newHandState.Finished && inPlayers == 1 {
+		newHandState.GameFinished = true
+	}
 
 	game.Hand = newHandState
 	printableHandState := game.Hand
@@ -248,7 +258,7 @@ func handleAction(game *WebsocketGame, playerId int, action Action) {
 	fmt.Printf("Hand state updated\n. %# v", pretty.Formatter(printableHandState))
 	updateHandForPlayers(game)
 
-	if game.Hand.Finished {
+	if game.Hand.Finished && !game.Hand.GameFinished {
 		go scheduleNextHand(game)
 	}
 }
@@ -497,21 +507,6 @@ func raiseMenuBack(w http.ResponseWriter, r *http.Request) {
 
 func scheduleNextHand(game *WebsocketGame) {
 	time.Sleep(3 * time.Second)
-	inPlayers := 0
-	for _, seats := range game.Hand.Seats {
-		if seats.Stack > 0 {
-			inPlayers = inPlayers + 1
-		}
-	}
-
-	if inPlayers == 1 {
-		game.Hand.GameFinished = true
-		printableHandState := game.Hand
-		printableHandState.Deck = []logic.Card{}
-		fmt.Printf("Hand state updated\n. %# v", pretty.Formatter(printableHandState))
-		updateHandForPlayers(game)
-		return
-	}
 
 	nextHand := logic.PrepareNextHand(game.Hand)
 	game.Hand = nextHand
