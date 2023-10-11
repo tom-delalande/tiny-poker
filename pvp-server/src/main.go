@@ -194,14 +194,23 @@ func gameWebsocket(w http.ResponseWriter, r *http.Request) {
 			ws.Close()
 			return
 		}
-		action := Action{}
+		action := ActionRequest{}
 		err = json.Unmarshal(p, &action)
 		if err != nil {
 			log.Println(err)
 			ws.Close()
 		}
-		handleAction(myGame, playerId, action)
+		amount, err := strconv.Atoi(action.Amount)
+		if err != nil {
+			amount = 0
+		}
+		handleAction(myGame, playerId, Action{Action: action.Action, Amount: amount})
 	}
+}
+
+type ActionRequest struct {
+	Action string
+	Amount string
 }
 
 type Action struct {
