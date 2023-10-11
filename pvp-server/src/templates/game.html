@@ -1,99 +1,100 @@
 {{ define "game" }}
-<div hx-ext="ws" ws-connect="/game/{{.GameId}}/player/{{.PlayerId}}/ws" class="flex flex-col justify-around h-full bg-neutral-300 h-full
-    app-container">
-    {{ block "opponents" .Opponents }}
-    <div id="opponents" class="flex justify-center items-center">
-        {{ range . }}
-        <div class="flex flex-col items-center">
-            <div>
-                Player#{{ .PlayerId }}
-            </div>
-            {{ template "stack" .Stack}}
-            {{if ne .HandStrength "None"}}
-            <div>
-                {{.HandStrength}}
-            </div>
-            {{end}}
-            {{ template "lastAction" .LastAction}}
-        </div>
-        {{end}}
+<div
+  hx-ext="ws"
+  ws-connect="/game/{{.GameId}}/player/{{.PlayerId}}/ws"
+  class="flex flex-col justify-around h-full bg-neutral-300 h-full app-container"
+>
+  {{ block "opponents" .Opponents }}
+  <div id="opponents" class="flex justify-center items-center">
+    {{ range . }}
+    <div class="flex flex-col items-center">
+      <div>Player#{{ .PlayerId }}</div>
+      {{ template "stack" .Stack}} {{if ne .HandStrength "None"}}
+      <div>{{.HandStrength}}</div>
+      {{end}} {{ template "lastAction" .LastAction}}
     </div>
     {{end}}
-    {{ block "communityCards" .CommunityCards }}
-    <div id="community-cards" class="flex gap-2 justify-center items-center">
-        {{ range . }}
-        {{ template "card" . }}
-        {{end}}</>
+  </div>
+  {{end}} {{ block "communityCards" .CommunityCards }}
+  <div id="community-cards" class="flex gap-2 justify-center items-center">
+    {{ range . }} {{ template "card" . }} {{end}}
+  </div>
+  {{end}} {{ block "pot" .Pot }}
+  <div id="pot" class="flex justify-center items-center">
+    {{ template "stack" . }}
+  </div>
+  {{end}}
+  <div class="flex flex-col gap-2 items-center">
+    {{ block "myLastAction" .LastAction }}
+    <div id="last-action">{{ template "lastAction" .}}</div>
+    {{end}} {{ block "handStrength" .HandStrength }}
+    <div id="hand-strength">
+      {{if ne . "None"}}
+      <div>{{.}}</div>
+      {{end}}
     </div>
-    {{end}}
-    {{ block "pot" .Pot }}
-    <div id="pot" class="flex justify-center items-center">
-        {{ template "stack" . }}
+    {{end}} {{ block "playerStack" .Stack }}
+    <div id="player-stack">{{template "stack" .}}</div>
+    {{end}} {{ block "pocketCards" .PocketCards }}
+    <div id="poket-cards" class="flex gap-2 justify-center">
+      {{ range . }} {{ template "card" . }} {{ end}}
     </div>
-    {{end}}
-    <div class="flex flex-col gap-2 items-center">
-        {{ block "myLastAction" .LastAction }}
-        <div id="last-action">
-            {{ template "lastAction" .}}
-        </div>
-        {{end}}
-        {{ block "handStrength" .HandStrength }}
-        <div id="hand-strength">
-            {{if ne . "None"}}
-            <div>
-                {{.}}
-            </div>
-            {{end}}
-        </div>
-        {{end}}
-        {{ block "playerStack" .Stack }}
-        <div id="player-stack">
-            {{template "stack" .}}
-        </div>
-        {{end}}
-        {{ block "pocketCards" .PocketCards }}
-        <div id="poket-cards" class="flex gap-2 justify-center">
-            {{ range . }}
-            {{ template "card" . }}
-            {{ end}}
-        </div>
-        {{ end }}
-        {{ block "actions" .Actions }}
-        {{ if .HandFinished }}
-        <div id="actions">
-            Preparing next hand...
-        </div>
-        {{else}}
-        <form id="actions" ws-send class="flex gap-2 justify-center">
-            <button name="action" type="submit" value="CheckFold" {{if .CheckFoldDisabled }} disabled {{end}} class="
-            px-4 py-2 min-w-max w-24
-                bg-gray-50 rounded-md active:scale-90 transition flex gap-2
-            items-center justify-center disabled:bg-neutral-300
-            disabled:border-2 disabled:border-gray-50 disabled:active:scale-100">
-                {{.CheckFoldLabel}}
-            </button>
-            <button name="action" type="submit" value="Call" {{if .CallDisabled }} disabled {{end}} class="
-            px-4 py-2 min-w-max w-24
-                bg-gray-50 rounded-md active:scale-90 transition flex gap-2
-            items-center justify-center disabled:bg-neutral-300
-            disabled:border-2 disabled:border-gray-50 disabled:active:scale-100">
-                Call
-                {{ if gt .CallAmount 0 }}
-                ({{.CallAmount}}<i class="fa-solid fa-coins"></i>)
-                {{end}}
-            </button>
-            <button hx-get="/raise-menu/{{ .PlayerId }}" hx-swap="outerHTML" hx-target="#actions" {{if .RaiseDisabled }}
-                disabled {{end}} class="
-            px-4 py-2 min-w-max w-24
-                bg-gray-50 rounded-md active:scale-90 transition flex gap-2
-            items-center justify-center disabled:bg-neutral-300
-            disabled:border-2 disabled:border-gray-50
-                                                    disabled:active:scale-100">
-                Raise
-            </button>
-        </form>
-        {{end}}
-        {{end}}
+    {{ end }} {{ block "actions" .Actions }} {{ if .GameFinished }}
+    <div id="actions" class="flex flex-col items-center justify-center">
+      Game finished!
+      <a
+        href="/"
+        class="px-4 py-2 min-w-max w-24 bg-gray-50 rounded-md active:scale-90 transition flex gap-2 items-center justify-center disabled:bg-neutral-300 disabled:border-2 disabled:border-gray-50 disabled:active:scale-100"
+        >Back</a
+      >
     </div>
+    {{else if .HandFinished}}
+    <div id="actions">Preparing next hand...</div>
+    {{else}}
+    <form id="actions" ws-send class="flex gap-2 justify-center">
+      <button
+        name="action"
+        type="submit"
+        value="CheckFold"
+        {{if
+        .CheckFoldDisabled
+        }}
+        disabled
+        {{end}}
+        class="px-4 py-2 min-w-max w-24 bg-gray-50 rounded-md active:scale-90 transition flex gap-2 items-center justify-center disabled:bg-neutral-300 disabled:border-2 disabled:border-gray-50 disabled:active:scale-100"
+      >
+        {{.CheckFoldLabel}}
+      </button>
+      <button
+        name="action"
+        type="submit"
+        value="Call"
+        {{if
+        .CallDisabled
+        }}
+        disabled
+        {{end}}
+        class="px-4 py-2 min-w-max w-24 bg-gray-50 rounded-md active:scale-90 transition flex gap-2 items-center justify-center disabled:bg-neutral-300 disabled:border-2 disabled:border-gray-50 disabled:active:scale-100"
+      >
+        Call {{ if gt .CallAmount 0 }} ({{.CallAmount}}<i
+          class="fa-solid fa-coins"
+        ></i
+        >) {{end}}
+      </button>
+      <button
+        hx-get="/raise-menu/{{ .PlayerId }}"
+        hx-swap="outerHTML"
+        hx-target="#actions"
+        {{if
+        .RaiseDisabled
+        }}
+        disabled
+        {{end}}
+        class="px-4 py-2 min-w-max w-24 bg-gray-50 rounded-md active:scale-90 transition flex gap-2 items-center justify-center disabled:bg-neutral-300 disabled:border-2 disabled:border-gray-50 disabled:active:scale-100"
+      >
+        Raise
+      </button>
+    </form>
+    {{end}} {{end}} {{ end }}
+  </div>
 </div>
-{{ end }}

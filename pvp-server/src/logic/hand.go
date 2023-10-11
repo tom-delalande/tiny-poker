@@ -168,7 +168,7 @@ func PrepareNextHand(hand HandState) HandState {
 		})
 	}
 	lastPlayer := seats[len(seats)-1]
-	seats = append([]InitalPlayer{lastPlayer}, seats...)
+	seats = append([]InitalPlayer{lastPlayer}, seats[:len(seats)-1]...)
 	return CreateInitialHandState(
 		seats,
 		hand.SmallBlindAmount,
