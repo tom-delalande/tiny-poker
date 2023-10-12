@@ -7,6 +7,7 @@ RUN go build -o /bin/app ./src/main.go
 
 FROM ubuntu:latest
 WORKDIR /app
+COPY ./src/templates ./src/templates
 COPY --from=build /bin/app ./app
 
 EXPOSE 8081

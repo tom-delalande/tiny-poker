@@ -28,11 +28,11 @@ elif [ $LOCAL = $BASE ]; then
     BUILD_VERSION=$BUILD_VERSION docker-compose up -d --no-deps --scale tiny-poker-server=1 --no-recreate tiny-poker-server
     docker exec nginx-server nginx -s reload
 
-    BUILD_VERSION=$BUILD_VERSION docker-compose build tiny-poker-pvp-server
+    docker-compose build tiny-poker-pvp-server
 
     echo "$(date --utc +%FT%TZ): Releasing new pvp server version"
-    BUILD_VERSION=$BUILD_VERSION docker rollout tiny-poker-pvp-server
-    BUILD_VERSION=$BUILD_VERSION docker-compose up -d --no-deps --scale tiny-poker-pvp-server=1 --no-recreate tiny-poker-pvp-server
+    docker rollout tiny-poker-pvp-server
+    docker-compose up -d --no-deps --scale tiny-poker-pvp-server=1 --no-recreate tiny-poker-pvp-server
     docker exec nginx-server nginx -s reload
 elif [ $REMOTE = $BASE ]; then
      echo "$(date --utc +%FT%TZ): Local changes detected, you may need to stashing"

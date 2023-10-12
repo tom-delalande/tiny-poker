@@ -31,6 +31,11 @@ services:
     volumes:
       - ./server/db:/app/db
     restart: always
+  pvp-server:
+    build:
+      context: pvp-server
+      dockerfile: pvp-server.dockerfile
+    restart: always
   client:
     build:
       context: client
