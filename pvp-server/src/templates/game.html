@@ -2,7 +2,7 @@
 <div
   hx-ext="ws"
   ws-connect="/game/{{.GameId}}/player/{{.PlayerId}}/ws"
-  class="flex flex-col justify-around h-full bg-neutral-300 h-full app-container"
+  class="flex flex-col justify-around h-full bg-neutral-300 app-container"
 >
   {{ block "opponents" .Opponents }}
   <div id="opponents" class="flex justify-center items-center">
