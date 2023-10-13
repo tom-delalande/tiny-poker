@@ -1,0 +1,15 @@
+package templates
+
+import "fmt"
+
+templ Queue(playerId int) {
+	<div
+ 		hx-get={ fmt.Sprintf("/queue/poll/%v", playerId) }
+ 		hx-trigger="load delay:1s"
+ 		hx-target="body"
+ 		class="flex items-center justify-center h-full"
+	>
+		<div>Looking for a game...</div>
+	</div>
+}
+

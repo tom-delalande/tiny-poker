@@ -1,0 +1,304 @@
+package templates
+
+import (
+    "fmt"
+    "tiny.poker/pvp-server/src/logic"
+)
+
+type HandStateForPlayer struct {
+	PlayerId       int
+	GameId         int
+	PocketCards    []logic.Card
+	Stack          int
+	Pot            int
+	LastAction     string
+	HandStrength   string
+	Opponents      []Opponent
+	CommunityCards []logic.Card
+	Actions        ActionBlock
+}
+
+type ActionBlock struct {
+	CheckFoldLabel    string
+	CheckFoldDisabled bool
+	CallDisabled      bool
+	CallAmount        int
+	RaiseDisabled     bool
+	RaiseAmounts      []int
+	PlayerId          int
+	HandFinished      bool
+	GameFinished      bool
+}
+type AvailableAction struct {
+	Type         string
+	RaiseAmounts []int
+	CallAmount   int
+	Disabled     bool
+}
+
+type Opponent struct {
+	Stack        int
+	PlayerId     int
+	Cards        []logic.Card
+	LastAction   string
+	HandStrength string
+}
+
+templ Game(s HandStateForPlayer) {
+	<div
+ 		hx-ext="ws"
+ 		ws-connect={fmt.Sprintf("/game/%v/player/%v/ws", s.GameId, s.PlayerId)}
+ 		class="flex flex-col justify-around h-full bg-neutral-300 app-container"
+	>
+		@Opponents(s.Opponents)
+		@CommunityCards(s.CommunityCards)
+		@Pot(s.Pot)
+		<div class="flex flex-col gap-2 items-center">
+			@MyLastAction(s.LastAction)
+			@MyHandStrength(s.HandStrength)
+			@Stack(s.Stack)
+			@PocketCards(s.PocketCards)
+			@Actions(s.Actions)
+		</div>
+	</div>
+}
+
+templ Stack(amount int) {
+	<div class="flex items-center gap-1">
+		<p>{ fmt.Sprint(amount) }</p>
+		<i class="fa-solid fa-coins"></i>
+	</div>
+}
+
+templ LastAction(action string) {
+	switch action {
+		case "Winner":
+			<div
+ 				class="border-2 border-yellow-900 rounded-md px-4 bg-yellow-300 text-yellow-900"
+			>
+				Winner
+			</div>
+		case "None":
+			<div
+ 				class="border-2 border-neutral-300 rounded-md px-4 bg-neutral-300 text-neutral-300"
+			>
+				None
+			</div>
+		case "Check":
+			<div
+ 				class="border-2 border-neutral-900 rounded-md px-4 bg-neutral-300 text-neutral-900"
+			>
+				Check
+			</div>
+		case "Fold": 
+			<div class="border-2 border-red-900 rounded-md px-4 bg-red-300 text-red-900">
+				Fold
+			</div>
+		case "Call":
+			<div
+ 				class="border-2 border-green-900 rounded-md px-4 bg-green-300 text-green-900"
+			>
+				Call
+			</div>
+		case "Big Blind":
+			<div
+ 				class="border-2 border-yellow-900 rounded-md px-4 bg-yellow-400 text-yellow-900"
+			>
+				Big Blind
+			</div>
+		case "Raise":
+			<div
+ 				class="border-2 border-yellow-900 rounded-md px-4 bg-yellow-400 text-yellow-900"
+			>
+				Raise
+			</div>
+		case "Small Blind":
+			<div
+ 				class="border-2 border-yellow-900 rounded-md px-4 bg-yellow-200 text-yellow-900"
+			>
+				Small Blind
+			</div>
+	}
+}
+
+templ Opponents(opponents []Opponent) {
+	<div id="opponents" class="flex flex-col justify-center items-center">
+		for _, opponent := range opponents {
+			<div>Player#{ fmt.Sprint(opponent.PlayerId) }</div>
+			@Stack(opponent.Stack)
+			if opponent.HandStrength != "None" {
+				<div>{ opponent.HandStrength }</div>
+			}
+			@LastAction(opponent.LastAction)
+		}
+	</div>
+}
+
+func getStylesFromSuit(suit string) string {
+    switch suit {
+        case "hearts":
+            return "bg-red-400 text-white"
+        case "diamonds":
+            return "bg-green-400 text-white"
+        case "spades":
+            return "bg-neutral-600 text-white"
+        case "clubs":
+            return "bg-white text-neutral-600"
+        case "Hidden":
+            return "bg-neutral-400 text-white"
+    }
+    return ""
+}
+
+templ Card(card logic.Card) {
+	<div
+ 		class={ 
+         "rounded-md w-10 h-10 md:w-16 md:h-16 text-2xl flex items-center justify-center gap-1 relative drop-shadow-sm text-2xl", 
+         getStylesFromSuit(card.Suit),
+     }
+	>
+		if card.Suit == "Hidden" {
+			<i class="fa-solid fa-eye-slash"></i>
+		} else if card.Rank == 1 {
+			<i class="fa-solid fa-a"></i>
+		} else if card.Rank < 10 {
+			<i class={ fmt.Sprintf("fa-solid fa-%v", card.Rank) }></i>
+		} else if card.Rank == 10 {
+			<div class="flex">
+				<i class="fa-solid fa-1"></i>
+				<i class="fa-solid fa-0"></i>
+			</div>
+		} else if card.Rank == 11 {
+			<i class="fa-solid fa-chess-bishop"></i>
+		} else if card.Rank == 12 {
+			<i class="fa-solid fa-chess-queen"></i>
+		} else if card.Rank == 13 {
+			<i class="fa-solid fa-chess-king"></i>
+		}
+	</div>
+}
+
+templ CommunityCards(cards []logic.Card) {
+	<div id="community-cards" class="flex gap-2 justify-center items-center">
+		for _, card := range cards {
+			@Card(card)
+		}
+	</div>
+}
+
+templ Pot(amount int) {
+	<div id="pot" class="flex justify-center items-center">
+		@Stack(amount)
+	</div>
+}
+
+templ MyLastAction(lastAction string) {
+	<div id="last-action">@LastAction(lastAction)</div>
+}
+
+templ MyHandStrength(handStrength string) {
+	<div id="hand-strength">
+		if handStrength != "None" {
+			<div>{ handStrength }</div>
+		}
+	</div>
+}
+
+templ MyStack(amount int) {
+	<div id="stack">
+		@Stack(amount)
+	</div>
+}
+
+templ PocketCards(cards []logic.Card) {
+	<div id="poket-cards" class="flex gap-2 justify-center">
+		for _, card := range cards {
+			@Card(card)
+		}
+	</div>
+}
+
+templ Actions(actions ActionBlock) {
+	if actions.GameFinished {
+		<div id="actions" class="flex flex-col items-center justify-center">
+			Game finished!
+			<a
+ 				href="/"
+ 				class="px-4 py-2 min-w-max w-24 bg-gray-50 rounded-md active:scale-90 transition flex gap-2 items-center justify-center disabled:bg-neutral-300 disabled:border-2 disabled:border-gray-50 disabled:active:scale-100"
+			>Back</a>
+		</div>
+	} else if actions.HandFinished {
+		<div id="actions">Preparing next hand...</div>
+	} else {
+		<form id="actions" ws-send class="flex gap-2 justify-center">
+			<button
+ 				name="action"
+ 				type="submit"
+ 				value="CheckFold"
+ 				if actions.CheckFoldDisabled {
+					disabled
+				}
+ 				class="px-4 py-2 min-w-max w-24 bg-gray-50 rounded-md active:scale-90 transition flex gap-2 items-center justify-center disabled:bg-neutral-300 disabled:border-2 disabled:border-gray-50 disabled:active:scale-100"
+			>
+				{ actions.CheckFoldLabel }
+			</button>
+			<button
+ 				name="action"
+ 				type="submit"
+ 				value="Call"
+ 				if actions.CallDisabled {
+					disabled
+				}
+ 				class="px-4 py-2 min-w-max w-24 bg-gray-50 rounded-md active:scale-90 transition flex gap-2 items-center justify-center disabled:bg-neutral-300 disabled:border-2 disabled:border-gray-50 disabled:active:scale-100"
+			>
+				Call
+				if actions.CallAmount > 0 {
+					{ fmt.Sprint(actions.CallAmount) }
+					<i
+ 						class="fa-solid fa-coins"
+					></i>
+				}
+			</button>
+			<button
+ 			    hx-get={ fmt.Sprintf("/raise-menu/%v", actions.PlayerId) }
+ 				hx-swap="outerHTML"
+ 				hx-target="#actions"
+ 				if actions.RaiseDisabled {
+					disabled
+				}
+ 				class="px-4 py-2 min-w-max w-24 bg-gray-50 rounded-md active:scale-90 transition flex gap-2 items-center justify-center disabled:bg-neutral-300 disabled:border-2 disabled:border-gray-50 disabled:active:scale-100"
+			>
+				Raise
+			</button>
+		</form>
+	}
+}
+
+templ RaiseMenu(actions ActionBlock) {
+	<div id="actions" class="flex gap-2 justify-center">
+		<button
+ 			hx-get={ fmt.Sprintf("/raise-menu/%v/back", actions.PlayerId) }
+ 			hx-swap="outerHTML"
+ 			hx-target="#actions"
+ 			class="px-4 py-2 min-w-max w-24 bg-gray-50 rounded-md active:scale-90 transition flex gap-2 items-center justify-center disabled:bg-neutral-300 disabled:border-2 disabled:border-gray-50 disabled:active:scale-100"
+		>
+			Back
+		</button>
+		<div class="flex gap-2 justify-center">
+			for _, amount := range actions.RaiseAmounts {
+				<form ws-send>
+					<input type="number" class="hidden" name="amount" value="{{.}}"/>
+					<button
+ 						name="action"
+ 						type="submit"
+ 						value="Raise"
+ 						class="px-4 py-2 min-w-max w-24 bg-gray-50 rounded-md active:scale-90 transition flex gap-2 items-center justify-center disabled:bg-neutral-300 disabled:border-2 disabled:border-gray-50 disabled:active:scale-100"
+					>
+						{ fmt.Sprint(amount) }
+						<i class="fa-solid fa-coins"></i>
+					</button>
+				</form>
+			}
+		</div>
+	</div>
+}
