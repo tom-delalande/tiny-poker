@@ -102,7 +102,7 @@ func Game(s HandStateForPlayer) templ.Component {
 		if err != nil {
 			return err
 		}
-		err = Stack(s.Stack).Render(ctx, templBuffer)
+		err = MyStack(s.Stack).Render(ctx, templBuffer)
 		if err != nil {
 			return err
 		}
@@ -865,7 +865,15 @@ func RaiseMenu(actions ActionBlock) templ.Component {
 			return err
 		}
 		for _, amount := range actions.RaiseAmounts {
-			_, err = templBuffer.WriteString("<form ws-send><input type=\"number\" class=\"hidden\" name=\"amount\" value=\"{{.}}\"><button name=\"action\" type=\"submit\" value=\"Raise\" class=\"px-4 py-2 min-w-max w-24 bg-gray-50 rounded-md active:scale-90 transition flex gap-2 items-center justify-center disabled:bg-neutral-300 disabled:border-2 disabled:border-gray-50 disabled:active:scale-100\">")
+			_, err = templBuffer.WriteString("<form ws-send><input type=\"number\" class=\"hidden\" name=\"amount\" value=\"")
+			if err != nil {
+				return err
+			}
+			_, err = templBuffer.WriteString(templ.EscapeString(fmt.Sprint(amount)))
+			if err != nil {
+				return err
+			}
+			_, err = templBuffer.WriteString("\"><button name=\"action\" type=\"submit\" value=\"Raise\" class=\"px-4 py-2 min-w-max w-24 bg-gray-50 rounded-md active:scale-90 transition flex gap-2 items-center justify-center disabled:bg-neutral-300 disabled:border-2 disabled:border-gray-50 disabled:active:scale-100\">")
 			if err != nil {
 				return err
 			}

@@ -108,8 +108,10 @@ func gameWebsocket(w http.ResponseWriter, r *http.Request) {
 		}
 		amount, err := strconv.Atoi(action.Amount)
 		if err != nil {
+			log.Printf("Error converting action amount. err[%v] amount[%v]\n", err, action.Amount)
 			amount = 0
 		}
+		log.Printf("Handling action. action[%v] amount[%v]", action.Action, amount)
 		handleAction(myGame, playerId, Action{Action: action.Action, Amount: amount})
 	}
 }
