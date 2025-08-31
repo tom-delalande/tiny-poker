@@ -1,5 +1,5 @@
 # ♠️ Tiny Poker
-*Play Head-Up Texas Hold'Em against bots*
+*Play Head-Up Texas Hold'Em against Bots or other players*
 
 ## Description
 Tiny Poker is a poker game with a simple, beautiful UI. You can play against bots with a variety of play-styles
